@@ -3,7 +3,7 @@ id: CreateFormHookOptions
 title: CreateFormHookOptions
 ---
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:46](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L46)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:45](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L45)
 
 Configures the components and reusable defaults returned by
 `createFormHook`.
@@ -56,7 +56,7 @@ Library-managed. Do not specify explicitly.
 optional defaultFieldOptions?: DefaultFieldOptions;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:79](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L79)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:78](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L78)
 
 Defaults for every field and array-field component owned by the form.
 
@@ -80,7 +80,7 @@ defaultFieldOptions: {
 optional defaultFormGroupOptions?: DefaultFormGroupOptions;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:95](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L95)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:94](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L94)
 
 Defaults for every `form.FormGroup` component.
 
@@ -105,7 +105,7 @@ defaultFormGroupOptions: {
 optional defaultFormOptions?: DefaultFormOptions;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:64](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L64)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:63](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L63)
 
 Defaults for every form created by `useAppForm`.
 

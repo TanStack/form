@@ -23,7 +23,7 @@ function ArrayForm(props: { items: Array<string> }) {
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          form.handleSubmit()
+          form.handleSubmit().catch(console.error)
         }}
       >
         <button type="submit">Submit</button>

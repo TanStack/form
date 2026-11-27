@@ -25,7 +25,7 @@
       onsubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
-        formGroup.handleSubmit()
+        formGroup.handleSubmit().catch(console.error)
       }}
     >
       <formGroup.Field name="name">

@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core'
-import type { FieldApi, FormErrorTypes } from '@tanstack/form-core'
+import type { FieldApi, ScopedErrorTypes } from '@tanstack/form-core'
 
 @Injectable({ providedIn: null })
 export class TanStackFieldInjectable<
@@ -7,7 +7,7 @@ export class TanStackFieldInjectable<
   TFieldName = any,
   TFieldError = any,
   TFormData = any,
-  TFormErrorTypes extends FormErrorTypes = any,
+  TFormErrorTypes extends ScopedErrorTypes = any,
 > {
   _api = signal<
     FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>

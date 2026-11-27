@@ -7,7 +7,7 @@ title: SolidFormGroupSubscribeComponent
 type SolidFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => JSX.Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:205](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L205)
+Defined in: [packages/solid-form/src/Components.public.ts:201](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L201)
 
 ## Type Parameters
 
@@ -17,7 +17,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:205](https://github.co
 
 ### TGroupErrorTypes
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupErrorTypes` *extends* `ScopedErrorTypes`
 
 ## Type Parameters
 

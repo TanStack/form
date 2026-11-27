@@ -5,12 +5,12 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
@@ -21,14 +21,10 @@ import type {
   ReactNode,
 } from 'react'
 import type { ReactComponentTree } from '../AppForm/componentMap.public'
-
-type ExactFieldBrand<out TValue> = {
-  readonly __tanstackFieldExactType: TValue
-}
-
-type AcceptsFieldBrand<out TAcceptedValue> = {
-  readonly __tanstackFieldAcceptsType: TAcceptedValue
-}
+import type {
+  AcceptsFieldBrand,
+  ExactFieldBrand,
+} from '../AppForm/helpers/fieldComponent.lib'
 
 type CompatibleFieldKey<TKey, TComponent, TTargetValue> = [TComponent] extends [
   ExactFieldBrand<infer TExact>,
@@ -84,9 +80,9 @@ export type ReactFieldApi<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends ReactComponentTree,
-> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
+> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 /**
@@ -101,15 +97,15 @@ interface ReactSubscribeProps<in out TSourceData, in out TSelected> {
 
 export type ReactFormSubscribeProps<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = ReactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>
+> = ReactSubscribeProps<FormState<TFormData, TFormError>, TSelected>
 
 export type ReactFormSubscribeComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > = <const TSelected>(
-  props: ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
+  props: ReactFormSubscribeProps<TFormData, TFormError, TSelected>,
 ) => ReactNode
 
 export interface ReactFormFieldProps<
@@ -121,38 +117,69 @@ export interface ReactFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > extends FieldApiOptions<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 > {
   children: (
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldError<
-        NoInfer<TFieldValidators>,
-        TGroupFieldError,
-        TFormErrorTypes
-      >,
+      NoInfer<ToFieldError<TFieldValidators, TGroupError, TFormError>>,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ) => ReactNode
 }
 
+export interface ReactFormArrayFieldProps<
+  in out TFieldData,
+  in out TFieldName,
+  in out TFieldValue,
+  in out TFieldValidators extends FieldValidators<
+    TFieldData,
+    TFieldName,
+    TFieldValue
+  >,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormData,
+  in out TFormError extends ScopedErrorTypes,
+  in out TFieldComponents extends ReactComponentTree,
+> extends ReactFormFieldProps<
+  TFieldData,
+  TFieldName,
+  TFieldValue,
+  TFieldValidators,
+  TGroupError,
+  TFormData,
+  TFormError,
+  TFieldComponents
+> {
+  /**
+   * Whether `ArrayField` also re-renders when the array field's meta changes.
+   *
+   * - Set to `true` when the render callback reads `field.meta`, including
+   *   validation errors and flags from subfields.
+   * - This option does not subscribe to every change in individual item values.
+   *
+   * @default false
+   */
+  subscribeToMeta?: boolean
+}
+
 export type ReactFormFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > = {
   <
@@ -170,7 +197,7 @@ export type ReactFormFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): ReactNode
@@ -178,7 +205,7 @@ export type ReactFormFieldComponent<
 
 export type ReactFormArrayFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > = {
   <
@@ -189,14 +216,14 @@ export type ReactFormArrayFieldComponent<
       DeepValue<TFormData, TFieldName>
     >,
   >(
-    props: ReactFormFieldProps<
+    props: ReactFormArrayFieldProps<
       TFormData,
       TFieldName,
       DeepValue<TFormData, TFieldName>,
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): ReactNode
@@ -204,25 +231,22 @@ export type ReactFormArrayFieldComponent<
 
 export type ReactFormGroupSubscribeProps<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
   TSelected,
-> = ReactSubscribeProps<
-  FormGroupState<TGroupValue, TGroupErrorTypes>,
-  TSelected
->
+> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupError>, TSelected>
 
 export type ReactFormGroupSubscribeComponent<
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
 > = <const TSelected>(
-  props: ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
+  props: ReactFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected>,
 ) => ReactNode
 
 export interface ReactFormGroupFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > {
   <
@@ -238,9 +262,9 @@ export interface ReactFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): ReactNode
@@ -249,8 +273,8 @@ export interface ReactFormGroupFieldComponent<
 export type ReactFormGroupArrayFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > = {
   <
@@ -261,14 +285,14 @@ export type ReactFormGroupArrayFieldComponent<
       DeepValue<TGroupValue, TFieldName>
     >,
   >(
-    props: ReactFormFieldProps<
+    props: ReactFormArrayFieldProps<
       TGroupValue,
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): ReactNode
@@ -278,31 +302,31 @@ export interface ReactFormGroupApi<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
+  TGroupError,
+  TFormError
 > {
   Field: ReactFormGroupFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
   ArrayField: ReactFormGroupArrayFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>
+  Subscribe: ReactFormGroupSubscribeComponent<TGroupValue, TGroupError>
 }
 
 export interface ReactFormGroupProps<
@@ -310,15 +334,17 @@ export interface ReactFormGroupProps<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
+  in out TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -327,8 +353,8 @@ export interface ReactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-      TFormErrorTypes,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>,
+      TFormError,
       TFieldComponents
     >,
   ) => ReactNode
@@ -336,46 +362,44 @@ export interface ReactFormGroupProps<
 
 export interface ReactFormGroupComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > {
   <
     TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TSubmitReturn = void,
   >(
     props: ReactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes,
-      TFieldComponents
+      TFormError,
+      TFieldComponents,
+      TSubmitReturn
     >,
   ): ReactNode
 }
 
 export interface ReactTanStackFormComponents<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
 > {
   /**
    * TODO docs
    */
-  Field: ReactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>
+  Field: ReactFormFieldComponent<TFormData, TFormError, TFieldComponents>
 
   ArrayField: ReactFormArrayFieldComponent<
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >
 
-  Subscribe: ReactFormSubscribeComponent<TFormData, TFormErrorTypes>
+  Subscribe: ReactFormSubscribeComponent<TFormData, TFormError>
 
-  FormGroup: ReactFormGroupComponent<
-    TFormData,
-    TFormErrorTypes,
-    TFieldComponents
-  >
+  FormGroup: ReactFormGroupComponent<TFormData, TFormError, TFieldComponents>
 }

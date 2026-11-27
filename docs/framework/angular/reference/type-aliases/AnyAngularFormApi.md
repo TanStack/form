@@ -4,10 +4,10 @@ title: AnyAngularFormApi
 ---
 
 ```ts
-type AnyAngularFormApi = AnyInternalFormApi;
+type AnyAngularFormApi = AnyFormApi;
 ```
 
-Defined in: [form-type.ts:33](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-type.ts#L33)
+Defined in: [form-type.ts:29](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-type.ts#L29)
 
 An Angular form API whose form data, validator, and submit types are erased.
 

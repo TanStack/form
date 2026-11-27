@@ -3,6 +3,7 @@ import { useSelector } from '@tanstack/preact-store'
 import type { FunctionComponent } from 'preact/compat'
 import type {
   AnyInternalFieldApi,
+  AnyInternalFormApi,
   InternalFormApi,
 } from '@tanstack/form-core/internals'
 import type { PreactFormFieldProps } from './Components.public'
@@ -17,7 +18,7 @@ interface InternalFieldProps extends PreactFormFieldProps<
   any,
   any
 > {
-  form: InternalFormApi<any, any, any>
+  form: AnyInternalFormApi
 }
 
 export function useField(

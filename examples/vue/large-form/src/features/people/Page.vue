@@ -10,10 +10,14 @@ const form = useAppForm({
     alert(JSON.stringify(value, null, 2))
   },
 })
+
+function handleSubmit() {
+  form.handleSubmit().catch(console.error)
+}
 </script>
 
 <template>
-  <form @submit.prevent="form.handleSubmit()">
+  <form @submit.prevent="handleSubmit">
     <h1>Personal Information</h1>
 
     <form.Field name="fullName" v-slot="{ field }">

@@ -11,11 +11,9 @@ export const schemaErrorsOnUnmountedDescendants = {
         return
       }
 
-      const hasSchemaError = getDevtoolsFieldErrors(
-        candidate,
-        candidate.state,
-        'messages',
-      ).some(({ source }) => source.validatorType === 'schema')
+      const hasSchemaError = getDevtoolsFieldErrors(candidate, 'messages').some(
+        ({ source }) => source.validatorType === 'schema',
+      )
 
       if (hasSchemaError) unmountedDescendantPaths.push(candidate.name)
     })

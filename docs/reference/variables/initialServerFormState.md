@@ -4,7 +4,7 @@ title: initialServerFormState
 ---
 
 ```ts
-const initialServerFormState: ServerFormState<any, any>;
+const initialServerFormState: ServerFormState<any>;
 ```
 
-Defined in: [ssr.public.ts:9](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L9)
+Defined in: [FormApi/formServerState.public.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L5)

@@ -3,12 +3,10 @@ id: FormApi
 title: FormApi
 ---
 
-Defined in: [FormApi/FormApi.public.ts:638](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L638)
+Defined in: [FormApi/FormApi.public.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L212)
 
-Core API for reading and updating state, validating values, and handling
-submission.
-
-Framework adapters compose this interface with framework-specific helpers.
+Type-safe methods for reading, updating, and resetting individual field
+values.
 
 ## Extends
 
@@ -22,21 +20,19 @@ Framework adapters compose this interface with framework-specific helpers.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
-
-Library-managed. Do not specify explicitly.
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 ## Properties
 
 ### atom
 
 ```ts
-atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
+atom: ReadonlyAtom<FormState<TFormData, TFormError>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:649](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L649)
+Defined in: [FormApi/FormApi.public.ts:224](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L224)
 
 Read-only atom containing reactive `FormState` snapshots.
 
@@ -79,7 +75,7 @@ formApi.clearFieldValues('items')
 readonly defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:653](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L653)
+Defined in: [FormApi/FormApi.public.ts:228](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L228)
 
 The current baseline values used by `reset()` and `isDefaultValue`.
 
@@ -120,7 +116,7 @@ formApi.filterFieldValues('items', (item) => item % 2 === 0)
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:660](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L660)
+Defined in: [FormApi/FormApi.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L235)
 
 Stable identifier supplied by `FormOptions.formId` or generated at
 creation.
@@ -164,23 +160,35 @@ be resolved at runtime.
 handleSubmit: HandleSubmitFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:698](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L698)
+Defined in: [FormApi/FormApi.public.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L286)
 
 Runs submission validation and submits current values when validation
 succeeds.
 
-Registered fields are marked touched, field validators run before form
-validators, and `onSubmit` is awaited only when validation succeeds.
+A submission attempt touches all fields.
+
+Field validators run before form validators, and `onSubmit` is awaited only
+when validation succeeds.
 Validation error results and errors returned by `onSubmit` through
-`createValidationError` are stored as error state. `onSubmitInvalid` is
-awaited after a failed attempt.
+`createValidationError` or `createErrorMap` are stored as error state.
+`onSubmitInvalid` is awaited after a failed attempt.
+Exceptions reject after submission state is cleaned up, unless
+`onSubmitInvalid` calls `preventThrow()`.
 
-Calls made while an attempt is in progress return the same promise instead
-of starting another attempt.
+Each call starts a fresh attempt with its own promise and captured values,
+superseding the form's pending attempt. Later edits do not cancel it or
+replace its captured values. Group submissions remain independent.
 
-The returned promise resolves to the error results produced by field and
-form validation, plus any validation error returned by `onSubmit` through
-`createValidationError`. The array is empty if none are produced.
+Supersession, reset, unmount, or server-state replacement aborts the attempt's
+callback signal and pending validation. Cancellation before callbacks start
+resolves with `[]`. Callbacks already started are still awaited with normal
+error handling, while their results cannot update form state. Submission
+state tracks only the current attempt.
+
+The returned promise resolves to a flat array of issues and error maps
+from field and form validation, plus errors returned by `onSubmit` through
+its validation helpers. Strings become issue objects. The array is empty
+if no errors are produced.
 
 ***
 
@@ -342,7 +350,7 @@ formApi.replaceFieldValue('items', 1, 'new item')
 reset: ResetFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:713](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L713)
+Defined in: [FormApi/FormApi.public.ts:301](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L301)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -418,10 +426,10 @@ formApi.setFieldValue('visitCount', (count) => count + 1)
 ### state
 
 ```ts
-readonly state: FormState<TFormData, TFormErrorTypes>;
+readonly state: FormState<TFormData, TFormError>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:651](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L651)
+Defined in: [FormApi/FormApi.public.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L226)
 
 Current values, validation status, and submission metadata.
 
@@ -461,10 +469,10 @@ formApi.swapFieldValues('items', 0, 2)
 ### validate
 
 ```ts
-validate: (signal) => Promise<FormValidationError<TFormData>[]>;
+validate: (signal) => Promise<FormattedValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:677](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L677)
+Defined in: [FormApi/FormApi.public.ts:253](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L253)
 
 Runs form-level validators enabled for the specified `'change'` or
 `'blur'` trigger.
@@ -480,13 +488,14 @@ Field-level validators are not run by this method.
 
 ##### signal
 
-[`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)
+[`DynamicValidatorTriggers`](../type-aliases/DynamicValidatorTriggers.md)
 
 The trigger used to select validators.
 
 #### Returns
 
-`Promise`\<[`FormValidationError`](../type-aliases/FormValidationError.md)\<`TFormData`\>[]\>
+`Promise`\<[`FormattedValidationError`](../type-aliases/FormattedValidationError.md)\<`TFormData`\>[]\>
 
-A promise resolving to each error result from the validators that
-ran. Unlike `state.errors`, these results are not flattened.
+A promise resolving to a flat array of issues and error maps from
+the validators that ran. Strings become issue objects; error maps retain
+their field paths.

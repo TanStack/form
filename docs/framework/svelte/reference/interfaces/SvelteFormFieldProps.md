@@ -3,11 +3,11 @@ id: SvelteFormFieldProps
 title: SvelteFormFieldProps
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L100)
+Defined in: [packages/svelte-form/src/Components.public.ts:101](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L101)
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -27,17 +27,17 @@ Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.c
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -49,9 +49,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.c
 
 ```ts
 children: Snippet<[SvelteFieldApi<TFieldName, TFieldValue, FallbackToValidationIssue<
-  | ExtractValidatorFieldError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
-  | unknown extends TGroupFieldError ? never : TGroupFieldError
-| ExtractFormFieldError<TFormErrorTypes>>, TFormData, TFormErrorTypes, TFieldComponents>]>;
+  | ExtractValidatorSelfError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
+  | ExtractSubfieldError<TGroupError>
+| ExtractSubfieldError<TFormError>>, TFormData, TFormError, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:118](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L118)
+Defined in: [packages/svelte-form/src/Components.public.ts:119](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L119)

@@ -5,9 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
-  ValidationIssue,
+  ScopedErrorTypes,
 } from '@tanstack/form-core'
 import type { Component, JSX } from 'solid-js'
 import type {
@@ -17,8 +16,8 @@ import type {
 import type { ReadonlyAtom } from '@tanstack/solid-store'
 
 export interface FieldGroupFieldComponent<
-  TFieldData,
-  TFieldComponents extends Record<string, Component<any>>,
+  in out TFieldData,
+  in out TFieldComponents extends Record<string, Component<any>>,
 > {
   <const TFieldName extends DeepKeys<TFieldData>>(
     props: SolidFormFieldProps<
@@ -30,17 +29,17 @@ export interface FieldGroupFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): JSX.Element
 }
 
 export interface FieldGroupArrayFieldComponent<
-  TFieldData,
-  TFieldComponents extends Record<string, Component<any>>,
+  in out TFieldData,
+  in out TFieldComponents extends Record<string, Component<any>>,
 > {
   <const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>>(
     props: SolidFormFieldProps<
@@ -52,9 +51,9 @@ export interface FieldGroupArrayFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): JSX.Element
@@ -62,7 +61,7 @@ export interface FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -71,8 +70,8 @@ export type FieldGroupSubscribeComponent = <const TSelected>(
 ) => JSX.Element
 
 export interface FieldGroupApi<
-  TFieldData,
-  TFieldComponents extends Record<string, Component<any>> = Record<
+  in out TFieldData,
+  in out TFieldComponents extends Record<string, Component<any>> = Record<
     never,
     never
   >,
@@ -88,4 +87,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   any,
   Record<string, Component<any>>
 >
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

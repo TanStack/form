@@ -14,9 +14,9 @@ export const WizardPage = () => {
   })
 
   return (
-    <form.AppForm>
+    <>
       {step === 0 && <Step1Form form={form} step={step} setStep={setStep} />}
       {step === 1 && <Step2Form form={form} step={step} setStep={setStep} />}
-    </form.AppForm>
+    </>
   )
 }

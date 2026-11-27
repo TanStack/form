@@ -4,7 +4,7 @@ title: VueFieldApi
 ---
 
 ```ts
-type VueFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
+type VueFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:65](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L65)
@@ -27,9 +27,9 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:65](https://gith
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

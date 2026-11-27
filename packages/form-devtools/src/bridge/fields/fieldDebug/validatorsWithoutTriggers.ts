@@ -1,4 +1,4 @@
-import type { AnyInternalValidatorInstance } from '@tanstack/form-core/internals'
+import type { AnyValidatorInstance } from '@tanstack/form-core/internals'
 import type { ValidatorsWithoutTriggersSuspicion } from '../../../eventClientTypes'
 import type { FieldDebugCase } from './types'
 
@@ -7,11 +7,11 @@ type ValidatorLocation =
 
 function appendValidatorsWithoutTriggers(
   locations: Array<ValidatorLocation>,
-  validatorInstances: ReadonlyArray<AnyInternalValidatorInstance> | null,
+  validatorInstances: ReadonlyArray<AnyValidatorInstance> | null,
   getLocation: (validatorIndex: number) => ValidatorLocation,
 ): void {
   validatorInstances?.forEach(({ definition: validator }, validatorIndex) => {
-    if (validator.triggers.length === 0 && !validator.runOnMount) {
+    if (!validator.triggers?.length) {
       locations.push(getLocation(validatorIndex))
     }
   })

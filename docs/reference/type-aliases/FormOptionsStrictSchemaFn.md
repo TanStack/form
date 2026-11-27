@@ -4,28 +4,19 @@ title: FormOptionsStrictSchemaFn
 ---
 
 ```ts
-type FormOptionsStrictSchemaFn<TComponents> = <TSchema, TFormValidators, TSubmitReturn>(schema, options) => FormOptions<StandardSchemaInput<TSchema>, TFormValidators, TSubmitReturn, TComponents>;
+type FormOptionsStrictSchemaFn<TPayload> = <TSchema, TValidatorConfig, TValidators, TSubmitReturn>(schema, options) => InferredFormOptions<NoInfer<StandardSchemaInput<TSchema>>, TValidators, TSubmitReturn, TPayload>;
 ```
 
-Defined in: [utils.public.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L114)
+Defined in: [FormApi/formOptions.public.ts:252](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L252)
 
-Types strict form options using a separate schema as the source of the form
-data type.
-
-The schema input fixes the form data type before the options are inferred,
-so `defaultValues` and each callback validator's `value` use the exact
-schema input type.
-
-The first argument is used only by TypeScript and is ignored at runtime.
-Include the schema in `validators` as well when it should validate the form.
-Parsed results are available in the corresponding `validatorOutputs` entries
-during submission.
+Function type for creating form options whose default values match a Standard
+Schema's input type.
 
 ## Type Parameters
 
-### TComponents
+### TPayload
 
-`TComponents`
+`TPayload`
 
 Library-managed. Do not specify explicitly.
 
@@ -37,9 +28,15 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`StandardSchemaInput`\<`TSchema`\>\>
+`TValidatorConfig` *extends* `unknown`[]
+
+Library-managed. Do not specify explicitly.
+
+### TValidators
+
+`TValidators`
 
 Library-managed. Do not specify explicitly.
 
@@ -55,34 +52,12 @@ Library-managed. Do not specify explicitly.
 
 `TSchema`
 
-Supplies the form data type without registering a validator.
-
 ### options
 
-[`FormOptions`](../interfaces/FormOptions.md)\<`StandardSchemaInput`\<`TSchema`\>, `TFormValidators`, `TSubmitReturn`, `unknown`\>
-
-The form options to type against the schema input.
+[`FormOptions`](../interfaces/FormOptions.md)\<`NoInfer`\<[`StandardSchemaInput`](StandardSchemaInput.md)\<`TSchema`\>\>, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`FormOptions`](../interfaces/FormOptions.md)\<`StandardSchemaInput`\<`TSchema`\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
+`InferredFormOptions`\<`NoInfer`\<[`StandardSchemaInput`](StandardSchemaInput.md)\<`TSchema`\>\>, `TValidators`, `TSubmitReturn`, `TPayload`\>
 
-The original options object, normalized to `FormOptions` with the
-schema input as its form data type.
-
-## Example
-
-```ts
-const profileSchema = z.object({ name: z.string().min(1) })
-const profileOptions = formOptions.strictSchema(profileSchema, {
-  defaultValues: { name: '' },
-  validators: [
-    { triggers: ['change'], run: profileSchema },
-    {
-      triggers: ['change'],
-      run: ({ value }) =>
-        value.name.length === 0 ? 'Name is required' : undefined,
-    },
-  ],
-})
-```
+The supplied options object unchanged.

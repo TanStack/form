@@ -88,7 +88,7 @@ function createSubscribeComponent(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  PreactFormGroupProps<any, any, any, any, any, any>
+  PreactFormGroupProps<any, any, any, any, any, any, any>
 >
 
 function createFormGroupComponent(
@@ -96,7 +96,7 @@ function createFormGroupComponent(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      Preact.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
+      Preact.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachPreactFormGroupComponents(
@@ -122,10 +122,17 @@ function createFormGroupComponent(
 }
 
 function attachPreactFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   form: InternalPreactFormApi,
 ) {
-  type FormGroupComponents = InternalFormGroupApi<any, any, any, any, any> & {
+  type FormGroupComponents = InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>

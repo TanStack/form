@@ -3,7 +3,7 @@ id: ReusableErrorVisibilityContext
 title: ReusableErrorVisibilityContext
 ---
 
-Defined in: [validation.public.ts:359](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L359)
+Defined in: [FormApi/errorVisibility.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L52)
 
 State available to a visibility policy shared across different form shapes.
 
@@ -15,7 +15,7 @@ State available to a visibility policy shared across different form shapes.
 fieldState: ErrorVisibilityFieldState;
 ```
 
-Defined in: [validation.public.ts:363](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L363)
+Defined in: [FormApi/errorVisibility.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L56)
 
 The field whose errors the policy controls.
 
@@ -27,6 +27,6 @@ The field whose errors the policy controls.
 state: ReusableErrorVisibilityState;
 ```
 
-Defined in: [validation.public.ts:361](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L361)
+Defined in: [FormApi/errorVisibility.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L54)
 
 Form state with group-scoped flags and counters for fields in a form group.

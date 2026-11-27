@@ -5,12 +5,12 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
@@ -80,9 +80,9 @@ export type PreactFieldApi<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
+> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 /**
@@ -99,15 +99,15 @@ interface PreactSubscribeProps<in out TSourceData, in out TSelected> {
 
 export type PreactFormSubscribeProps<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = PreactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>
+> = PreactSubscribeProps<FormState<TFormData, TFormError>, TSelected>
 
 export type PreactFormSubscribeComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > = <const TSelected>(
-  props: PreactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
+  props: PreactFormSubscribeProps<TFormData, TFormError, TSelected>,
 ) => CrossVersionPreactNode
 
 export interface PreactFormFieldProps<
@@ -119,30 +119,26 @@ export interface PreactFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > extends FieldApiOptions<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 > {
   children: (
     fieldApi: PreactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldError<
-        NoInfer<TFieldValidators>,
-        TGroupFieldError,
-        TFormErrorTypes
-      >,
+      ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ) => CrossVersionPreactNode
@@ -150,7 +146,7 @@ export interface PreactFormFieldProps<
 
 export type PreactFormFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = {
   <
@@ -168,7 +164,7 @@ export type PreactFormFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -176,7 +172,7 @@ export type PreactFormFieldComponent<
 
 export type PreactFormArrayFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = {
   <
@@ -194,7 +190,7 @@ export type PreactFormArrayFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -202,29 +198,22 @@ export type PreactFormArrayFieldComponent<
 
 export type PreactFormGroupSubscribeProps<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = PreactSubscribeProps<
-  FormGroupState<TGroupValue, TGroupErrorTypes>,
-  TSelected
->
+> = PreactSubscribeProps<FormGroupState<TGroupValue, TFormError>, TSelected>
 
 export type PreactFormGroupSubscribeComponent<
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
 > = <const TSelected>(
-  props: PreactFormGroupSubscribeProps<
-    TGroupValue,
-    TGroupErrorTypes,
-    TSelected
-  >,
+  props: PreactFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected>,
 ) => CrossVersionPreactNode
 
 export interface PreactFormGroupFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
   <
@@ -240,9 +229,9 @@ export interface PreactFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -251,8 +240,8 @@ export interface PreactFormGroupFieldComponent<
 export type PreactFormGroupArrayFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = {
   <
@@ -268,9 +257,9 @@ export type PreactFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -280,31 +269,31 @@ export interface PreactFormGroupApi<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
+  TGroupError,
+  TFormError
 > {
   Field: PreactFormGroupFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
   ArrayField: PreactFormGroupArrayFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: PreactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>
+  Subscribe: PreactFormGroupSubscribeComponent<TGroupValue, TGroupError>
 }
 
 export interface PreactFormGroupProps<
@@ -312,15 +301,17 @@ export interface PreactFormGroupProps<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -329,8 +320,8 @@ export interface PreactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-      TFormErrorTypes,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>,
+      TFormError,
       TFieldComponents
     >,
   ) => CrossVersionPreactNode
@@ -338,46 +329,44 @@ export interface PreactFormGroupProps<
 
 export interface PreactFormGroupComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
   <
     TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TSubmitReturn = void,
   >(
     props: PreactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes,
-      TFieldComponents
+      TFormError,
+      TFieldComponents,
+      TSubmitReturn
     >,
   ): CrossVersionPreactNode
 }
 
 export interface PreactTanStackFormComponents<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
   /**
    * TODO docs
    */
-  Field: PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>
+  Field: PreactFormFieldComponent<TFormData, TFormError, TFieldComponents>
 
   ArrayField: PreactFormArrayFieldComponent<
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >
 
-  Subscribe: PreactFormSubscribeComponent<TFormData, TFormErrorTypes>
+  Subscribe: PreactFormSubscribeComponent<TFormData, TFormError>
 
-  FormGroup: PreactFormGroupComponent<
-    TFormData,
-    TFormErrorTypes,
-    TFieldComponents
-  >
+  FormGroup: PreactFormGroupComponent<TFormData, TFormError, TFieldComponents>
 }

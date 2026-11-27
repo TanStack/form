@@ -2,7 +2,7 @@ import TanStackFormField from '../fields-ui/field'
 import TanStackFormLabel from '../fields-ui/label'
 import TanStackFormTextInput from '../fields-ui/text-input'
 import TanStackFormError from '../fields-ui/error'
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 
 interface TanStackFormTextFieldProps {
@@ -21,4 +21,7 @@ function FormTextField(props: TanStackFormTextFieldProps) {
   )
 }
 
-export default fieldComponent.strict(FormTextField, 'field')
+export default fieldComponent.strict()({
+  component: FormTextField,
+  replaceProperty: 'field',
+})

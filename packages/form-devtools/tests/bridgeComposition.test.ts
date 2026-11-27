@@ -38,10 +38,8 @@ describe('form devtools bridge composition', () => {
     const removedFields = [{ field, previousPath: 'name' }]
     const dependencyChanges = [
       {
-        kind: 'listener' as const,
-        sourceField: field,
+        sourceFieldName: 'name',
         watchingField: field,
-        listenerInstance: field._listenerInstances![0]!,
       },
     ]
 

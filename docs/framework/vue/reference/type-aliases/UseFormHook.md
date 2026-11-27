@@ -4,7 +4,7 @@ title: UseFormHook
 ---
 
 ```ts
-type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => VueFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
+type UseFormHook<TComponents> = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => VueFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, TComponents>;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/useForm.public.ts#L13)
@@ -21,9 +21,13 @@ Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -33,8 +37,8 @@ Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`VueFormApi`](VueFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>
+[`VueFormApi`](VueFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, `TComponents`\>

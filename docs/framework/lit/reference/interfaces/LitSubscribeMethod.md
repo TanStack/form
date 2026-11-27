@@ -3,7 +3,7 @@ id: LitSubscribeMethod
 title: LitSubscribeMethod
 ---
 
-Defined in: [tanstack-form-controller.ts:148](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L148)
+Defined in: [tanstack-form-controller.ts:147](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L147)
 
 ## Type Parameters
 
@@ -22,7 +22,7 @@ subscribe<TSelected>(
    when?): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:149](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L149)
+Defined in: [tanstack-form-controller.ts:148](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L148)
 
 #### Type Parameters
 

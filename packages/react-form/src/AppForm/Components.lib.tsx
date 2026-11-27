@@ -4,41 +4,33 @@ import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
-import { FieldContext, FormContext } from './contexts.lib'
-import type { FieldOptionsScope } from '@tanstack/form-core/internals'
-import type { FunctionComponent, ReactNode } from 'react'
-import type { AppFormComponent } from './ReactAppFormApi.public'
+import { FieldContext } from './contexts.lib'
 import type {
-  ReactFormFieldProps,
+  AnyInternalFieldApi,
+  FieldOptionsScope,
+} from '@tanstack/form-core/internals'
+import type { FunctionComponent } from 'react'
+import type {
+  ReactFormArrayFieldProps,
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
-export function createAppForm(form: InternalReactFormApi): AppFormComponent {
-  const AppForm: FunctionComponent<{
-    children: Exclude<ReactNode, Promise<any>>
-  }> = function AppFormComponent(props) {
-    // eslint-disable-next-line @eslint-react/no-context-provider
-    return <FormContext.Provider value={form as never} {...props} />
-  }
-
-  AppForm.displayName = 'TanStackForm.AppForm'
-
-  return AppForm
-}
-
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, never, any, any, any>
+  ReactFormArrayFieldProps<any, any, any, any, never, any, any, any>
 >
 
 export function createFieldWithContext(
   form: InternalReactFormApi,
   scope: FieldOptionsScope,
-  useFieldSubscription = useValueFieldSubscription,
+  useFieldSubscription: (
+    fieldApi: AnyInternalFieldApi,
+    subscribeToMeta?: boolean,
+  ) => AnyInternalFieldApi = useValueFieldSubscription,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, scope)
-    const field = useFieldSubscription(fieldApi)
+    const field = useFieldSubscription(fieldApi, props.subscribeToMeta)
 
     return (
       // eslint-disable-next-line @eslint-react/no-context-provider
@@ -54,7 +46,7 @@ export function createFieldWithContext(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  ReactFormGroupProps<any, any, any, any, any, any>
+  ReactFormGroupProps<any, any, any, any, any, any, any>
 >
 
 export function createFormGroupWithContext(
@@ -64,7 +56,7 @@ export function createFormGroupWithContext(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
+      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
@@ -91,11 +83,18 @@ export function createFormGroupWithContext(
 }
 
 function attachAppFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   groupField: FunctionComponent<any>,
   groupArrayField: FunctionComponent<any>,
 ) {
-  type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
+  type GroupWithComponents = InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>

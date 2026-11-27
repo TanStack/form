@@ -4,15 +4,12 @@ title: ParseSubmitIssuesFn
 ---
 
 ```ts
-type ParseSubmitIssuesFn<TFormData> = (issues) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>;
+type ParseSubmitIssuesFn<TFormData> = (issues) => ParsedSubmitIssues<TFormData> & OnSubmitError<ParsedSubmitIssues<TFormData>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L80)
+Defined in: [FormApi/formSubmit.public.ts:92](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L92)
 
-Converts Standard Schema issues into an `onSubmit` validation error.
-
-Issue paths are mapped to fields in the submitted value. Return the result
-from `onSubmit` to add the parsed errors to validation state.
+Converts Standard Schema issues into a mutable error map to return from `onSubmit`.
 
 ## Type Parameters
 
@@ -26,10 +23,8 @@ Library-managed. Do not specify explicitly.
 
 ### issues
 
-`ReadonlyArray`\<[`StandardSchemaV1Issue`](../interfaces/StandardSchemaV1Issue.md)\>
-
-The Standard Schema issues to convert.
+`Parameters`\<[`ParseIssuesFn`](ParseIssuesFn.md)\<`TFormData`\>\>\[`0`\]
 
 ## Returns
 
-[`OnSubmitError`](OnSubmitError.md)\<[`ParsedStandardSchemaIssues`](../interfaces/ParsedStandardSchemaIssues.md)\<`TFormData`\>\>
+`ParsedSubmitIssues`\<`TFormData`\> & [`OnSubmitError`](OnSubmitError.md)\<`ParsedSubmitIssues`\<`TFormData`\>\>

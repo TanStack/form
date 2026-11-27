@@ -4,10 +4,10 @@ title: AngularFormType
 ---
 
 ```ts
-type AngularFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, unknown> ? InternalFormApi<TFormData, TFormValidators, AngularFormTypeSubmitReturn<TSubmitReturn>> : never;
+type AngularFormType<TOptions> = TOptions extends FormOptions<infer TFormData, any, infer TValidators, infer TSubmitReturn, any> ? FormApi<TFormData, GetSharedFormErrorTypes<TValidators, TSubmitReturn>> : never;
 ```
 
-Defined in: [form-type.ts:57](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-type.ts#L57)
+Defined in: [form-type.ts:53](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-type.ts#L53)
 
 Derives the Angular form API type represented by a reusable options object.
 

@@ -1,15 +1,15 @@
 import { createFormHook } from '@tanstack/react-form'
 import { lazy } from 'react'
 
-// React lazy importing loses generics, so import this directly
+// React lazy importing loses generics, so fix the type.
 const Select = lazy(
   () => import('./fields-ui/select'),
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 ) as unknown as typeof import('./fields-ui/select').default
 
 const TextInput = lazy(() => import('./fields-ui/text-input'))
-const TanStackFormSubmitButton = lazy(() => import('./form-ui/submit-button'))
-const TanStackFormElement = lazy(() => import('./form-ui/form'))
+const SubmitButton = lazy(() => import('./form-ui/submit-button'))
+const Form = lazy(() => import('./form-ui/form'))
 const Field = lazy(() => import('./fields-ui/field'))
 const Label = lazy(() => import('./fields-ui/label'))
 const Error = lazy(() => import('./fields-ui/error'))
@@ -23,7 +23,7 @@ const TextArea = lazy(() => import('./fields-ui/text-area'))
 
 const TextInputField = lazy(() => import('./wrappers/text-field'))
 
-export const { appFormOptions, useAppForm, useFormContext } = createFormHook({
+export const { appFormOptions, useAppForm } = createFormHook({
   fieldComponents: {
     // Granular elements for when you need full control
     TextInput,
@@ -36,13 +36,14 @@ export const { appFormOptions, useAppForm, useFormContext } = createFormHook({
     NumberInput,
     Select,
     IntegerSlider,
-
-    // General wrappers for the usual cases
-    TextInputField,
     DateRangePicker,
+
+    preset: {
+      TextInput: TextInputField,
+    },
   },
   formComponents: {
-    SubmitButton: TanStackFormSubmitButton,
-    Form: TanStackFormElement,
+    SubmitButton,
+    Form,
   },
 })

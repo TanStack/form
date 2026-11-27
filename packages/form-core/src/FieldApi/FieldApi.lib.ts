@@ -1,169 +1,96 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, evaluate, getBy } from '../utils.lib'
-import {
-  clearValidationSourceErrorsFromEvent,
-  isValidationTriggerEnabled,
-  parseValidationResult,
-  runFieldMountValidatorPipeline,
-  runFieldValidatorPipeline,
-  setValidationSourceError,
-} from '../validation'
-import { runFieldListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
-import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
-import { reconcileListenerInstances } from '../ListenerInstance.lib'
-import { resolveDefaultOptions } from '../defaultOptions.lib'
 import {
-  attachWatchingListenerField,
-  attachWatchingValidatorField,
-  detachWatchingListenerField,
-  detachWatchingValidatorField,
-  reconcileWatchedListenerFields,
-  reconcileWatchedValidatorFields,
-} from './linked-fields.lib'
+  ValidationErrorStore,
+  removeSourceErrors,
+  replaceSourceErrors,
+  validationSourceScopes,
+} from '../validation/errorStorage.lib'
+import { ValidationRunTracker } from '../pipeline/runTracker.lib'
+import { callUpdater, evaluate, getBy } from '../utils.lib'
+import { resolveDefaultOptions } from '../defaultOptions.lib'
+import { startFieldValidation } from '../pipeline/validation/ownerValidation.lib'
+import { parseValidationResult } from '../validation/results/errors.lib'
 import {
   defaultInternalBaseFieldMeta,
   deriveFromBaseFieldMeta,
-  getChildContributionStates,
   getFieldSnapshot,
+  getSubfieldsMetaFlags,
 } from './fieldState.lib'
+import { initializeFieldOptions, updateFieldOptions } from './fieldOptions.lib'
+import {
+  handleFieldEvent,
+  notifyFieldListener,
+  notifyFieldValidator,
+  triggerValidationFromField,
+} from './fieldEvents.lib'
 import {
   killField,
   moveFieldToSegment,
   pruneFieldIfUnused,
-  updateChildContributionCount,
+  updateChildMetaCounts,
 } from './fieldTree.lib'
 import { visitFieldAndAncestors } from './fieldTraversal.lib'
+import type { FieldApi, FieldApiOptions } from './FieldApi.public'
+import type {
+  FieldValidator,
+  FieldValidators,
+} from '../pipeline/validation/validation.public'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
+import type { NameSegment } from '../utils.lib'
+import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type {
+  FieldListenerTriggers,
+  FieldListeners,
+} from '../pipeline/listeners/listeners.public'
+import type {
+  NotifyFieldListenerOptions,
+  NotifyFieldValidatorOptions,
+} from './fieldEvents.lib'
 import type {
   DeepKeys,
   DeepValue,
   TryGetArrayElementType,
 } from '../deep-keys.public'
 import type {
-  AnyFieldListener,
-  FieldListenerTriggers,
-} from '../listeners.public'
-import type { NameSegment, NameSegments } from '../utils.lib'
-import type {
-  FieldValidatorPipelineResult,
-  PipelineResult,
-} from '../validation'
-import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
-import type { FieldUpdateOptions, Updater } from '../types.public'
-import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
-import type { FieldDependencyChange } from '../devtoolsBridge.lib'
-import type { ReadonlyAtom } from '@tanstack/store'
-import type {
-  InternalValidatorInstance,
-  InternalValidatorInstances,
-} from '../ValidatorInstance.lib'
-import type {
-  InternalListenerInstance,
-  InternalListenerInstances,
-} from '../ListenerInstance.lib'
-import type { FieldApi, FieldApiOptions } from './FieldApi.public'
-import type {
-  ErrorVisibility,
-  FieldErrors,
-  FieldValidateResult,
-  FieldValidator,
-  FieldValidators,
-} from '../validation.public'
-import type {
-  ChildContributionStates,
   DerivedMetaMarkers,
   FieldAtoms,
   InternalBaseFieldMeta,
   InternalFieldMeta,
   InternalFieldState,
+  SubfieldsMetaFlags,
 } from './fieldState.lib'
+import type {
+  ValidatorInstance,
+  ValidatorInstances,
+} from '../pipeline/validation/ValidatorInstance.lib'
+import type {
+  ListenerInstance,
+  ListenerInstances,
+} from '../pipeline/listeners/ListenerInstance.lib'
+import type { ErrorVisibilityFn } from '../FormApi/errorVisibility.public'
+import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { FieldUpdateOptions, Updater } from '../types.public'
+import type {
+  ClientSideEvents,
+  ValidatorEvents,
+} from '../pipeline/events.public'
+import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
+import type { FieldValidationOptions } from '../pipeline/validation/ownerValidation.lib'
+import type { PipelineResult } from '../pipeline/state.lib'
+import type { FieldEventOptions } from '../types.lib'
+import type { FieldErrors } from '../validation/state.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
+export type AnyFieldApiOptions = Omit<
+  FieldApiOptions<any, any, any, FieldValidators<any, any, any>, any, any, any>,
+  'listeners'
+> & {
+  // error types would become something like `ValidationIssue[]` for adapter compat.
+  // breaks our intended internal usage, though.
+  listeners?: FieldListeners<any, any, any, any, any, any>
+}
 export type AnyFieldValidator = FieldValidator<any, any, any>
-
-type FieldOptionItemWithWatchedFields = {
-  watchFields?: ReadonlyArray<string>
-}
-
-type FieldOptionsWithFieldNameReferences = {
-  name: string
-  validators?: ReadonlyArray<FieldOptionItemWithWatchedFields | undefined>
-  listeners?: ReadonlyArray<FieldOptionItemWithWatchedFields | undefined>
-}
-
-function transformFieldOptionItemsWithWatchedFields<
-  TItem extends FieldOptionItemWithWatchedFields | undefined,
->(
-  items: ReadonlyArray<TItem> | undefined,
-  transformFieldName: (fieldName: string) => string,
-): Array<TItem> | undefined {
-  if (!items) return undefined
-
-  return items.map((item) => {
-    if (!item?.watchFields) return item
-
-    return {
-      ...item,
-      watchFields: item.watchFields.map(transformFieldName),
-    }
-  })
-}
-
-export function transformFieldOptionsFieldNames<
-  TFieldOptions extends AnyFieldApiOptions,
->(
-  fieldOptions: TFieldOptions,
-  transformFieldName: (fieldName: string) => string,
-  mergeOptions: (
-    props: TFieldOptions,
-    overrides: Partial<TFieldOptions>,
-  ) => TFieldOptions,
-): TFieldOptions {
-  const options = fieldOptions as TFieldOptions &
-    FieldOptionsWithFieldNameReferences
-
-  const overrides = {
-    get name() {
-      return transformFieldName(options.name)
-    },
-  } as Partial<TFieldOptions>
-
-  if (Object.hasOwn(options, 'validators')) {
-    Object.defineProperty(overrides, 'validators', {
-      enumerable: true,
-      get() {
-        return transformFieldOptionItemsWithWatchedFields(
-          options.validators,
-          transformFieldName,
-        )
-      },
-    })
-  }
-
-  if (Object.hasOwn(options, 'listeners')) {
-    Object.defineProperty(overrides, 'listeners', {
-      enumerable: true,
-      get() {
-        return transformFieldOptionItemsWithWatchedFields(
-          options.listeners,
-          transformFieldName,
-        )
-      },
-    })
-  }
-
-  return mergeOptions(fieldOptions, overrides)
-}
 
 export interface DefaultValueCacheEntry {
   name: string
@@ -199,86 +126,6 @@ function isObjectLike(value: unknown): boolean {
   )
 }
 
-/**
- * @private
- * Get a field api at the specified location. If it doesn't exist,
- * it will create the necessary nodes to get it.
- *
- * @important This mutates the segments array.
- */
-export function getOrCreateFieldApi(
-  node: AnyInternalFieldApi | InternalRootFieldApi,
-  segments: NameSegments,
-  form: AnyInternalFormApi,
-  options?: Omit<AnyFieldApiOptions, 'name'>,
-  scope: FieldOptionsScope = 'field',
-): AnyInternalFieldApi {
-  const segment = segments.shift()
-  if (segment === undefined) {
-    // If trieNode is the root, we need to return a field node, not the root
-    if (node._isRoot) {
-      throw new Error('Root node cannot be a field API')
-    }
-    // Internal trie nodes defer their options until they are first requested as
-    // a configured field. Adapter updates handle subsequent option changes.
-    if (scope !== 'internal' && !node._fieldOptionsInitialized) {
-      node._update(options ?? {}, scope)
-    }
-    return node
-  }
-
-  let childNode = node._getChild(segment)
-  if (childNode) {
-    return getOrCreateFieldApi(childNode, segments, form, options, scope)
-  }
-
-  childNode = new form._FieldApi(
-    {
-      segment,
-      parent: node,
-      form: form,
-    },
-    'internal',
-  )
-
-  node._setChild(childNode)
-  if (segments.length === 0) {
-    const field = getOrCreateFieldApi(childNode, segments, form, options, scope)
-    devtools().fieldAdded?.(childNode)
-    return field
-  }
-
-  devtools().fieldAdded?.(childNode)
-
-  return getOrCreateFieldApi(childNode, segments, form, options, scope)
-}
-
-/**
- * @private
- *
- * @important This mutates the segments array.
- */
-export function tryGetFieldApi(
-  trieNode: AnyInternalFieldApi | InternalRootFieldApi,
-  segments: NameSegments,
-): AnyInternalFieldApi | null {
-  const segment = segments.shift()
-  if (segment === undefined) {
-    // If trieNode is the root, we cannot return it as a field API
-    if (!trieNode._isRoot) {
-      return trieNode
-    }
-    return null
-  }
-
-  const childNode = trieNode._getChild(segment)
-  if (childNode) {
-    return tryGetFieldApi(childNode, segments)
-  } else {
-    return null
-  }
-}
-
 export interface InternalFieldApiParams extends Omit<
   AnyFieldApiOptions,
   'name'
@@ -291,27 +138,9 @@ export interface InternalFieldApiParams extends Omit<
 
 export type FieldOptionsScope = 'internal' | 'field'
 
-export type FieldWatchingListenerFields = Map<
-  AnyInternalFieldApi,
-  Set<InternalFieldListenerInstance>
->
-export type FieldWatchingValidatorFields = Map<
-  AnyInternalFieldApi,
-  Set<InternalFieldValidatorInstance>
->
-
 export type AnyInternalFieldApi = InternalFieldApi<any, any, any>
-export type InternalFieldListenerInstance = InternalListenerInstance<
-  AnyFieldListener,
-  AnyInternalFieldApi,
-  AnyInternalFieldApi
->
-export type InternalFieldValidatorInstance = InternalValidatorInstance<
-  AnyFieldValidator,
-  AnyInternalFieldApi,
-  AnyInternalFieldApi,
-  AnyInternalFieldApi
->
+export type InternalFieldListenerInstance = ListenerInstance<'field'>
+export type InternalFieldValidatorInstance = ValidatorInstance<'field'>
 
 export class InternalFieldApi<
   TFormData,
@@ -319,38 +148,36 @@ export class InternalFieldApi<
   TFieldValue extends DeepValue<TFormData, TFieldName>,
 > implements FieldApi<any, any, any, any, any> {
   readonly _isRoot = false
+  // Every field currently creates a store, even if there are no errors yet and there's nothing to render.
+  // Perhaps if there's demand, we can change this sometime.
+  readonly _errorStore: ValidationErrorStore
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   _childrenMap: Map<NameSegment, AnyInternalFieldApi> = new Map()
   _defaultValueCache: DefaultValueCacheEntry | null = null
   _atoms: FieldAtoms
-  /** Stable runtime instances for this field's validator definitions. */
-  _validatorInstances: InternalValidatorInstances<
-    AnyFieldValidator,
-    AnyInternalFieldApi,
-    AnyInternalFieldApi,
-    AnyInternalFieldApi
-  >
-  /** Stable runtime instances for this field's listener definitions. */
-  _listenerInstances: InternalListenerInstances<
-    AnyFieldListener,
-    AnyInternalFieldApi,
-    AnyInternalFieldApi
-  >
-  _errorVisibility: ErrorVisibility<any, any> | undefined
+  /** Validators attached to this field. */
+  _validatorInstances: ValidatorInstances<'field'> = null
+  /** Listeners attached to this field. */
+  _listenerInstances: ListenerInstances<'field'> = null
+  _errorVisibility: ErrorVisibilityFn<any> | undefined
   _errorBoundary: boolean
   /** The form group occupying this trie node. */
   _formGroup: AnyInternalFormGroupApi | null = null
 
-  // TODO implement
+  _watchedListenerNames: Set<string> | null = null
+  _watchedValidatorNames: Set<string> | null = null
+
   /**
-   * @private
-   * Fields that are listening to this one.
+   * Whether this field has received usage-site options.
+   * Some actions like form error-routing or in-between fields could cause
+   * field nodes to exist before a render is supposed to create them.
+   *
+   * The main thing we're avoiding here is avoiding error reports from
+   * going from no validators -> N validators (since that'd usually be banned in the update)
    */
-  _watchingListenerFields: FieldWatchingListenerFields | null
-  _watchingValidatorFields: FieldWatchingValidatorFields | null
-  /** Whether this trie node has received usage-site field options. */
   _fieldOptionsInitialized: boolean
   _isKilled = false
+  private _validationRuns: ValidationRunTracker | null = null
 
   _segmentValue: NameSegment
   /**
@@ -505,178 +332,30 @@ export class InternalFieldApi<
     this._segmentValue = segment
     this._parent = parent
     this.form = form
-    const normalizedValidators =
-      validators && validators.length > 0
-        ? (validators as Array<AnyFieldValidator>)
-        : null
     this._errorVisibility = errorVisibility
     this._errorBoundary = errorBoundary ?? false
     this._atoms = {}
-    this._watchingListenerFields = null
-    this._watchingValidatorFields = null
-    this._listenerInstances = reconcileListenerInstances<
-      AnyFieldListener,
-      AnyInternalFieldApi,
-      AnyInternalFieldApi
-    >({
-      definitions: listeners,
-      instances: null,
-      owner: this,
-    })
-    this._validatorInstances = reconcileValidatorInstances<
-      AnyFieldValidator,
-      AnyInternalFieldApi,
-      AnyInternalFieldApi,
-      AnyInternalFieldApi
-    >({
-      definitions: normalizedValidators,
-      instances: null,
-      owner: this,
-      scope: 'field',
+
+    this._errorStore = new ValidationErrorStore({
+      target: this,
+      onChange: (wasInvalid, isInvalid) => {
+        if (this._isKilled) return
+        const meta = this._getBaseMeta()
+        const previous = getSubfieldsMetaFlags(meta, wasInvalid)
+        const next = getSubfieldsMetaFlags(meta, isInvalid)
+        this._updateParentMeta(previous, next)
+        devtools().updateField?.(this)
+      },
     })
 
-    const reconciledListeners = reconcileWatchedListenerFields({
-      field: this,
-      listenerInstances: this._listenerInstances,
-      form,
-    })
-
-    reconciledListeners.attach.forEach(attachWatchingListenerField)
-
-    const reconciledValidators = reconcileWatchedValidatorFields({
-      field: this,
-      validatorInstances: this._validatorInstances,
-      form,
-    })
-
-    reconciledValidators.attach.forEach(attachWatchingValidatorField)
+    initializeFieldOptions(this, { validators, listeners })
   }
 
   _update(
     options: Omit<AnyFieldApiOptions, 'name' | 'form'>,
     scope: FieldOptionsScope = 'field',
   ) {
-    if (this._isKilled) return
-
-    const isInitializing =
-      scope !== 'internal' && !this._fieldOptionsInitialized
-    const defaultOptions =
-      scope === 'field' ? this.form._defaultOptions?.field : undefined
-    const resolvedOptions = resolveDefaultOptions(options, defaultOptions)
-
-    this._errorVisibility = resolvedOptions.errorVisibility
-    this._errorBoundary = resolvedOptions.errorBoundary ?? false
-
-    const notifyDependencyChanges = devtools().fieldDependenciesChanged
-    const dependencyChanges: Array<FieldDependencyChange> | null =
-      notifyDependencyChanges ? [] : null
-
-    if (resolvedOptions.listeners) {
-      const previousListeners = this._listenerInstances?.map(
-        (instance) => instance.definition,
-      )
-      this._listenerInstances = reconcileListenerInstances<
-        AnyFieldListener,
-        AnyInternalFieldApi,
-        AnyInternalFieldApi
-      >({
-        definitions: resolvedOptions.listeners,
-        previousDefinitions: isInitializing
-          ? undefined
-          : (previousListeners ?? null),
-        instances: this._listenerInstances,
-        owner: this,
-        onBeforeDispose: (listenerInstance) => {
-          listenerInstance.resolvedWatchFields?.forEach((sourceField) => {
-            const operation = {
-              kind: 'listener' as const,
-              sourceField,
-              watchingField: this,
-              listenerInstance,
-            }
-            detachWatchingListenerField(operation)
-            dependencyChanges?.push(operation)
-          })
-          listenerInstance.resolvedWatchFields = null
-        },
-      })
-
-      const reconciledListeners = reconcileWatchedListenerFields({
-        field: this,
-        listenerInstances: this._listenerInstances,
-        form: this.form,
-      })
-
-      reconciledListeners.detach.forEach((operation) =>
-        detachWatchingListenerField(operation),
-      )
-      reconciledListeners.attach.forEach(attachWatchingListenerField)
-      dependencyChanges?.push(
-        ...reconciledListeners.attach,
-        ...reconciledListeners.detach,
-      )
-    }
-
-    if (resolvedOptions.validators) {
-      const previousValidators = this._validatorInstances?.map(
-        (instance) => instance.definition,
-      )
-      const nextValidators =
-        resolvedOptions.validators.length > 0
-          ? (resolvedOptions.validators as Array<AnyFieldValidator>)
-          : null
-      this._validatorInstances = reconcileValidatorInstances<
-        AnyFieldValidator,
-        AnyInternalFieldApi,
-        AnyInternalFieldApi,
-        AnyInternalFieldApi
-      >({
-        definitions: nextValidators,
-        previousDefinitions: isInitializing
-          ? undefined
-          : (previousValidators ?? null),
-        instances: this._validatorInstances,
-        owner: this,
-        scope: 'field',
-        onBeforeDispose: (validatorInstance) => {
-          validatorInstance.resolvedWatchFields?.forEach((sourceField) => {
-            const operation = {
-              kind: 'validator' as const,
-              sourceField,
-              watchingField: this,
-              validatorInstance,
-            }
-            detachWatchingValidatorField(operation)
-            dependencyChanges?.push(operation)
-          })
-          validatorInstance.resolvedWatchFields = null
-          this._removeValidatorInstance(validatorInstance)
-        },
-      })
-      const reconciledValidators = reconcileWatchedValidatorFields({
-        field: this,
-        validatorInstances: this._validatorInstances,
-        form: this.form,
-      })
-
-      reconciledValidators.detach.forEach((operation) =>
-        detachWatchingValidatorField(operation),
-      )
-      reconciledValidators.attach.forEach(attachWatchingValidatorField)
-
-      dependencyChanges?.push(
-        ...reconciledValidators.attach,
-        ...reconciledValidators.detach,
-      )
-    }
-
-    if (dependencyChanges && dependencyChanges.length > 0) {
-      notifyDependencyChanges?.(dependencyChanges)
-    }
-
-    if (scope !== 'internal') {
-      this._fieldOptionsInitialized = true
-    }
+    updateFieldOptions(this, options, scope)
   }
 
   /**
@@ -715,125 +394,90 @@ export class InternalFieldApi<
 
     this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
-      const prevContributions = getChildContributionStates(prevMeta)
-      const newContributions = getChildContributionStates(newMeta)
+      const previousFlags = getSubfieldsMetaFlags(
+        prevMeta,
+        this._errorStore.hasErrors,
+      )
+      const nextFlags = getSubfieldsMetaFlags(
+        newMeta,
+        this._errorStore.hasErrors,
+      )
 
-      if (!this._parent._isRoot) {
-        this._parent._updateChildContributionCount(
-          prevContributions,
-          newContributions,
-        )
-      } else {
-        this._parent._updateFieldContributionCount(
-          prevContributions,
-          newContributions,
-        )
-
-        this._parent._updateErrorFields(
-          this,
-          prevContributions.error,
-          newContributions.error,
-        )
-      }
+      this._updateParentMeta(previousFlags, nextFlags)
 
       return newMeta
     })
     devtools().updateField?.(this)
   }
 
-  /**
-   * @private
-   * Called when a child's meta contribution changes.
-   * Increments/decrements the relevant child contribution count and propagates up.
-   */
-  _updateChildContributionCount(
-    prevState: ChildContributionStates,
-    newState: ChildContributionStates,
+  _updateParentMeta(
+    previous: SubfieldsMetaFlags,
+    next: SubfieldsMetaFlags,
   ): void {
-    updateChildContributionCount(this, prevState, newState)
+    if (!this._parent._isRoot) {
+      this._parent._updateChildMetaCounts(previous, next)
+    } else {
+      this._parent._updateFormMetaCounts(previous, next)
+      this._parent._updateErrorFields(this, previous.error, next.error)
+    }
   }
 
   /**
    * @private
-   * Triggers validation for this field and all parent fields,
-   * eventually calling form validation.
+   * Updates counts of child fields with each meta flag, including their subfields,
+   * then updates parent meta.
    */
-  _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
-    if (this._isKilled) return
+  _updateChildMetaCounts(
+    previousFlags: SubfieldsMetaFlags,
+    nextFlags: SubfieldsMetaFlags,
+  ): void {
+    updateChildMetaCounts(this, previousFlags, nextFlags)
+  }
 
-    const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
+  /**
+   * @private
+   * Validates this field and its ancestors within its group, then validates
+   * the containing group or form.
+   */
+  _triggerValidationFromField(
+    event: ClientSideEvents,
+    group: AnyInternalFormGroupApi | null,
+  ): void {
+    triggerValidationFromField(this, event, group)
+  }
 
-    visitFieldAndAncestors(this, (current, stop) => {
-      if (current._isKilled) return stop
+  /**
+   * @private
+   * Runs this field's validation pipeline. Undefined if an error occurred that was caught.
+   */
+  _runFieldValidation(
+    event: 'mount' | 'change' | 'blur' | 'submit',
+    options: FieldValidationOptions,
+  ): ClientValidationRun<InternalFieldValidatorInstance> | undefined {
+    const isFieldOwnedRun = !options.submission
+    const hasLiveValidators =
+      !this._isKilled && this._validatorInstances !== null
 
-      current._runFieldValidation(event)
-      current._notifyValidator(event, seenValidatorFields)
-      return undefined
+    if (isFieldOwnedRun && hasLiveValidators) {
+      this._validationRuns ??= new ValidationRunTracker()
+    }
+
+    return startFieldValidation(this, this._validationRuns, event, options)
+  }
+
+  /** Cancels this node's runs, including those owned by its form group. */
+  _cancelValidation(): void {
+    batch(() => {
+      this._validationRuns?.cancelAll()
+      this._formGroup?._cancelOwnedValidation()
     })
-
-    const group = this._getFormGroup()
-    if (group) {
-      group.validate(event, { triggerFieldApi: this })
-      return
-    }
-
-    this.form.validate(event, { fieldApiOverride: this })
   }
 
-  /**
-   * @private
-   * Runs this field's validation pipeline.
-   */
-  async _runFieldValidation(
-    event: 'change' | 'blur' | 'submit',
-    options?: {
-      onResult?: boolean
-      onlyRunValidatorInstances?: ReadonlySet<InternalFieldValidatorInstance> | null
-      _startValidation?: () => () => void
-    },
-  ): Promise<FieldValidatorPipelineResult> {
-    if (this._isKilled)
-      return {
-        results: [],
-        hasErrors: false,
-        thrownError: null,
-      }
-
-    const validators = this._validatorInstances
-
-    if (!validators)
-      return {
-        results: [],
-        hasErrors: false,
-        thrownError: null,
-      }
-
-    let finishValidation = options?._startValidation?.()
-    if (!finishValidation) {
-      this._setValidationCount((count) => count + 1)
-      finishValidation = () => {
-        this._setValidationCount((count) => Math.max(0, count - 1))
-      }
-    }
-
-    try {
-      return await runFieldValidatorPipeline({
-        pipeline: validators,
-        context: {
-          scope: 'field',
-          event,
-          fieldApi: this,
-          formApi: this.form,
-        },
-        onResult:
-          options?.onResult !== false
-            ? (result) => this._processValidationResult(result, event)
-            : undefined,
-        validatorInstancesToRun: options?.onlyRunValidatorInstances ?? null,
-      })
-    } finally {
-      finishValidation()
-    }
+  _resetValidation(): void {
+    batch(() => {
+      this._cancelValidation()
+      this._errorStore.clearTargetErrors()
+    })
   }
 
   _setValidationCount(updater: Updater<number>): void {
@@ -857,256 +501,45 @@ export class InternalFieldApi<
   }
 
   _processValidationResult(
-    result: PipelineResult<FieldValidateResult>,
-    sourceEvent: string,
+    { value, instance }: PipelineResult<InternalFieldValidatorInstance>,
+    sourceEvent: ValidatorEvents,
   ) {
     if (this._isKilled) return
-    const validatorInstance =
-      result.validatorInstance as InternalFieldValidatorInstance
+    const selfErrors = parseValidationResult(value.result).self ?? []
 
-    this._setMeta((prev) => {
-      const { self } = parseValidationResult(result.result)
-      const nextErrors = setValidationSourceError(
-        prev._validationSourceErrors,
-        validatorInstance,
-        self ?? [],
-        sourceEvent,
-      )
-
-      if (!nextErrors) return prev
-
-      if (self && self.length > 0) {
-        validatorInstance.addErrorTarget(this)
-      } else {
-        validatorInstance.deleteErrorTarget(this)
-      }
-
-      return {
-        ...prev,
-        _validationSourceErrors: nextErrors.errorMap,
-      } satisfies InternalBaseFieldMeta
-    })
+    replaceSourceErrors(instance, sourceEvent, [[this, selfErrors]])
   }
 
-  /** Removes all field-owned state associated with a disposed validator. */
   _removeValidatorInstance(
     validatorInstance: InternalFieldValidatorInstance,
   ): void {
-    this._setMeta((prev) => {
-      const nextErrors = setValidationSourceError(
-        prev._validationSourceErrors,
-        validatorInstance,
-        [],
-        '',
-      )
-      if (!nextErrors) return prev
-
-      return {
-        ...prev,
-        _validationSourceErrors: nextErrors.errorMap,
-      }
-    })
-    validatorInstance.deleteErrorTarget(this)
-  }
-
-  _clearEventErrors(event: 'change' | 'blur', sourceEvent: string): void {
-    if (this._isKilled) return
-
-    const validators = this._validatorInstances
-    if (!validators) return
-
-    const validatorInstancesToClear: Array<InternalFieldValidatorInstance> = []
-
-    for (const validatorInstance of validators) {
-      const runsOnEvent = validatorInstance.definition.triggers.some(
-        (trigger) =>
-          isValidationTriggerEnabled(trigger, {
-            scope: 'field',
-            event,
-            fieldApi: this,
-            formApi: this.form,
-          }),
-      )
-
-      if (!runsOnEvent) {
-        validatorInstancesToClear.push(validatorInstance)
-      }
-    }
-
-    if (validatorInstancesToClear.length === 0) return
-    const clearedInstances = validatorInstancesToClear.filter(
-      (validatorInstance) =>
-        this._getBaseMeta()._validationSourceErrors?.get(validatorInstance)
-          ?.sourceEvent === sourceEvent,
-    )
-    if (clearedInstances.length === 0) return
-
-    this._setMeta((prev) => {
-      const clearedErrors = clearValidationSourceErrorsFromEvent(
-        prev._validationSourceErrors,
-        clearedInstances,
-        sourceEvent,
-      )
-
-      if (!clearedErrors) return prev
-
-      clearedInstances.forEach((validatorInstance) =>
-        validatorInstance.deleteErrorTarget(this),
-      )
-
-      return {
-        ...prev,
-        _validationSourceErrors: clearedErrors.errorMap,
-      } satisfies InternalBaseFieldMeta
-    })
+    removeSourceErrors(validatorInstance)
     this._pruneIfUnused()
   }
 
-  _notifyEvent(
-    options: Omit<
-      ResolvedInternalFieldUpdateOptions,
-      'fieldApiOverride' | '_skipFieldCreation'
-    >,
+  _clearStaleErrors(
+    shouldClear: (instance: InternalFieldValidatorInstance) => boolean = () =>
+      true,
+  ): void {
+    this._errorStore.clearStaleErrors(
+      (source) =>
+        source.scope === validationSourceScopes.field && shouldClear(source),
+    )
+  }
+
+  _handleEvent(
+    options: FieldEventOptions,
     event: 'change' | 'blur' | 'submit',
   ): void {
-    if (this._isKilled) return
-
-    if (event === 'change' || event === 'blur') {
-      this._clearEventErrors(event, 'submit')
-
-      if (event === 'blur') {
-        this._clearEventErrors('blur', 'mount')
-        this.form._clearEventErrors(this, 'submit', event)
-        this.form._clearEventErrors(this, 'server', event)
-        this.form._clearEventErrors(this, 'mount', event)
-      }
-    }
-
-    const {
-      markAsDirty,
-      markAsTouched,
-      causeValidation,
-      markAsBlurred,
-      doPropagate,
-    } = options
-    // Not sure if we lose this context, so might as well
-    const originalField = this
-
-    batch(() => {
-      const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
-
-      visitFieldAndAncestors(this, (currNode, stop) => {
-        const isOriginalField = currNode === originalField
-        const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
-        const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
-        const shouldUpdateTouched =
-          isOriginalField && markAsTouched && !isSelfTouched
-
-        const shouldUpdateBlurred = markAsBlurred && !isBlurred
-
-        if (shouldUpdateDirty || shouldUpdateTouched || shouldUpdateBlurred) {
-          currNode._setMeta((prev) => ({
-            ...prev,
-            isTouched: shouldUpdateTouched ? true : prev.isTouched,
-            isDirty: shouldUpdateDirty ? true : prev.isDirty,
-            isBlurred: markAsBlurred ? true : prev.isBlurred,
-          }))
-        }
-
-        currNode._notifyListener(event, seenListenerFields)
-
-        if (!doPropagate) return stop
-        return undefined
-      })
-    })
-
-    if (causeValidation) {
-      this._triggerValidationCascade(event)
-    }
+    handleFieldEvent(this, options, event)
   }
 
-  _notifyListener(
-    trigger: FieldListenerTriggers,
-    seenFields: WeakSet<AnyInternalFieldApi>,
-    onlyRunListenerInstances: ReadonlySet<InternalFieldListenerInstance> | null = null,
-  ) {
-    if (this._isKilled) return
-
-    // Field A listens to Field B listens to field A
-    // FieldA.notifyListener -> fieldB.notifyListener -> fieldA.notifyLister
-    if (seenFields.has(this)) {
-      console.warn(
-        `Field listener: cyclical listener cycle detected. Check around the field ${this.name}`,
-      )
-      return
-    }
-
-    seenFields.add(this)
-
-    if (this._listenerInstances) {
-      runFieldListenerPipeline({
-        pipeline: this._listenerInstances,
-        context: {
-          event: trigger,
-          fieldApi: this,
-          formApi: this.form,
-        },
-        listenerInstancesToRun: onlyRunListenerInstances,
-      })
-    }
-
-    const watchingFields = this._watchingListenerFields
-    if (!watchingFields) return
-
-    for (const [watchingField, listenerInstances] of watchingFields) {
-      if (watchingField._isKilled) {
-        watchingFields.delete(watchingField)
-        continue
-      }
-
-      watchingField._notifyListener(trigger, seenFields, listenerInstances)
-    }
-
-    if (watchingFields.size === 0) {
-      this._watchingListenerFields = null
-    }
+  _notifyListener(options: NotifyFieldListenerOptions) {
+    notifyFieldListener(this, options)
   }
 
-  _notifyValidator(
-    trigger: 'change' | 'blur' | 'submit',
-    seenFields: WeakSet<AnyInternalFieldApi>,
-    onlyRunValidatorInstances: ReadonlySet<InternalFieldValidatorInstance> | null = null,
-  ) {
-    if (this._isKilled) return
-
-    if (seenFields.has(this)) {
-      console.warn(
-        `Field validator: cyclical validator cycle detected. Check around the field ${this.name}`,
-      )
-      return
-    }
-
-    seenFields.add(this)
-
-    if (this._validatorInstances && onlyRunValidatorInstances) {
-      this._runFieldValidation(trigger, { onlyRunValidatorInstances })
-    }
-
-    const watchingFields = this._watchingValidatorFields
-    if (!watchingFields) return
-
-    for (const [watchingField, validatorInstances] of watchingFields) {
-      if (watchingField._isKilled) {
-        watchingFields.delete(watchingField)
-        continue
-      }
-
-      watchingField._notifyValidator(trigger, seenFields, validatorInstances)
-    }
-
-    if (watchingFields.size === 0) {
-      this._watchingValidatorFields = null
-    }
+  _notifyValidator(options: NotifyFieldValidatorOptions) {
+    notifyFieldValidator(this, options)
   }
 
   /**
@@ -1120,57 +553,20 @@ export class InternalFieldApi<
     }
 
     const isMountTransition = this._refCount === 0
-    const mountValidatorInstances = isMountTransition
-      ? (this._validatorInstances?.filter(
-          (validatorInstance) => !validatorInstance.didRunOnMount,
-        ) ?? [])
-      : []
+
     this._refCount++
     this._getOrCreateAtoms()
     if (isMountTransition) {
       devtools().mountField?.(this)
     }
 
-    this._notifyListener('mount', new WeakSet())
+    this._notifyListener({ trigger: 'mount', seenFields: new WeakSet() })
 
-    if (mountValidatorInstances.length > 0) {
-      mountValidatorInstances.forEach((validatorInstance) =>
-        validatorInstance.markMountValidationRan(),
-      )
-      this._runMountValidation(mountValidatorInstances)
+    if (isMountTransition) {
+      this._runFieldValidation('mount', { catchErrors: true })
     }
 
     return () => this._unregister()
-  }
-
-  /**
-   * @private
-   * Runs validators marked with runOnMount on the first component mount.
-   */
-  _runMountValidation(validators = this._validatorInstances): void {
-    if (!validators || validators.length === 0) return
-
-    this._setValidationCount((count) => count + 1)
-
-    const { didRun, asyncPromise } = runFieldMountValidatorPipeline({
-      pipeline: validators,
-      fieldApi: this,
-      onResult: (result) => this._processValidationResult(result, 'mount'),
-    })
-
-    if (!didRun) {
-      this._setValidationCount((count) => Math.max(0, count - 1))
-      return
-    }
-
-    if (asyncPromise) {
-      void asyncPromise.finally(() => {
-        this._setValidationCount((count) => Math.max(0, count - 1))
-      })
-      return
-    }
-
-    this._setValidationCount((count) => Math.max(0, count - 1))
   }
 
   /**
@@ -1181,13 +577,15 @@ export class InternalFieldApi<
   _unregister(): void {
     if (this._isKilled) return
 
+    // TODO we have an RFC for what unmounts should do with validators and listeners.
+
     const previousPath = this.name
     const isUnmountTransition = this._refCount === 1
     this._refCount--
     if (isUnmountTransition) {
       devtools().unmountField?.(this, previousPath)
     }
-    this._notifyListener('unmount', new WeakSet())
+    this._notifyListener({ trigger: 'unmount', seenFields: new WeakSet() })
 
     if (this._refCount <= 0) {
       setTimeout(() => {
@@ -1397,17 +795,18 @@ export class InternalFieldApi<
   handleBlur = (): void => {
     if (this._isKilled) return
 
-    this._notifyEvent(
+    // TODO A workplan could let users configure whether listeners run before or after validation.
+    // not overly important but could be useful.
+
+    this._handleEvent(
       {
         markAsDirty: false,
         causeValidation: true,
-        doPropagate: true,
+        notifyParentFields: true,
         markAsTouched: true,
         markAsBlurred: true,
       },
       'blur',
     )
-
-    this.form._notifyFormListener('blur', this)
   }
 }

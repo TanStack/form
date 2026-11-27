@@ -7,7 +7,7 @@ title: useForm
 const useForm: UseFormHook<DefaultVueFormComponentMap>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:51](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/useForm.public.ts#L51)
+Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:58](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/useForm.public.ts#L58)
 
 Creates a Vue form whose instance and lifecycle are owned by the current
 component.

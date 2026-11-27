@@ -1,12 +1,11 @@
-import Preact from 'preact/compat'
 import { expectTypeOf } from 'vitest'
 import { z } from 'zod'
 import { useForm } from '../src'
 import type {
   DeepKeys,
   FieldApi,
-  FormErrorTypes,
   FormGroupApi,
+  ScopedErrorTypes,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
@@ -77,7 +76,7 @@ function FormGroupTypes() {
         expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, { message: string; fromGroup: true }>
+          ScopedErrorTypes<never, { message: string; fromGroup: true }>
         >()
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
@@ -177,23 +176,25 @@ function FormGroupSubmitTypes() {
         }>()
         expectTypeOf(validatorOutputs[1]).toEqualTypeOf<undefined>()
         expectTypeOf<FormGroupErrorTypesOf<typeof groupApi>>().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
       onSubmitInvalid={(context) => {
-        expectTypeOf<keyof typeof context>().toEqualTypeOf<
-          'value' | 'formApi' | 'groupApi'
-        >()
+        expectTypeOf(context.reason).toEqualTypeOf<'validation' | 'exception'>()
+        expectTypeOf(context.source).toEqualTypeOf<'validators' | 'onSubmit'>()
+        expectTypeOf(context.error).toEqualTypeOf<unknown>()
+        expectTypeOf(context.preventThrow).toEqualTypeOf<() => void>()
         expectTypeOf(context.value).toEqualTypeOf<GuestDetails>()
         expectTypeOf<
           FormGroupErrorTypesOf<typeof context.groupApi>
         >().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
     >
       {(group) => {
-        void group.validate('submit')
+        void group.validate('change')
+        void group.validate('blur')
         return null
       }}
     </form.FormGroup>
@@ -355,7 +356,7 @@ function FormGroupWithoutValidatorsTypes() {
     <form.FormGroup name="guestDetails">
       {(group) => {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, never>
+          ScopedErrorTypes<never, never>
         >()
         expectTypeOf(group.state.errors).toEqualTypeOf<Array<never>>()
         return null

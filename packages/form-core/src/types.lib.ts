@@ -11,24 +11,22 @@ export interface FieldApiOverrideOptions {
 }
 
 export interface InternalFieldUpdateOptions
-  extends FieldUpdateOptions, FieldApiOverrideOptions, PropagateOptions {
+  extends
+    FieldUpdateOptions,
+    FieldApiOverrideOptions,
+    NotifyParentFieldsOptions {}
+
+export interface NotifyParentFieldsOptions {
   /**
    * @private
-   * Whether to use `tryGetFieldApi` or `getOrCreateFieldApi`.
-   *
-   * @default boolean - derived from whether field meta needs to be stored
+   * Whether to walk up to parent fields to notify their listeners and apply blurred flags.
+   * @default true
    */
-  _skipFieldCreation?: boolean
+  notifyParentFields?: boolean
 }
 
-export interface PropagateOptions {
-  /**
-   * @private
-   * Whether to propagate the action to parent field nodes.
-   * @default boolean - So far, always true. Maybe a future case needs it to be false.
-   */
-  doPropagate?: boolean
-}
+export interface FieldEventOptions
+  extends Required<FieldUpdateOptions>, Required<NotifyParentFieldsOptions> {}
 
 export type ResolvedInternalFieldUpdateOptions =
   Required<InternalFieldUpdateOptions>

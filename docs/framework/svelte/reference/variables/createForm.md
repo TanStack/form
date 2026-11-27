@@ -7,7 +7,7 @@ title: createForm
 const createForm: CreateForm;
 ```
 
-Defined in: [packages/svelte-form/src/createForm.public.ts:53](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/createForm.public.ts#L53)
+Defined in: [packages/svelte-form/src/createForm.public.ts:55](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/createForm.public.ts#L55)
 
 Creates a Svelte form whose instance and lifecycle are owned by the current
 component.

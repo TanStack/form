@@ -4,7 +4,7 @@ title: VueFormApi
 ---
 
 ```ts
-type VueFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
+type VueFormApi<TFormData, TFormError, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```
 
 Defined in: [packages/vue-form/src/VueForm/formApiTypes.public.ts:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/formApiTypes.public.ts#L16)
@@ -15,9 +15,9 @@ Defined in: [packages/vue-form/src/VueForm/formApiTypes.public.ts:16](https://gi
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

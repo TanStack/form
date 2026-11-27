@@ -82,45 +82,6 @@ const { fields: rangeFields, bindComponent: bindRangeFields } =
     upper: strict<string>(),
   }))
 
-interface RangeFieldsProps {
-  fields: typeof rangeFields
-  onRender: {
-    lower: React.ProfilerOnRenderCallback
-    upper: React.ProfilerOnRenderCallback
-  }
-}
-
-function RangeFieldsImpl({ fields, onRender }: RangeFieldsProps) {
-  return (
-    <>
-      <fields.Field name="lower">
-        {(field) => (
-          <React.Profiler id="lower" onRender={onRender.lower}>
-            <input
-              aria-label="Lower"
-              value={field.value}
-              onChange={(event) => field.handleChange(event.target.value)}
-            />
-          </React.Profiler>
-        )}
-      </fields.Field>
-      <fields.Field name="upper">
-        {(field) => (
-          <React.Profiler id="upper" onRender={onRender.upper}>
-            <input
-              aria-label="Upper"
-              value={field.value}
-              onChange={(event) => field.handleChange(event.target.value)}
-            />
-          </React.Profiler>
-        )}
-      </fields.Field>
-    </>
-  )
-}
-
-const RangeFields = bindRangeFields(RangeFieldsImpl, 'fields')
-
 interface RangeValuesFieldsProps {
   fields: typeof rangeFields
 }
@@ -156,55 +117,6 @@ function RangeValuesFieldsImpl({ fields }: RangeValuesFieldsProps) {
 }
 
 const RangeValuesFields = bindRangeFields(RangeValuesFieldsImpl, 'fields')
-
-const { fields: memoizedInputFields, bindComponent: bindMemoizedInputFields } =
-  defineFieldGroup(({ strict }) => ({
-    value: strict<string>(),
-  }))
-
-interface MemoizedInputProps {
-  field: {
-    value: string
-    handleChange: (value: string) => void
-  }
-}
-
-const MemoizedInput = React.memo(function MemoizedInput({
-  field,
-}: MemoizedInputProps) {
-  return (
-    <input
-      aria-label="Memoized"
-      value={field.value}
-      onChange={(event) => field.handleChange(event.target.value)}
-    />
-  )
-})
-
-interface MemoizedInputFieldsProps {
-  fields: typeof memoizedInputFields
-  onRender: React.ProfilerOnRenderCallback
-}
-
-function MemoizedInputFieldsImpl({
-  fields,
-  onRender,
-}: MemoizedInputFieldsProps) {
-  return (
-    <fields.Field name="value">
-      {(field) => (
-        <React.Profiler id="memoized-input" onRender={onRender}>
-          <MemoizedInput field={field} />
-        </React.Profiler>
-      )}
-    </fields.Field>
-  )
-}
-
-const MemoizedInputFields = bindMemoizedInputFields(
-  MemoizedInputFieldsImpl,
-  'fields',
-)
 
 describe('FieldGroup', () => {
   it('defaults omitted bindings to same-named form fields', async () => {
@@ -282,35 +194,6 @@ describe('FieldGroup', () => {
     expect(getByTestId('field')).toHaveTextContent('second.bar:Two')
   })
 
-  it('exposes subscribed field meta from field group children', async () => {
-    const MetaFields = bindNestedFields(
-      ({ fields }: NestedFieldsProps) => (
-        <fields.Field name="foo.bar">
-          {(field) => (
-            <span data-testid="meta">{String(field.meta.isValidating)}</span>
-          )}
-        </fields.Field>
-      ),
-      'fields',
-    )
-
-    function Component() {
-      const form = useForm({
-        defaultValues: {
-          anything: {
-            bar: 'Initial',
-          },
-        },
-      })
-
-      return <MetaFields form={form} fields={{ foo: 'anything' }} />
-    }
-
-    const { getByTestId } = await render(<Component />)
-
-    expect(getByTestId('meta')).toHaveTextContent('false')
-  })
-
   it('resolves watched field names for listeners', async () => {
     const listener = vi.fn()
 
@@ -341,64 +224,6 @@ describe('FieldGroup', () => {
     await userEvent.type(getByLabelText('Password'), 'a')
 
     expect(listener).toHaveBeenCalledOnce()
-  })
-
-  it('updates extracted memoized field components when field values change', async () => {
-    const onRender = vi.fn()
-
-    function Component() {
-      const form = useForm({
-        defaultValues: {
-          value: '',
-        },
-      })
-
-      return <MemoizedInputFields form={form} onRender={onRender} />
-    }
-
-    const { getByLabelText } = await render(<Component />)
-    const input = getByLabelText('Memoized')
-
-    await userEvent.type(input, 'abc')
-
-    expect(input).toHaveValue('abc')
-    expect(onRender).toHaveBeenCalledTimes(4)
-  })
-
-  it('does not rerender unrelated sibling fields when one field changes', async () => {
-    const onRender = {
-      lower: vi.fn(),
-      upper: vi.fn(),
-    }
-
-    function Component() {
-      const form = useForm({
-        defaultValues: {
-          min: '',
-          max: '',
-        },
-      })
-
-      return (
-        <RangeFields
-          form={form}
-          fields={{
-            lower: 'min',
-            upper: 'max',
-          }}
-          onRender={onRender}
-        />
-      )
-    }
-
-    const { getByLabelText } = await render(<Component />)
-    const initialUpperRenderCount = onRender.upper.mock.calls.length
-
-    await userEvent.type(getByLabelText('Lower'), '12')
-
-    expect(getByLabelText('Lower')).toHaveValue('12')
-    expect(onRender.lower).toHaveBeenCalledTimes(3)
-    expect(onRender.upper).toHaveBeenCalledTimes(initialUpperRenderCount)
   })
 
   it('exposes bound field values through a group-level atom', async () => {

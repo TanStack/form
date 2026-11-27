@@ -42,7 +42,6 @@
     "dist/"
   ],
   "dependencies": {
-    "@tanstack/pacer-lite": "^0.2.2",
     "@tanstack/store": "^0.11.1"
   },
   "devDependencies": {

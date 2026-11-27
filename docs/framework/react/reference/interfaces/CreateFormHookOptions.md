@@ -3,7 +3,7 @@ id: CreateFormHookOptions
 title: CreateFormHookOptions
 ---
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:56](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L56)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:61](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L61)
 
 Configures the components and reusable defaults returned by
 `createFormHook`.
@@ -18,9 +18,7 @@ configured `listenersMerge` strategy.
 ```tsx
 const { useAppForm } = createFormHook({
   formComponents: {
-    actions: {
-      SubmitButton,
-    },
+    SubmitButton,
   },
   fieldComponents: {
     inputs: {
@@ -35,20 +33,16 @@ const { useAppForm } = createFormHook({
   },
 })
 
-// Registered namespaces retain their shape on the form and field APIs:
-// <form.actions.SubmitButton />
+// Form components are flat; field components retain their namespaces:
+// <form.SubmitButton />
 // <field.inputs.TextField />
 ```
-
-## Extends
-
-- [`ReactFormComponentMap`](ReactFormComponentMap.md)\<`TFormComponents`, `TFieldComponents`\>
 
 ## Type Parameters
 
 ### TFormComponents
 
-`TFormComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
+`TFormComponents` *extends* [`ReactFormComponents`](../type-aliases/ReactFormComponents.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -66,7 +60,7 @@ Library-managed. Do not specify explicitly.
 optional defaultFieldOptions?: DefaultFieldOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:89](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L89)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:101](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L101)
 
 Defaults for every field and array-field component owned by the form.
 
@@ -90,7 +84,7 @@ defaultFieldOptions: {
 optional defaultFormGroupOptions?: DefaultFormGroupOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:105](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L105)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:117](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L117)
 
 Defaults for every `form.FormGroup` component.
 
@@ -115,7 +109,7 @@ defaultFormGroupOptions: {
 optional defaultFormOptions?: DefaultFormOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:74](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L74)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:86](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L86)
 
 Defaults for every form created by `useAppForm`.
 
@@ -139,26 +133,14 @@ defaultFormOptions: {
 fieldComponents: TFieldComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:31](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L31)
-
-Components and component namespaces exposed on each App Field API.
-
-#### Inherited from
-
-[`ReactFormComponentMap`](ReactFormComponentMap.md).[`fieldComponents`](ReactFormComponentMap.md#fieldcomponents)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:71](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L71)
 
 ***
 
 ### formComponents
 
 ```ts
-formComponents: TFormComponents;
+formComponents: TFormComponents & CompatibleFormComponents<NoInfer<TFormComponents>, TFormComponents, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:29](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L29)
-
-Components and component namespaces exposed on each App Form API.
-
-#### Inherited from
-
-[`ReactFormComponentMap`](ReactFormComponentMap.md).[`formComponents`](ReactFormComponentMap.md#formcomponents)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:65](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L65)

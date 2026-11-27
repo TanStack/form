@@ -3,11 +3,11 @@ id: SolidFormGroupApi
 title: SolidFormGroupApi
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L268)
+Defined in: [packages/solid-form/src/Components.public.ts:264](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L264)
 
 ## Extends
 
-- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupErrorTypes`, `TFormErrorTypes`\>
+- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupError`, `TFormError`\>
 
 ## Type Parameters
 
@@ -23,13 +23,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.co
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -40,27 +40,27 @@ Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.co
 ### ArrayField
 
 ```ts
-ArrayField: SolidFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
+ArrayField: SolidFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:289](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L289)
+Defined in: [packages/solid-form/src/Components.public.ts:285](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L285)
 
 ***
 
 ### Field
 
 ```ts
-Field: SolidFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
+Field: SolidFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:282](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L282)
+Defined in: [packages/solid-form/src/Components.public.ts:278](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L278)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: SolidFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
+Subscribe: SolidFormGroupSubscribeComponent<TGroupValue, TGroupError>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:296](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L296)
+Defined in: [packages/solid-form/src/Components.public.ts:292](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L292)

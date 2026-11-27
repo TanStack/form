@@ -3,11 +3,11 @@ id: VueFormFieldProps
 title: VueFormFieldProps
 ---
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:97](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L97)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:96](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L96)
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -27,17 +27,17 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:97](https://gith
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -51,4 +51,4 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:97](https://gith
 readonly optional [fieldComponentsType]?: TFieldComponents;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:119](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L119)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:118](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L118)

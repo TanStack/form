@@ -13,7 +13,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:378](https://github.co
 
 ### TFormErrorTypes
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormErrorTypes` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

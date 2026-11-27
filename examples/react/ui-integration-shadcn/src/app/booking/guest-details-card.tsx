@@ -26,7 +26,7 @@ function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
             )}
           </group.Field>
           <group.Field name="phoneNumber">
-            {(field) => <field.TextInputField label="Phone number" />}
+            {(field) => <field.preset.TextInput label="Phone number" />}
           </group.Field>
           <group.Field name="email">
             {(field) => (

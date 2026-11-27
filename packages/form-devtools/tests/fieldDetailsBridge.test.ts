@@ -2,8 +2,9 @@ import {
   InternalFormApi,
   InternalFormGroupApi,
   installDevtoolsBridge,
+  replaceSourceErrors,
 } from '@tanstack/form-core/internals'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, onTestFinished, vi } from 'vitest'
 import { z } from 'zod'
 import { createFieldsController } from '../src/bridge/fields'
 import { createFieldIdentityController } from '../src/bridge/fields/identity'
@@ -13,10 +14,8 @@ import { createFormDevtoolsBridge } from '../src/bridge/createBridge'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
 import { connectTestEventBus } from './testEventBus'
 import { setFieldValidatorErrors } from './testUtils'
-import type {
-  AnyInternalValidationSourceInstance,
-  ValidationSourceErrorState,
-} from '@tanstack/form-core/internals'
+import type { ValidationIssue, ValidatorEvents } from '@tanstack/form-core'
+import type { ValidationErrorSource } from '@tanstack/form-core/internals'
 import type {
   DevtoolsFieldDetail,
   FieldDetailSubscriptionDescriptor,
@@ -78,71 +77,71 @@ describe('field detail snapshots', () => {
       const [fieldCallback, fieldSchema] = field._validatorInstances!
       const groupSchema = group._validatorInstances![0]!
       const [formCallback, formSchema] = form._validatorInstances!
-      field._setMeta((meta) => ({
-        ...meta,
-        _validationSourceErrors: new Map<
-          AnyInternalValidationSourceInstance,
-          ValidationSourceErrorState
-        >([
-          [
-            fieldCallback!,
-            {
-              errors: [
-                { message: 'Field callback', code: 'field-code' } as never,
-                {
-                  message: 'Field callback second',
-                  code: 'field-code-2',
-                } as never,
-              ],
-              sourceEvent: 'change',
-            },
-          ],
-          [
-            fieldSchema!,
-            {
-              errors: [{ message: 'Field schema', path: ['name'] } as never],
-              sourceEvent: 'blur',
-            },
-          ],
-          [
-            groupSchema,
-            {
-              errors: [{ message: 'Group schema', path: ['name'] } as never],
-              sourceEvent: 'server',
-            },
-          ],
-          [
-            formCallback!,
-            {
-              errors: [
-                { message: 'Form callback', code: 'form-code' } as never,
-              ],
-              sourceEvent: 'change',
-            },
-          ],
-          [
-            formSchema!,
-            {
-              errors: [
-                {
-                  message: 'Form schema',
-                  path: ['profile', 'name'],
-                } as never,
-              ],
-              sourceEvent: 'server',
-            },
-          ],
-          [
-            form._onSubmitSource,
-            {
-              errors: [
-                { message: 'Submit callback', code: 'submit-code' } as never,
-              ],
-              sourceEvent: 'submit',
-            },
-          ],
-        ]),
-      }))
+      const contributions: Array<
+        readonly [
+          ValidationErrorSource,
+          { errors: Array<ValidationIssue>; sourceEvent: ValidatorEvents },
+        ]
+      > = [
+        [
+          fieldCallback!,
+          {
+            errors: [
+              { message: 'Field callback', code: 'field-code' } as never,
+              {
+                message: 'Field callback second',
+                code: 'field-code-2',
+              } as never,
+            ],
+            sourceEvent: 'change',
+          },
+        ],
+        [
+          fieldSchema!,
+          {
+            errors: [{ message: 'Field schema', path: ['name'] } as never],
+            sourceEvent: 'blur',
+          },
+        ],
+        [
+          groupSchema,
+          {
+            errors: [{ message: 'Group schema', path: ['name'] } as never],
+            sourceEvent: 'server',
+          },
+        ],
+        [
+          formCallback!,
+          {
+            errors: [{ message: 'Form callback', code: 'form-code' } as never],
+            sourceEvent: 'change',
+          },
+        ],
+        [
+          formSchema!,
+          {
+            errors: [
+              {
+                message: 'Form schema',
+                path: ['profile', 'name'],
+              } as never,
+            ],
+            sourceEvent: 'server',
+          },
+        ],
+        [
+          form._onSubmitSource,
+          {
+            errors: [
+              { message: 'Submit callback', code: 'submit-code' } as never,
+            ],
+            sourceEvent: 'submit',
+          },
+        ],
+      ]
+      for (const [source, { errors, sourceEvent }] of contributions) {
+        replaceSourceErrors(source, sourceEvent, [[field, errors]])
+      }
 
       const full = getDevtoolsFieldDetail(field, subscription, identity)
       expect(full.state.value).toBe('Ada')
@@ -311,7 +310,52 @@ describe('field detail snapshots', () => {
 })
 
 describe('field detail bridge', () => {
-  it('streams topology changes and registers newly watched fields', async () => {
+  it('publishes changed provenance when a validator returns equivalent issues', () => {
+    const disconnect = connectTestEventBus()
+    onTestFinished(disconnect)
+    const mountedForms = createMountedFormsController()
+    onTestFinished(() => mountedForms.dispose())
+    const fields = createFieldsController(mountedForms)
+    onTestFinished(() => fields.dispose())
+    const uninstall = installDevtoolsBridge(
+      createFormDevtoolsBridge({ fields, mountedForms }),
+    )
+    onTestFinished(uninstall)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    onTestFinished(form.mount())
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [{ triggers: ['change', 'blur'], run: () => 'Required' }],
+    })
+    onTestFinished(field._register())
+    const details: Array<DevtoolsFieldDetail> = []
+    onTestFinished(
+      formDevtoolsEventClient.on('field-detail-changed', (event) =>
+        details.push(event.payload),
+      ),
+    )
+    const formInstanceId = mountedForms.getMountedFormsSnapshot()[0]!.instanceId
+    formDevtoolsEventClient.emit('field-list-subscribe', { formInstanceId })
+    const fieldId = fields
+      .getFieldRowsSnapshot(form)
+      .find(({ path }) => path === 'name')!.fieldId
+    formDevtoolsEventClient.emit(
+      'field-detail-subscribe',
+      descriptor(formInstanceId, fieldId),
+    )
+    field.handleChange('value')
+    const errors = field.meta.original.errors
+    expect(details.at(-1)?.state.meta.original.errors[0]?.sourceEvent).toBe(
+      'change',
+    )
+    field.handleBlur()
+    expect(field.meta.original.errors).toBe(errors)
+    expect(details.at(-1)?.state.meta.original.errors[0]?.sourceEvent).toBe(
+      'blur',
+    )
+  })
+
+  it('streams topology changes and resolves listener and validator watch relations', async () => {
     const disconnectEventBus = connectTestEventBus()
     const mountedForms = createMountedFormsController()
     const fields = createFieldsController(mountedForms)
@@ -319,11 +363,15 @@ describe('field detail bridge', () => {
       createFormDevtoolsBridge({ fields, mountedForms }),
     )
     const form = new InternalFormApi({
-      defaultValues: { parent: {}, target: '' },
+      defaultValues: { parent: {}, target: '', source: '' },
     })
     const unmountForm = form.mount()
     form._getOrCreateFieldApi({ name: 'parent' })
-    const target = form._getOrCreateFieldApi({ name: 'target' })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [{ triggers: ['change'], run: () => {} }],
+      validators: [{ triggers: ['change'], run: () => null }],
+    })
     const details: Array<DevtoolsFieldDetail> = []
     const patches: Array<FormDevtoolsEventMap['field-list-patch']> = []
     const cleanupDetails = formDevtoolsEventClient.on(
@@ -356,6 +404,11 @@ describe('field detail bridge', () => {
         details.filter(({ fieldId }) => fieldId === parentId).at(-1)?.relations
           .directChildCount,
       ).toBe(1)
+
+      expect(
+        details.filter(({ fieldId }) => fieldId === targetId).at(-1)?.relations
+          .listensTo,
+      ).toEqual([])
 
       target._update({
         listeners: [
@@ -409,11 +462,15 @@ describe('field detail bridge', () => {
         },
       ])
 
-      target._update({ listeners: [], validators: [] })
+      target._update({
+        listeners: [{ triggers: ['change'], run: () => {} }],
+        validators: [{ triggers: ['change'], run: () => null }],
+      })
       expect(
         details.filter(({ fieldId }) => fieldId === sourceId).at(-1)?.relations
           .listenedToBy,
       ).toEqual([])
+      form.resetField('source')
       unregisterSource()
       await new Promise((resolve) => setTimeout(resolve, 0))
       await Promise.resolve()
@@ -577,16 +634,16 @@ describe('field detail bridge', () => {
       form.insertFieldValue('users', 0, { name: 'inserted' })
 
       expect(source.name).toBe('users[1].name')
+      expect(details.at(-1)?.relations.listensTo).toEqual([])
+      form.setFieldValue('users[0].name', 'inserted name')
+      const insertedSourceId = fields
+        .getFieldRowsSnapshot(form)
+        .find(({ path }) => path === 'users[0].name')!.fieldId
+      expect(insertedSourceId).not.toBe(sourceId)
       expect(details.at(-1)?.relations.listensTo).toEqual([
         {
-          fieldId: sourceId,
-          causes: [
-            {
-              kind: 'listener',
-              itemIndex: 0,
-              configuredPath: 'users[0].name',
-            },
-          ],
+          fieldId: insertedSourceId,
+          causes: [{ kind: 'listener', itemIndex: 0 }],
         },
       ])
 

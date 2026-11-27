@@ -4,7 +4,7 @@ title: FieldGroupWithFieldsFn
 ---
 
 ```ts
-type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => CrossVersionPreactNode;
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData, TParentFieldComponents>(props) => CrossVersionPreactNode;
 ```
 
 Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:53](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L53)
@@ -37,4 +37,4 @@ Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:53](https:
 
 ## Returns
 
-\<`TFormData`\>(`props`) => [`CrossVersionPreactNode`](CrossVersionPreactNode.md)
+\<`TFormData`, `TParentFieldComponents`\>(`props`) => [`CrossVersionPreactNode`](CrossVersionPreactNode.md)

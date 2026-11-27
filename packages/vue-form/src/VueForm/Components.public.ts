@@ -5,12 +5,12 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
@@ -67,9 +67,9 @@ export type VueFieldApi<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component>,
-> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
+> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 interface VueSubscribeProps<in out TSourceData, in out TSelected> {
@@ -79,18 +79,17 @@ interface VueSubscribeProps<in out TSourceData, in out TSelected> {
 
 export type VueFormSubscribeProps<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = VueSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>
+> = VueSubscribeProps<FormState<TFormData, TFormError>, TSelected>
 
 export type VueFormSubscribeComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > = new <const TSelected>(
-  props: VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> &
-    PublicProps,
+  props: VueFormSubscribeProps<TFormData, TFormError, TSelected> & PublicProps,
 ) => VueComponentInstance<
-  VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
+  VueFormSubscribeProps<TFormData, TFormError, TSelected>,
   { default: NoInfer<TSelected> }
 >
 
@@ -103,25 +102,25 @@ export interface VueFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > extends FieldApiOptions<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 > {
   readonly [fieldComponentsType]?: TFieldComponents
 }
 
 export type VueFormFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > = new <
   TFieldName extends DeepKeys<TFormData>,
@@ -138,7 +137,7 @@ export type VueFormFieldComponent<
     TFieldValidators,
     never,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   > &
     PublicProps,
@@ -150,7 +149,7 @@ export type VueFormFieldComponent<
     TFieldValidators,
     never,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >,
   {
@@ -158,9 +157,9 @@ export type VueFormFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TFormData, TFieldName>,
-        ToFieldError<NoInfer<TFieldValidators>, never, TFormErrorTypes>,
+        ToFieldError<NoInfer<TFieldValidators>, never, TFormError>,
         TFormData,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >
     }
@@ -169,7 +168,7 @@ export type VueFormFieldComponent<
 
 export type VueFormArrayFieldComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > = new <
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
@@ -186,7 +185,7 @@ export type VueFormArrayFieldComponent<
     TFieldValidators,
     never,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   > &
     PublicProps,
@@ -198,7 +197,7 @@ export type VueFormArrayFieldComponent<
     TFieldValidators,
     never,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >,
   {
@@ -206,9 +205,9 @@ export type VueFormArrayFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TFormData, TFieldName>,
-        ToFieldError<NoInfer<TFieldValidators>, never, TFormErrorTypes>,
+        ToFieldError<NoInfer<TFieldValidators>, never, TFormError>,
         TFormData,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >
     }
@@ -217,26 +216,26 @@ export type VueFormArrayFieldComponent<
 
 export type VueFormGroupSubscribeProps<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
   TSelected,
-> = VueSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>
+> = VueSubscribeProps<FormGroupState<TGroupValue, TGroupError>, TSelected>
 
 export type VueFormGroupSubscribeComponent<
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
 > = new <const TSelected>(
-  props: VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> &
+  props: VueFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected> &
     PublicProps,
 ) => VueComponentInstance<
-  VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
+  VueFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected>,
   { default: NoInfer<TSelected> }
 >
 
 export type VueFormGroupFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > = new <
   TFieldName extends DeepKeys<TGroupValue>,
@@ -251,9 +250,9 @@ export type VueFormGroupFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupErrorTypes['fieldError'],
+    TGroupError,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   > &
     PublicProps,
@@ -263,9 +262,9 @@ export type VueFormGroupFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupErrorTypes['fieldError'],
+    TGroupError,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >,
   {
@@ -273,13 +272,9 @@ export type VueFormGroupFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TGroupValue, TFieldName>,
-        ToFieldError<
-          NoInfer<TFieldValidators>,
-          TGroupErrorTypes['fieldError'],
-          TFormErrorTypes
-        >,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >
     }
@@ -289,8 +284,8 @@ export type VueFormGroupFieldComponent<
 export type VueFormGroupArrayFieldComponent<
   in out TFormData,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > = new <
   TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
@@ -305,9 +300,9 @@ export type VueFormGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupErrorTypes['fieldError'],
+    TGroupError,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   > &
     PublicProps,
@@ -317,9 +312,9 @@ export type VueFormGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupErrorTypes['fieldError'],
+    TGroupError,
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >,
   {
@@ -327,13 +322,9 @@ export type VueFormGroupArrayFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TGroupValue, TFieldName>,
-        ToFieldError<
-          NoInfer<TFieldValidators>,
-          TGroupErrorTypes['fieldError'],
-          TFormErrorTypes
-        >,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >
     }
@@ -344,31 +335,31 @@ export interface VueFormGroupApi<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
+  TGroupError,
+  TFormError
 > {
   Field: VueFormGroupFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
   ArrayField: VueFormGroupArrayFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: VueFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>
+  Subscribe: VueFormGroupSubscribeComponent<TGroupValue, TGroupError>
 }
 
 export interface VueFormGroupProps<
@@ -376,15 +367,17 @@ export interface VueFormGroupProps<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
+  in out TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -393,20 +386,22 @@ export interface VueFormGroupProps<
 
 export type VueFormGroupComponent<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
 > = new <
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
+  TSubmitReturn = void,
 >(
   props: VueFormGroupProps<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes,
-    TFieldComponents
+    TFormError,
+    TFieldComponents,
+    TSubmitReturn
   > &
     PublicProps,
 ) => VueComponentInstance<
@@ -415,8 +410,9 @@ export type VueFormGroupComponent<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes,
-    TFieldComponents
+    TFormError,
+    TFieldComponents,
+    TSubmitReturn
   >,
   {
     default: {
@@ -424,8 +420,11 @@ export type VueFormGroupComponent<
         TFormData,
         TGroupName,
         TGroupValue,
-        ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-        TFormErrorTypes,
+        ToFormGroupErrorTypes<
+          NoInfer<TGroupValidators>,
+          NoInfer<TSubmitReturn>
+        >,
+        TFormError,
         TFieldComponents
       >
     }
@@ -434,18 +433,18 @@ export type VueFormGroupComponent<
 
 export interface VueTanStackFormComponents<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component> = Record<
     never,
     never
   >,
 > {
-  Field: VueFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>
+  Field: VueFormFieldComponent<TFormData, TFormError, TFieldComponents>
   ArrayField: VueFormArrayFieldComponent<
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: VueFormSubscribeComponent<TFormData, TFormErrorTypes>
-  FormGroup: VueFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>
+  Subscribe: VueFormSubscribeComponent<TFormData, TFormError>
+  FormGroup: VueFormGroupComponent<TFormData, TFormError, TFieldComponents>
 }

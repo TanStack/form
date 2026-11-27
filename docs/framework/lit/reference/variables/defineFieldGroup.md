@@ -7,4 +7,4 @@ title: defineFieldGroup
 const defineFieldGroup: DefineFieldGroupFn;
 ```
 
-Defined in: [with-fields.ts:196](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L196)
+Defined in: [with-fields.ts:223](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L223)

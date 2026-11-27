@@ -1,19 +1,19 @@
 import { batch } from '@tanstack/store'
-import { touchAllFieldsAndCollectSubmitValidators } from './fieldTree.lib'
-import type { AnyInternalFieldApi } from './FieldApi.lib'
-import type { ChildContributionStates } from './fieldState.lib'
+import { ValidationErrorStore } from '../validation/errorStorage.lib'
 import type { AnyInternalFormApi, FormMetaAtoms } from '../FormApi/FormApi.lib'
 import type { NameSegment } from '../utils.lib'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
+import type { SubfieldsMetaFlags } from './fieldState.lib'
 
-export type RootCounterContributionKey = 'touched' | 'validating'
+export type FormMetaCountKey = 'touched' | 'validating'
 
-export const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
+export const formMetaCountKeys: Array<FormMetaCountKey> = [
   'touched',
   'validating',
 ]
 
-const rootCounterMetaKeys: Record<
-  RootCounterContributionKey,
+const formMetaCountAtomKeys: Record<
+  FormMetaCountKey,
   keyof Pick<FormMetaAtoms, 'touchedFieldCount' | 'fieldValidationCount'>
 > = {
   touched: 'touchedFieldCount',
@@ -22,6 +22,12 @@ const rootCounterMetaKeys: Record<
 
 export class InternalRootFieldApi {
   readonly _isRoot = true
+  /**
+   * The errors of the form itself (AKA a field with name '').
+   */
+  readonly _errorStore: ValidationErrorStore = new ValidationErrorStore({
+    target: this,
+  })
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
 
   form: AnyInternalFormApi
@@ -34,6 +40,10 @@ export class InternalRootFieldApi {
 
   constructor(form: AnyInternalFormApi) {
     this.form = form
+  }
+
+  _clearErrors(): void {
+    this._errorStore.clearTargetErrors()
   }
 
   /**
@@ -54,15 +64,15 @@ export class InternalRootFieldApi {
 
   _updateErrorFields(
     node: AnyInternalFieldApi,
-    prevContributes: boolean,
-    newContributes: boolean,
+    wasInvalid: boolean,
+    isInvalid: boolean,
   ) {
-    if (prevContributes === newContributes) return
+    if (wasInvalid === isInvalid) return
 
     this.form._atoms.meta.errorFields.set((prev) => {
       const errorFields = new Set(prev)
 
-      if (newContributes) {
+      if (isInvalid) {
         errorFields.add(node)
       } else {
         errorFields.delete(node)
@@ -72,20 +82,20 @@ export class InternalRootFieldApi {
     })
   }
 
-  _updateFieldContributionCount(
-    prevState: ChildContributionStates,
-    newState: ChildContributionStates,
+  _updateFormMetaCounts(
+    previousFlags: SubfieldsMetaFlags,
+    nextFlags: SubfieldsMetaFlags,
   ) {
     batch(() => {
-      for (const key of rootCounterContributionKeys) {
-        const prevContributes = prevState[key]
-        const newContributes = newState[key]
+      for (const key of formMetaCountKeys) {
+        const wasSet = previousFlags[key]
+        const isSet = nextFlags[key]
 
-        if (prevContributes === newContributes) continue
+        if (wasSet === isSet) continue
 
-        const atom = this.form._atoms.meta[rootCounterMetaKeys[key]]
+        const atom = this.form._atoms.meta[formMetaCountAtomKeys[key]]
         atom.set((prev) => {
-          const delta = newContributes ? 1 : -1
+          const delta = isSet ? 1 : -1
           return Math.max(0, prev + delta)
         })
       }
@@ -94,9 +104,5 @@ export class InternalRootFieldApi {
 
   _removeChild(segment: NameSegment): void {
     this.#children.delete(segment)
-  }
-
-  _touchAllFieldsAndCollectSubmitValidators(): Array<AnyInternalFieldApi> {
-    return touchAllFieldsAndCollectSubmitValidators(this)
   }
 }

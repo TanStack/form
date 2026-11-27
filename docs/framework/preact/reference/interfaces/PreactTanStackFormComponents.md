@@ -3,7 +3,7 @@ id: PreactTanStackFormComponents
 title: PreactTanStackFormComponents
 ---
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L360)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:353](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L353)
 
 ## Type Parameters
 
@@ -11,9 +11,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -24,20 +24,20 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https
 ### ArrayField
 
 ```ts
-ArrayField: PreactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+ArrayField: PreactFormArrayFieldComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:370](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L370)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:363](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L363)
 
 ***
 
 ### Field
 
 ```ts
-Field: PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+Field: PreactFormFieldComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:368](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L368)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:361](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L361)
 
 TODO docs
 
@@ -46,17 +46,17 @@ TODO docs
 ### FormGroup
 
 ```ts
-FormGroup: PreactFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+FormGroup: PreactFormGroupComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:378](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L378)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:371](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L371)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: PreactFormSubscribeComponent<TFormData, TFormErrorTypes>;
+Subscribe: PreactFormSubscribeComponent<TFormData, TFormError>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:376](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L376)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:369](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L369)

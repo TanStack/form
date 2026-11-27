@@ -4,10 +4,10 @@ title: FieldListeners
 ---
 
 ```ts
-type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>[];
+type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormError> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormError>[];
 ```
 
-Defined in: [listeners.public.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L514)
+Defined in: [pipeline/listeners/listeners.public.ts:375](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L375)
 
 Listener configurations evaluated in array order for each field event.
 
@@ -45,9 +45,9 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](../interfaces/ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 

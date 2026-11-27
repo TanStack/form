@@ -4,7 +4,7 @@ title: FieldGroupFormState
 ---
 
 ```ts
-type FieldGroupFormState = FormState<unknown, FormErrorTypes>;
+type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:100](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L100)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:103](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L103)

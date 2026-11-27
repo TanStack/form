@@ -94,7 +94,7 @@ export default function App() {
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          form.handleSubmit().catch(console.error)
         }}
       >
         <div>

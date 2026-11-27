@@ -219,7 +219,7 @@ Source: TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
 Wrong:
 
 ```ts
-const TextField = fieldComponent.strict(TextInput, 'field')
+const TextField = fieldComponent.strict()(TextInput, 'field')
 ```
 
 Correct:

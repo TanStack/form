@@ -3,24 +3,13 @@ id: FormOptions
 title: FormOptions
 ---
 
-Defined in: [FormApi/FormApi.public.ts:262](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L262)
+Defined in: [FormApi/formOptions.public.ts:53](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L53)
 
-Configures initial values, validation, listeners, and submission.
+Configures a form's initial values, validation, listeners, and submission.
 
 Pass these options to a framework adapter's form creation API. Use
-`formOptions` when declaring them separately so data and validator types
-remain inferred.
-
-## Example
-
-```ts
-const profileFormOptions = formOptions({
-  defaultValues: { name: '' },
-  onSubmit: async ({ value }) => {
-    await saveProfile(value)
-  },
-})
-```
+`formOptions` when defining reusable options so values and callbacks retain
+their inferred types.
 
 ## Type Parameters
 
@@ -30,9 +19,15 @@ const profileFormOptions = formOptions({
 
 Library-managed. Do not specify explicitly.
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* [`FormValidators`](../type-aliases/FormValidators.md)\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+Library-managed. Do not specify explicitly.
+
+### TValidators
+
+`TValidators`
 
 Library-managed. Do not specify explicitly.
 
@@ -40,23 +35,25 @@ Library-managed. Do not specify explicitly.
 
 `TSubmitReturn`
 
-Library-managed. Do not specify explicitly.
+### TPayload
 
-### TComponents
-
-`TComponents`
+`TPayload`
 
 Library-managed. Do not specify explicitly.
 
 ## Properties
 
-### \[formOptionsComponentsSymbol\]?
+### \[formOptionsTypePayloadSymbol\]?
 
 ```ts
-readonly optional [formOptionsComponentsSymbol]?: TComponents;
+readonly optional [formOptionsTypePayloadSymbol]?: TPayload;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L268)
+Defined in: [FormApi/formOptions.public.ts:65](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L65)
+
+INTERNAL USE ONLY
+
+A custom type payload that adapters need for things like form composition. Not a real runtime value.
 
 ***
 
@@ -66,42 +63,59 @@ Defined in: [FormApi/FormApi.public.ts:268](https://github.com/TanStack/form/blo
 defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L290)
+Defined in: [FormApi/formOptions.public.ts:92](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L92)
 
-Initial values and the source of the inferred data shape.
+The values your form starts with.
 
-They also define the reset baseline and what `isDefaultValue` compares
-against.
+`reset()` restores these values, and `isDefaultValue` checks whether the
+current values match them.
 
-**Async initial values:** The passed value may change over time. While data
-is loading, pass fallback values containing the complete data shape, then
-pass the resolved values when they become available.
+You can supply a new object whenever options are updated. Defaults are
+compared deeply, so recreating equal objects and arrays leaves them unchanged.
 
-When this option changes, untouched top-level values adopt the new defaults
-while values under touched top-level fields are preserved.
+When defaults change, untouched top-level fields receive the new values.
+Values under touched top-level fields are preserved.
+
+#### Example
+
+```ts
+formOptions({
+  defaultValues: {
+    name: '',
+    age: 0,
+    interests: [] as string[],
+  },
+  onSubmit: ({ value }) => {
+     // Use values
+  },
+})
+```
 
 ***
 
 ### errorVisibility?
 
 ```ts
-optional errorVisibility?: ErrorVisibility<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
+optional errorVisibility?: ErrorVisibilityFn<NoInfer<TFormData>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:305](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L305)
+Defined in: [FormApi/formOptions.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L117)
 
-Controls when fields expose validation errors through public state.
+Controls when fields expose validation errors. Return `true` to show errors
+or `false` to hide them. This only affects their visibility and does not
+change the form's validity.
 
-This is the default policy for every field. A field can override it with a field-level
-`errorVisibility` option.
-
-When omitted, errors are always exposed.
+Applies to every field unless the field supplies its own `errorVisibility`.
+When no `errorVisibility` is provided, errors are always exposed.
 
 #### Example
 
 ```ts
-errorVisibility: ({ state, fieldState }) =>
-  fieldState.meta.isBlurred || state.submissionAttempts > 0,
+formOptions({
+  defaultValues: { name: '' },
+  errorVisibility: ({ state, fieldState }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
+})
 ```
 
 ***
@@ -112,41 +126,43 @@ errorVisibility: ({ state, fieldState }) =>
 optional formId?: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L276)
+Defined in: [FormApi/formOptions.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L99)
 
-A stable identifier for this form.
+Identifies this form through `formApi.formId`.
 
-When omitted, an identifier is generated and preserved across option
-updates until a new `formId` is supplied. Read the supplied or generated
-identifier from `formApi.formId`.
+When omitted, an identifier is generated when the form is created and
+preserved across option updates. Supplying a new `formId` replaces it.
 
 ***
 
 ### listeners?
 
 ```ts
-optional listeners?: FormListeners<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
+optional listeners?: FormListeners<NoInfer<TFormData>, NoInfer<GetFormErrorTypes<TValidators, unknown>>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L352)
+Defined in: [FormApi/formOptions.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L176)
 
-Listener configurations for change, blur, submit, mount, and reset events.
+Callbacks for change, blur, submit, mount, and reset events.
 
-Matching listeners are evaluated in array order. Their return values are
-ignored, and returned promises are not awaited.
+Use listeners for work that does not depend on other listeners. Return
+values are ignored, and returned promises are not awaited.
 
 #### Example
 
 ```ts
-listeners: [
-  {
-    triggers: ['change'],
-    triggerDebounceMs: 200,
-    run: ({ value }) => {
-      saveDraft(value)
+formOptions({
+  defaultValues: { name: '' },
+  listeners: [
+    {
+      triggers: ['change'],
+      triggerDebounceMs: 200,
+      run: ({ value }) => {
+        localStorage.setItem('profile-draft', JSON.stringify(value))
+      },
     },
-  },
-],
+  ],
+})
 ```
 
 ***
@@ -154,26 +170,33 @@ listeners: [
 ### onSubmit?
 
 ```ts
-optional onSubmit?: FormSubmitFn<TFormData, TFormValidators, TSubmitReturn>;
+optional onSubmit?: FormOptionsOnSubmitFn<NoInfer<TFormData>, NoInfer<TryGetValidatorOutputs<TValidators>>, TSubmitReturn>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:389](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L389)
+Defined in: [FormApi/formOptions.public.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L212)
 
-Called after submission validation succeeds.
+Handles submission after field and form submission validation succeeds.
+A returned promise is awaited before submission finishes.
 
-Return an error created with `createValidationError` or `parseIssues` to
-mark the submission as invalid. A returned promise is awaited before
-submission finishes. If the callback throws, `onSubmitInvalid` is called.
+The context provides form values, validator outputs, the form instance, and
+helpers for reporting submission errors.
+
+You can also report form and field errors discovered during submission,
+such as validation errors returned by the server.
 
 #### Example
 
 ```ts
-{
-  // ...
-  onSubmit: async ({ value }) => {
-    await saveUser(value)
+formOptions({
+  defaultValues: { name: '' },
+  onSubmit: async ({ value, createErrorMap }) => {
+    const response = await createProfile();
+    if (response.error === 'username_taken') {
+      return createErrorMap({ fields: { name: 'This name is taken' }})
+    }
+    return redirect({ to: '/my-profile' })
   },
-}
+})
 ```
 
 ***
@@ -181,38 +204,27 @@ submission finishes. If the callback throws, `onSubmitInvalid` is called.
 ### onSubmitInvalid?
 
 ```ts
-optional onSubmitInvalid?: (context) => void | Promise<void>;
+optional onSubmitInvalid?: FormOptionsOnSubmitInvalidFn<NoInfer<TFormData>, NoInfer<GetFormErrorTypes<TValidators, TSubmitReturn>>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:409](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L409)
+Defined in: [FormApi/formOptions.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L235)
 
-Called after an invalid submission is detected.
+Handles a failed submission, including submission validation failures,
+errors returned from `onSubmit`, and exceptions during validation or
+`onSubmit`.
 
-This includes validation failures, errors returned from `onSubmit`, and
-exceptions thrown during validation or submission. A returned promise is
-awaited before submission finishes.
-
-#### Parameters
-
-##### context
-
-[`FormSubmitInvalidContext`](FormSubmitInvalidContext.md)\<`TFormData`, [`ToFormErrorTypes`](../type-aliases/ToFormErrorTypes.md)\<`TFormValidators`, `unknown`\>\>
-
-#### Returns
-
-`void` \| `Promise`\<`void`\>
+A returned promise is awaited before submission finishes.
 
 #### Example
 
 ```ts
-{
-  // ...
+formOptions({
+  defaultValues: { name: '' },
   onSubmitInvalid: () => {
-    document
-      .querySelector<HTMLElement>('[aria-invalid="true"]')
-      ?.focus()
+    // Focus on first invalid input
+    document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
   },
-}
+})
 ```
 
 ***
@@ -221,53 +233,51 @@ awaited before submission finishes.
 
 ```ts
 optional serverState?: 
-  | ServerFormState<NoInfer<TFormData>, NoInfer<TFormValidators>>
+  | NoInfer<ServerFormState<TFormData>>
   | null;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:368](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L368)
+Defined in: [FormApi/formOptions.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L187)
 
-Server-validation state supplied by a server or SSR adapter during
-hydration.
-
-Pass a failed result's `serverState` through unchanged. Constructing or
-mutating this state directly is discouraged.
-
-#### Example
-
-```ts
-serverState: failedResult.serverState,
-```
+Used by server-side rendering (SSR) integrations to restore form state
+from the server on the client.
 
 ***
 
 ### validators?
 
 ```ts
-optional validators?: TFormValidators;
+optional validators?: TValidators & FormOptionsValidators<NoInfer<TFormData>, TValidatorConfig, NoInfer<TValidators>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L332)
+Defined in: [FormApi/formOptions.public.ts:148](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L148)
 
-An ordered pipeline of form-level validators.
+An ordered array of validators for the complete form values.
 
-Validators run for their configured triggers and, by default, during
-submission. Keep the array length stable after initialization so
-validator-indexed errors and schema outputs remain aligned.
+By default, validators run only on submission. See `triggers` and
+`skipOnSubmit` to change when they run.
+
+Submission outputs follow the same array order.
+
+Make sure to not dynamically change the array length.
 
 #### Example
 
 ```ts
-validators: [
-  {
-    triggers: ['change'],
-    run: ({ value, createErrorMap }) => {
-      if (value.name) {
-        return null
-      }
-
-      return createErrorMap({ fields: { name: 'Name is required' } })
+formOptions({
+  defaultValues: { name: '' },
+  validators: [
+    {
+      triggers: ['change'],
+      run: ({ value, createErrorMap }) => {
+        // Form validators can set errors on fields
+        const map = createErrorMap();
+        if (!value.name.trim()) {
+          map.fields.name = 'Enter a name';
+        }
+        return map;
+      },
     },
-  },
-],
+  ],
+})
 ```

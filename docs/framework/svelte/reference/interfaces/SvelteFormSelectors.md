@@ -11,9 +11,9 @@ Defined in: [packages/svelte-form/src/formApiTypes.public.ts:14](https://github.
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Properties
 
@@ -29,7 +29,7 @@ Defined in: [packages/svelte-form/src/formApiTypes.public.ts:18](https://github.
 
 ##### TSelected
 
-`TSelected` = `FormState`\<`TFormData`, `TFormErrorTypes`\>
+`TSelected` = `FormState`\<`TFormData`, `TFormError`\>
 
 #### Parameters
 

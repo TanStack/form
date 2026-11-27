@@ -4,10 +4,10 @@ title: PreactFormType
 ---
 
 ```ts
-type PreactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? PreactFormApi<TFormData, PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyPreactFormComponentMap ? TComponents : DefaultPreactFormComponentMap> : never;
+type PreactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, any, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? PreactFormApi<TFormData, GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyPreactFormComponentMap ? TComponents : DefaultPreactFormComponentMap> : never;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/formType.public.ts:55](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formType.public.ts#L55)
+Defined in: [packages/preact-form/src/PreactForm/formType.public.ts:42](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formType.public.ts#L42)
 
 Derives the Preact form API type represented by a reusable options object.
 

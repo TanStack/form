@@ -1,15 +1,15 @@
+import type {
+  ScopedErrorTypes,
+  ToFieldError,
+  FieldErrors as ValidationFieldErrors,
+} from '../validation/state.public'
 import type { TryGetArrayElementType } from '../deep-keys.public'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { FormApi } from '../FormApi/FormApi.public'
-import type {
-  ErrorVisibility,
-  FieldValidators,
-  FormErrorTypes,
-  ToFieldError,
-  FieldErrors as ValidationFieldErrors,
-} from '../validation.public'
-import type { FieldListeners } from '../listeners.public'
 import type { ReadonlyAtom } from '@tanstack/store'
+import type { FieldValidators } from '../pipeline/validation/validation.public'
+import type { ErrorVisibilityFn } from '../FormApi/errorVisibility.public'
+import type { FieldListeners } from '../pipeline/listeners/listeners.public'
 
 export interface BaseFieldMeta {
   isTouched: boolean
@@ -125,12 +125,12 @@ export interface FieldApi<
   in out TFieldValue,
   in out TFieldError,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
   /**
    * The form that owns this field.
    */
-  form: FormApi<TFormData, TFormErrorTypes>
+  form: FormApi<TFormData, TFormError>
 
   /**
    * The name of the field.
@@ -227,12 +227,12 @@ export interface FieldApiOptions<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
   name: TFieldName
-  errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>
+  errorVisibility?: ErrorVisibilityFn<TFormData>
   /**
    * Route descendant field errors from form and form group validators to this field.
    */
@@ -242,8 +242,8 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormErrorTypes>,
+    NoInfer<ToFieldError<TFieldValidators, TGroupError, TFormError>>,
     TFormData,
-    TFormErrorTypes
+    TFormError
   >
 }

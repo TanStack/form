@@ -1,8 +1,8 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  FormOptionsApi,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyReactFormComponentMap,
@@ -10,18 +10,25 @@ import type {
 } from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
 
-// When defining formOptions, `onSubmit` is most likely not going to be present in it. Users
-// prefer to define them in components.
-// That's an issue for us because the inferred form error types are covariant, so resolving them
-// early can break passing forms as props to child components.
-// This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
-// free to tinker.
-type ReactFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
+type ComponentOrDefault<TComponents> =
+  TComponents extends AnyReactFormComponentMap
+    ? TComponents
+    : DefaultReactFormComponentMap
+
+type OptionsInferredForm<TOptions extends AnyFormOptions> =
+  TOptions extends FormOptions<
+    infer TFormData,
+    any,
+    infer TFormValidators,
+    infer TSubmitReturn,
+    infer TComponents
+  >
+    ? ReactFormApi<
+        TFormData,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
+        ComponentOrDefault<TComponents>
+      >
+    : never
 
 /**
  * Derives the React form API type represented by a reusable options object.
@@ -52,18 +59,10 @@ type ReactFormTypeErrorTypes<
  *
  * @typeParam TOptions - The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
  */
-export type ReactFormType<TOptions extends AnyFormOptions> =
-  TOptions extends FormOptions<
-    infer TFormData,
-    infer TFormValidators,
-    infer TSubmitReturn,
-    infer TComponents
-  >
-    ? ReactFormApi<
-        TFormData,
-        ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
-        TComponents extends AnyReactFormComponentMap
-          ? TComponents
-          : DefaultReactFormComponentMap
-      >
+export type ReactFormType<
+  TOptions extends AnyFormOptions | FormOptionsApi<unknown>,
+> = TOptions extends AnyFormOptions
+  ? OptionsInferredForm<TOptions>
+  : TOptions extends FormOptionsApi<infer TComponents>
+    ? ReactFormApi<any, any, ComponentOrDefault<TComponents>>
     : never

@@ -4,7 +4,7 @@ title: SolidFormSubscribeProps
 ---
 
 ```ts
-type SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = SolidSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
+type SolidFormSubscribeProps<TFormData, TFormError, TSelected> = SolidSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
 Defined in: [packages/solid-form/src/Components.public.ts:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L80)
@@ -15,9 +15,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:80](https://github.com
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

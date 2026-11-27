@@ -20,7 +20,7 @@
     onsubmit={(event) => {
       event.preventDefault()
       event.stopPropagation()
-      form.handleSubmit()
+      form.handleSubmit().catch(console.error)
     }}
   >
     <form.Field name="firstName">

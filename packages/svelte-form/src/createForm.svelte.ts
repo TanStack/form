@@ -5,7 +5,7 @@ import Field from './Field.svelte'
 import FormGroup from './FormGroup.svelte'
 import Subscribe from './Subscribe.svelte'
 import { withComponentProps } from './utils.lib.js'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions } from '@tanstack/form-core'
 import type { Component } from 'svelte'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { SvelteTanStackFormComponents } from './Components.public'
@@ -55,17 +55,13 @@ export function attachSvelteFormComponents(
   return result
 }
 
-export function initializeForm(
-  options: FormOptions<any, any, any, unknown>,
-): InternalSvelteFormApi {
+export function initializeForm(options: AnyFormOptions): InternalSvelteFormApi {
   return attachSvelteFormComponents(new InternalFormApi(options), null)
 }
 
 export function createInternalForm(
-  options: () => FormOptions<any, any, any, unknown>,
-  initialize: (
-    options: FormOptions<any, any, any, unknown>,
-  ) => InternalSvelteFormApi,
+  options: () => AnyFormOptions,
+  initialize: (options: AnyFormOptions) => InternalSvelteFormApi,
 ): InternalSvelteFormApi {
   const form = initialize(options())
 

@@ -4,7 +4,7 @@ title: PreactFormApi
 ---
 
 ```ts
-type PreactFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
+type PreactFormApi<TFormData, TFormError, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```
 
 Defined in: [packages/preact-form/src/PreactForm/formApiTypes.public.ts:13](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formApiTypes.public.ts#L13)
@@ -15,9 +15,9 @@ Defined in: [packages/preact-form/src/PreactForm/formApiTypes.public.ts:13](http
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

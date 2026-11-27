@@ -3,7 +3,7 @@ id: FormGroupOptions
 title: FormGroupOptions
 ---
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L118)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L203)
 
 ## Type Parameters
 
@@ -23,19 +23,23 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:118](https://github.com/TanStac
 
 `TGroupValidators` *extends* [`FormGroupValidators`](../type-aliases/FormGroupValidators.md)\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
+
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
 
 ## Properties
 
 ### form
 
 ```ts
-form: FormApi<TFormData, TFormErrorTypes>;
+form: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L125)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:211](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L211)
 
 ***
 
@@ -45,17 +49,17 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:125](https://github.com/TanStac
 name: TGroupName;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L126)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L212)
 
 ***
 
 ### onSubmit?
 
 ```ts
-optional onSubmit?: FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes>;
+optional onSubmit?: FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormError, TSubmitReturn>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:142](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L142)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:244](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L244)
 
 Called after group submission validation succeeds. The callback is awaited
 before submission finishes.
@@ -76,23 +80,13 @@ before submission finishes.
 ### onSubmitInvalid?
 
 ```ts
-optional onSubmitInvalid?: (context) => void | Promise<void>;
+optional onSubmitInvalid?: FormGroupOnSubmitInvalidFn<TFormData, TGroupName, TGroupValue, NoInfer<ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>>, TFormError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:165](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L165)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L268)
 
 Called when group validation fails or validation or submission throws. The
 callback is awaited before submission finishes.
-
-#### Parameters
-
-##### context
-
-[`FormGroupSubmitInvalidContext`](FormGroupSubmitInvalidContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupErrorTypes`](../type-aliases/ToFormGroupErrorTypes.md)\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`\>
-
-#### Returns
-
-`void` \| `Promise`\<`void`\>
 
 #### Example
 
@@ -112,7 +106,7 @@ callback is awaited before submission finishes.
 ### validators?
 
 ```ts
-optional validators?: TGroupValidators;
+optional validators?: { [K in string | number | symbol]: TGroupValidators[K] & Record<Exclude<keyof TGroupValidators[K], keyof FormGroupValidator<TGroupValue>>, never> };
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:127](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L127)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:217](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L217)

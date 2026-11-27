@@ -1,7 +1,180 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { formOptions } from '../../src'
+import { sleep } from '../../src/pipeline/utils.lib'
 import { promiseWithResolvers } from '../test-utils'
+
+describe('InternalFormApi - fieldErrorTarget', () => {
+  const nameIssue = expect.objectContaining({
+    message: 'Name is required',
+    path: ['name'],
+  })
+
+  describe.each([
+    {
+      fieldErrorTarget: undefined,
+      formErrors: [],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'field',
+      formErrors: [],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'field-and-self',
+      formErrors: [nameIssue],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'self',
+      formErrors: [nameIssue],
+      fieldErrors: [],
+    },
+  ] as const)('target $fieldErrorTarget', (ctx) => {
+    const { fieldErrorTarget, formErrors, fieldErrors } = ctx
+
+    it('routes Standard Schema issues when a field changes', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: 'Alice' },
+        validators: [
+          {
+            run: z.object({ name: z.string().min(1, 'Name is required') }),
+            triggers: ['change'],
+            fieldErrorTarget,
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field._register()
+
+      field.handleChange('')
+
+      await expect
+        .poll(() => ({
+          formErrors: form.state.errors,
+          fieldErrors: field.errors,
+        }))
+        .toEqual({ formErrors, fieldErrors })
+      expect(form.state.isValid).toBe(false)
+    })
+
+    it('routes Standard Schema issues when the form is submitted', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: z.object({ name: z.string().min(1, 'Name is required') }),
+            fieldErrorTarget,
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field._register()
+
+      await form.handleSubmit()
+
+      expect(form.state.errors).toEqual(formErrors)
+      expect(field.errors).toEqual(fieldErrors)
+      expect(form.state.isValid).toBe(false)
+    })
+  })
+
+  it('routes Standard Schema mount issues to both the field and the form', async ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string().min(1, 'Name is required') }),
+          triggers: ['mount'],
+          fieldErrorTarget: 'field-and-self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    const unmount = form.mount()
+    onTestFinished(unmount)
+
+    await expect.poll(() => form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([nameIssue])
+  })
+
+  it('routes manually parsed schema mount issues only to the form with target self', ({
+    onTestFinished,
+  }) => {
+    const schema = z.object({ name: z.string().min(1, 'Name is required') })
+
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: ({ value, parseIssues }) => {
+            const result = schema.safeParse(value)
+            if (result.success) return
+            return parseIssues(result.error.issues)
+          },
+          triggers: ['mount'],
+          fieldErrorTarget: 'self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    const unmount = form.mount()
+    onTestFinished(unmount)
+
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([])
+  })
+
+  it('reroutes errors after updates and restores field routing when the option is removed', async () => {
+    const schema = z.object({ name: z.string().min(1, 'Name is required') })
+
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [{ run: schema, triggers: ['change'] }],
+    })
+
+    const form = new InternalFormApi({
+      ...options,
+      validators: [
+        {
+          run: schema,
+          triggers: ['change'],
+          fieldErrorTarget: 'field-and-self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    await form.handleSubmit()
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([nameIssue])
+
+    form._update({
+      ...options,
+      validators: [
+        { run: schema, triggers: ['change'], fieldErrorTarget: 'self' },
+      ],
+    })
+    await form.handleSubmit()
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([])
+
+    form._update(options)
+    await form.handleSubmit()
+
+    expect(form.state.errors).toEqual([])
+    expect(field.errors).toEqual([nameIssue])
+  })
+})
 
 describe('InternalFormApi - constructor', () => {
   it('initializes default values with untouched, submittable state', () => {
@@ -125,7 +298,6 @@ describe('InternalFormApi - _update', () => {
       defaultValues: { name: '' },
       validators: [
         { run: () => null, triggers: [] },
-        // @ts-expect-error We're testing this on purpose
         { run: () => null, triggers: [] },
       ],
     })
@@ -682,32 +854,74 @@ describe('InternalFormApi - setFieldValue', () => {
     })
   })
 
-  // TODO: Form validation is skipped when disabled metadata updates prevent field creation.
-  it.fails(
-    'validates form changes before field creation when all metadata flags are false',
-    async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: 'Alice' },
-        validators: [
-          {
-            triggers: ['change'],
-            run: ({ value }) =>
-              value.name.length < 3 ? 'Name is too short' : undefined,
-          },
-        ],
-      })
+  it('validates unrendered values when all metadata flags are false', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ value }) =>
+            value.name.length < 3 ? 'Name is too short' : undefined,
+        },
+      ],
+    })
 
-      form.setFieldValue('name', 'Al', {
-        markAsTouched: false,
-        markAsDirty: false,
-        markAsBlurred: false,
-      })
+    form.setFieldValue('name', 'Al', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
 
-      await expect
-        .poll(() => form.state.errors)
-        .toEqual([{ message: 'Name is too short' }])
-    },
-  )
+    await expect
+      .poll(() => form.state.errors)
+      .toEqual([{ message: 'Name is too short' }])
+    expect(form.state).toMatchObject({
+      values: { name: 'Al' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: false,
+    })
+
+    form.setFieldValue('name', 'Alice', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
+
+    await expect.poll(() => form.state.errors).toEqual([])
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: true,
+    })
+  })
+
+  it('skips validation of unrendered values when causeValidation is false', () => {
+    const validator = vi.fn(() => 'Name is too short')
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      validators: [{ triggers: ['change'], run: validator }],
+    })
+
+    form.setFieldValue('name', 'Al', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+      causeValidation: false,
+    })
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(form.state).toMatchObject({
+      values: { name: 'Al' },
+      errors: [],
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+    })
+  })
 
   it('applies updater functions to the current field value', () => {
     const form = new InternalFormApi({ defaultValues: { count: 1 } })
@@ -745,6 +959,78 @@ describe('InternalFormApi - setFieldValue', () => {
 })
 
 describe('InternalFormApi - reset', () => {
+  it('cancels mounted field validation and its waiting validators when the form resets', async ({
+    onTestFinished,
+  }) => {
+    vi.useFakeTimers()
+    let signal: AbortSignal | undefined
+    const waitingValidator = vi.fn(() => 'Late mount error')
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          triggers: ['mount'],
+          run: (context) => {
+            signal = context.signal
+            return sleep(100).then(() => null)
+          },
+        },
+        { triggers: ['mount'], bailIfInvalid: true, run: waitingValidator },
+      ],
+    })
+    onTestFinished(field._register())
+    expect(signal?.aborted).toBe(false)
+    expect(form.state.isValidating).toBe(true)
+
+    form.reset()
+
+    expect(signal?.aborted).toBe(true)
+    expect(form.state.isValidating).toBe(false)
+    expect(form.getFieldMeta('name')).toBeUndefined()
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(waitingValidator).not.toHaveBeenCalled()
+    expect(form.getFieldMeta('name')).toBeUndefined()
+    expect(form.state.errors).toEqual([])
+    expect(form.state.isValidating).toBe(false)
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('notifies parent and child reset listeners with their values before removing the fields', () => {
+    const parentListener = vi.fn()
+    const childListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: 'Alice' } },
+    })
+    const parent = form._getOrCreateFieldApi({
+      name: 'user',
+      listeners: [{ triggers: ['reset'], run: parentListener }],
+    })
+    const child = form._getOrCreateFieldApi({
+      name: 'user.name',
+      listeners: [{ triggers: ['reset'], run: childListener }],
+    })
+    parent._register()
+    child._register()
+    child.handleChange('Bob')
+
+    form.reset()
+
+    expect(parentListener).toHaveBeenCalledOnce()
+    expect(parentListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: { name: 'Bob' } }),
+    )
+    expect(childListener).toHaveBeenCalledOnce()
+    expect(childListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'Bob' }),
+    )
+    expect(form.state.values).toEqual({ user: { name: 'Alice' } })
+    expect(form.getFieldMeta('user')).toBeUndefined()
+    expect(form.getFieldMeta('user.name')).toBeUndefined()
+  })
+
   it('discards old watched fields and allows rebuilt fields to establish new listeners', () => {
     const discardedListener = vi.fn()
     const currentListener = vi.fn()
@@ -869,7 +1155,7 @@ describe('InternalFormApi - reset', () => {
     expect(form.state.errors).toEqual([{ message: 'Current error' }])
   })
 
-  it('ignores the result of a submission that finishes after reset', async ({
+  it('returns the result of a detached submission without changing reset state', async ({
     onTestFinished,
   }) => {
     const { promise: request, resolve: finishRequest } = promiseWithResolvers()
@@ -895,7 +1181,9 @@ describe('InternalFormApi - reset', () => {
 
     finishRequest()
 
-    await expect(submission).resolves.toEqual([])
+    await expect(submission).resolves.toEqual([
+      { message: 'Late submit error' },
+    ])
     expect(form.state).toMatchObject({
       values: { name: 'reset value' },
       errors: [],
@@ -998,7 +1286,7 @@ describe('InternalFormApi - reset', () => {
 })
 
 describe('InternalFormApi - resetField', () => {
-  it('restores the field default and clears touched state and validation errors', async () => {
+  it('restores the field default and clears self touch and errors while preserving submission touch', async () => {
     const form = new InternalFormApi({ defaultValues: { name: 'hi' } })
     const field = form._getOrCreateFieldApi({
       name: 'name',
@@ -1018,9 +1306,10 @@ describe('InternalFormApi - resetField', () => {
     form.resetField('name')
 
     expect(field.value).toBe('hi')
-    expect(field.meta.isTouched).toBe(false)
+    expect(field.meta.isTouched).toBe(true)
+    expect(field.meta.isSelfTouched).toBe(false)
     expect(field.errors).toEqual([])
-    expect(form.state.isTouched).toBe(false)
+    expect(form.state.isTouched).toBe(true)
     expect(form.state.isDefaultValue).toBe(true)
     expect(form.state.isValid).toBe(true)
   })
@@ -1307,8 +1596,7 @@ describe('InternalFormApi - _clearEventErrors', () => {
     expect(form.state.isValid).toBe(false)
   })
 
-  // TODO: Clearing onSubmit errors on blur is debated and may change.
-  it('clears onSubmit field errors only for the field that blurs', async () => {
+  it('preserves onSubmit field errors on blur', async () => {
     const form = new InternalFormApi({
       defaultValues: { name: '', email: '' },
       onSubmit: ({ createErrorMap }) =>
@@ -1331,7 +1619,7 @@ describe('InternalFormApi - _clearEventErrors', () => {
     nameField.handleBlur()
     await expect.poll(() => form.state.isValidating).toBe(false)
 
-    expect(nameField.errors).toEqual([])
+    expect(nameField.errors).toEqual([{ message: 'Name is required' }])
     expect(emailField.errors).toEqual([{ message: 'Email is required' }])
     expect(form.state.isValid).toBe(false)
   })
@@ -1354,8 +1642,7 @@ describe('InternalFormApi - _clearEventErrors', () => {
     expect(form.state.canSubmit).toBe(true)
   })
 
-  // TODO clearing onSubmit errors on blur is debated and may change.
-  it('clears form-level onSubmit errors when a field blurs', async () => {
+  it('preserves form-level onSubmit errors when a field blurs', async () => {
     const form = new InternalFormApi({
       defaultValues: { name: '', email: '' },
       onSubmit: ({ createValidationError }) =>
@@ -1368,7 +1655,7 @@ describe('InternalFormApi - _clearEventErrors', () => {
 
     field.handleBlur()
 
-    expect(form.state.errors).toEqual([])
+    expect(form.state.errors).toEqual([{ message: 'Submission failed' }])
   })
 
   it('clears submit-only validator errors when a field changes', async () => {

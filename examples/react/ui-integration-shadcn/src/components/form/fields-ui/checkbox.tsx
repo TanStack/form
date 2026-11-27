@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import { Checkbox } from '@/components/ui/checkbox'
 
@@ -18,4 +18,7 @@ function FormCheckbox({ field }: TanStackFormCheckboxProps) {
   )
 }
 
-export default fieldComponent.strict(FormCheckbox, 'field')
+export default fieldComponent.strict()({
+  component: FormCheckbox,
+  replaceProperty: 'field',
+})

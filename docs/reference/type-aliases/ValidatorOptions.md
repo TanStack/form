@@ -9,7 +9,7 @@ type ValidatorOptions<TFormData, TContextValue, TTrigger, TScope> = Omit<Validat
   | ValidatorFn<any, any>, TContextValue, TTrigger, TScope>, "run" | "triggers"> & object;
 ```
 
-Defined in: [validation.public.ts:95](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L95)
+Defined in: [pipeline/validation/validation.public.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L94)
 
 Reusable scheduling and failure-handling options for `createValidator` or `createValidators`.
 

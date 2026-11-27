@@ -203,21 +203,61 @@ type DeepValueImpl<TValue, TAccessor extends string> = MostSpecificKey<
 >
 
 /**
- * The keys of an object or array, deeply nested.
+ * Constructs a union of field paths, including parent fields and subfields.
+ *
+ * Object properties use dot notation. Array elements use bracket notation.
+ * Array indices and record keys can vary. Tuples use their known indices.
+ *
+ * An `any` or `unknown` input resolves to `string`.
+ *
+ * @remarks
+ * **Important:** The library exports this type to support its type declarations.
+ * Use the form and field APIs instead of using this type directly.
+ *
+ * @typeParam T - Library-managed. Do not specify explicitly.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
 /**
- * Infer the type of a deeply nested property within an object or an array.
+ * Resolves the value type at a field path in `TValue`.
+ *
+ * The result includes `undefined` when a parent can be `null` or `undefined`,
+ * or a property is absent from a union member.
+ *
+ * For `any` or `unknown`, the result preserves `TValue`.
+ * Otherwise, a path outside {@link DeepKeys} resolves to `never`.
+ *
+ * @remarks
+ * **Important:** The library exports this type to support its type declarations.
+ * Use the form and field APIs instead of using this type directly.
+ *
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ * @typeParam TAccessor - Library-managed. Do not specify explicitly.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : TAccessor extends DeepKeys<TValue>
+  : // For some reason, this "unnecessary" check reduces instantiations.
+    // Probably due to TS caching or the like? Fine by us!
+    TAccessor extends DeepKeys<TValue>
     ? DeepValueImpl<TValue, TAccessor>
     : never
 
+/**
+ * Selects field paths by matching their value types against `TValue`.
+ *
+ * The type removes `null` and `undefined` from each field's value type.
+ * A path matches if at least one remaining union member is assignable to
+ * `TValue`.
+ *
+ * @remarks
+ * **Important:** The library exports this type to support its type declarations.
+ * Use the form and field APIs instead of using this type directly.
+ *
+ * @typeParam TData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ */
 export type DeepKeysWhereValueIncludes<TData, TValue> =
   DeepKeysAndValues<TData> extends infer TDeepKeyAndValue
     ? TDeepKeyAndValue extends AnyDeepKeyAndValue
@@ -227,5 +267,17 @@ export type DeepKeysWhereValueIncludes<TData, TValue> =
       : never
     : never
 
+/**
+ * Extracts the element types from mutable or readonly arrays and tuples.
+ *
+ * Non-array union members are ignored. If no union member is an array, the
+ * result is `never`.
+ *
+ * @remarks
+ * **Important:** The library exports this type to support its type declarations.
+ * Use the form and field APIs instead of using this type directly.
+ *
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ */
 export type TryGetArrayElementType<TValue> =
   TValue extends ReadonlyArray<infer TElement> ? TElement : never

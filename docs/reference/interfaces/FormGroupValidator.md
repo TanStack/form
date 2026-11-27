@@ -3,7 +3,7 @@ id: FormGroupValidator
 title: FormGroupValidator
 ---
 
-Defined in: [validation.public.ts:918](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L918)
+Defined in: [pipeline/validation/validation.public.ts:548](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L548)
 
 Configures validation of a form group's value.
 
@@ -29,7 +29,7 @@ Library-managed. Do not specify explicitly.
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
+Defined in: [pipeline/validation/validation.public.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L35)
 
 If `true`, skips this and subsequent validators when earlier validation has failed.
 
@@ -55,36 +55,13 @@ run:
 | StandardSchemaV1<TGroupValue, any>;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [pipeline/validation/validation.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L27)
 
 The function or Standard Schema that validates the value in this validator's scope.
 
 #### Inherited from
 
 [`Validator`](Validator.md).[`run`](Validator.md#run)
-
-***
-
-### runOnMount?
-
-```ts
-optional runOnMount?: boolean;
-```
-
-Defined in: [validation.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L64)
-
-Whether this validator runs when the form is constructed or when its field
-or form group first mounts.
-
-#### Default
-
-```ts
-false
-```
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`runOnMount`](Validator.md#runonmount)
 
 ***
 
@@ -96,11 +73,11 @@ optional skipOnSubmit?:
 | ValidationPredicateFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [validation.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L56)
+Defined in: [pipeline/validation/validation.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L62)
 
 Whether this validator runs during a submission attempt, independently of `triggers`.
 
-Pass a boolean directly, or pass a function that returns
+Pass a boolean to enable or disable it, or pass a function that returns
 `true` to skip it for the current attempt.
 
 #### Default
@@ -123,7 +100,7 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [validation.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L74)
+Defined in: [pipeline/validation/validation.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L73)
 
 The delay in milliseconds before validation runs for change or blur events.
 
@@ -146,15 +123,21 @@ Submission validation runs immediately.
 ### triggers
 
 ```ts
-triggers: ValidationTriggerOption<TGroupValue, TGroupValue, ConfigurableValidationTrigger, "group">[];
+triggers: (
+  | "change"
+  | "blur"
+  | "mount"
+  | ValidationTriggerConfig<TGroupValue, TGroupValue, "change", "group">
+  | ValidationTriggerConfig<TGroupValue, TGroupValue, "blur", "group">
+  | ValidationTriggerConfig<TGroupValue, TGroupValue, "mount", "group">)[];
 ```
 
-Defined in: [validation.public.ts:82](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L82)
+Defined in: [pipeline/validation/validation.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L81)
 
-Change and blur events that can run this validator, optionally with conditions.
+Mount, change, and blur events that can run this validator, optionally with conditions.
 
-An empty array disables change and blur validation. Configure submission
-separately with `skipOnSubmit` and initial validation with `runOnMount`.
+An empty array disables mount, change, and blur validation. Configure
+submission separately with `skipOnSubmit`.
 
 #### Inherited from
 

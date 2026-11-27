@@ -4,12 +4,20 @@ title: AnyFormOptions
 ---
 
 ```ts
-type AnyFormOptions = FormOptions<any, any, any, any>;
+type AnyFormOptions = Omit<FormOptions<any, any, any, any, any>, "onSubmit"> & object;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:236](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L236)
+Defined in: [FormApi/formOptions.public.ts:426](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L426)
 
 Form options whose data, validator, and submission return types are erased.
 
 Use this alias only when reusable code does not need type-safe access to
 values, validators, or submission results.
+
+## Type Declaration
+
+### onSubmit?
+
+```ts
+optional onSubmit?: FormOptionsOnSubmitFn<any, any, any>;
+```

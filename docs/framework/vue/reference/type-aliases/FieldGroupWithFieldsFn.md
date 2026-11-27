@@ -4,7 +4,7 @@ title: FieldGroupWithFieldsFn
 ---
 
 ```ts
-type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, fieldsPropName) => <TFormData>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & FieldGroupFieldBindingsInstanceProp<TFieldGroup, TFormData, TFieldsPropName> & Record<string, any>, {
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, fieldsPropName) => <TFormData, TParentFieldComponents>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & FieldGroupFieldBindingsInstanceProp<TFieldGroup, TFormData, TFieldsPropName> & Record<string, any>, {
 }>;
 ```
 
@@ -38,5 +38,5 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:68](https://g
 
 ## Returns
 
-\<`TFormData`\>(`props`) => `VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `FieldGroupFieldBindingsInstanceProp`\<`TFieldGroup`, `TFormData`, `TFieldsPropName`\> & `Record`\<`string`, `any`\>, \{
+\<`TFormData`, `TParentFieldComponents`\>(`props`) => `VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `FieldGroupFieldBindingsInstanceProp`\<`TFieldGroup`, `TFormData`, `TFieldsPropName`\> & `Record`\<`string`, `any`\>, \{
 \}\>

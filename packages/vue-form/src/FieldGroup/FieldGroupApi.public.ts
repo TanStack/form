@@ -5,10 +5,9 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
-  ValidationIssue,
 } from '@tanstack/form-core'
 import type { Component, PublicProps } from 'vue'
 import type { ReadonlyAtom } from '@tanstack/vue-store'
@@ -28,9 +27,9 @@ export type FieldGroupFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   > &
     PublicProps,
@@ -40,9 +39,9 @@ export type FieldGroupFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   >,
   {
@@ -56,11 +55,11 @@ export type FieldGroupFieldComponent<
             TFieldName,
             DeepValue<TFieldData, TFieldName>
           >,
-          ValidationIssue,
-          FormErrorTypes
+          ScopedErrorTypes,
+          ScopedErrorTypes
         >,
         unknown,
-        FormErrorTypes,
+        ScopedErrorTypes,
         TFieldComponents
       >
     }
@@ -78,9 +77,9 @@ export type FieldGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   > &
     PublicProps,
@@ -90,9 +89,9 @@ export type FieldGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   >,
   {
@@ -106,11 +105,11 @@ export type FieldGroupArrayFieldComponent<
             TFieldName,
             DeepValue<TFieldData, TFieldName>
           >,
-          ValidationIssue,
-          FormErrorTypes
+          ScopedErrorTypes,
+          ScopedErrorTypes
         >,
         unknown,
-        FormErrorTypes,
+        ScopedErrorTypes,
         TFieldComponents
       >
     }
@@ -119,7 +118,7 @@ export type FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = VueFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -145,4 +144,4 @@ export interface FieldGroupApi<
 }
 
 export type AnyFieldGroupApi = FieldGroupApi<any, Record<string, Component>>
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

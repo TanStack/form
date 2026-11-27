@@ -1,4 +1,4 @@
-import type { AnyFormApi, FormApi, FormErrorTypes } from '@tanstack/form-core'
+import type { AnyFormApi, FormApi, ScopedErrorTypes } from '@tanstack/form-core'
 import type { Component } from 'vue'
 import type { VueTanStackFormComponents } from './Components.public'
 import type {
@@ -8,22 +8,18 @@ import type {
 
 type ExtendedFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component>,
-> = FormApi<TFormData, TFormErrorTypes> &
-  VueTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents>
+> = FormApi<TFormData, TFormError> &
+  VueTanStackFormComponents<TFormData, TFormError, TFieldComponents>
 
 export type VueFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TComponents extends AnyVueFormComponentMap = DefaultVueFormComponentMap,
 > = unknown extends TComponents['formComponents']
-  ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents['fieldComponents']>
-  : ExtendedFormApi<
-      TFormData,
-      TFormErrorTypes,
-      TComponents['fieldComponents']
-    > &
+  ? ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']>
+  : ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']> &
       TComponents['formComponents']
 
 /**

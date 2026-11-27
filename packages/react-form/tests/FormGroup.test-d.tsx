@@ -5,8 +5,8 @@ import { useForm } from '../src'
 import type {
   DeepKeys,
   FieldApi,
-  FormErrorTypes,
   FormGroupApi,
+  ScopedErrorTypes,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
@@ -77,7 +77,7 @@ function FormGroupTypes() {
         expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, { message: string; fromGroup: true }>
+          ScopedErrorTypes<never, { message: string; fromGroup: true }>
         >()
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
@@ -98,8 +98,6 @@ function FormGroupTypes() {
                 expectTypeOf<
                   FieldErrorOf<typeof field>
                 >().toEqualTypeOf<GroupValidationError>()
-                // @ts-expect-error public field APIs expose atom, not store
-                field.store
                 return null
               }}
             </group.Field>
@@ -177,23 +175,28 @@ function FormGroupSubmitTypes() {
         }>()
         expectTypeOf(validatorOutputs[1]).toEqualTypeOf<undefined>()
         expectTypeOf<FormGroupErrorTypesOf<typeof groupApi>>().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
       onSubmitInvalid={(context) => {
-        expectTypeOf<keyof typeof context>().toEqualTypeOf<
-          'value' | 'formApi' | 'groupApi'
-        >()
+        expectTypeOf(context.reason).toEqualTypeOf<'validation' | 'exception'>()
+        expectTypeOf(context.source).toEqualTypeOf<'validators' | 'onSubmit'>()
+        expectTypeOf(context.error).toEqualTypeOf<unknown>()
+        expectTypeOf(context.preventThrow).toEqualTypeOf<() => void>()
         expectTypeOf(context.value).toEqualTypeOf<GuestDetails>()
+        expectTypeOf(
+          context.formApi.state.values.guestDetails,
+        ).toEqualTypeOf<GuestDetails>()
         expectTypeOf<
           FormGroupErrorTypesOf<typeof context.groupApi>
         >().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
     >
       {(group) => {
-        void group.validate('submit')
+        void group.validate('change')
+        void group.validate('blur')
         return null
       }}
     </form.FormGroup>
@@ -245,7 +248,6 @@ function FormGroupSubscribeTypes() {
 
           <group.Subscribe
             selector={(state) => {
-              expectTypeOf(state.errors).not.toBeNever()
               expectTypeOf(state.errors).toEqualTypeOf<
                 Array<GroupValidationError>
               >()
@@ -326,7 +328,6 @@ function FormGroupSubscribeWithoutGroupErrorsTypes() {
       {(group) => (
         <group.Subscribe
           selector={(state) => {
-            expectTypeOf(state.errors).not.toBeNever()
             expectTypeOf(state.errors).toEqualTypeOf<Array<never>>()
             return state.errors
           }}
@@ -355,7 +356,7 @@ function FormGroupWithoutValidatorsTypes() {
     <form.FormGroup name="guestDetails">
       {(group) => {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, never>
+          ScopedErrorTypes<never, never>
         >()
         expectTypeOf(group.state.errors).toEqualTypeOf<Array<never>>()
         return null
@@ -374,8 +375,6 @@ function RootFieldTypes() {
   })
 
   expectTypeOf(form.atom.get().values.guestDetails.name).toEqualTypeOf<string>()
-  // @ts-expect-error public form APIs expose atom, not store
-  form.store
 
   return (
     <form.Field

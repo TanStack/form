@@ -3,7 +3,7 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:110](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L110)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:116](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L116)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:110](ht
 appFormOptions: FormOptionsApi<TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:111](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L111)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L117)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:111](ht
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:112](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L112)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:118](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L118)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:112](ht
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:113](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L113)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:119](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L119)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:113](ht
 useFormContext: () => VueAppFormApi<any, any, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:114](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L114)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:120](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L120)
 
 #### Returns
 

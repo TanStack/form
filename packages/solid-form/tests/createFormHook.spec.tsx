@@ -135,16 +135,7 @@ describe('createFormHook defaults', () => {
     changeGrouped()
     changeGroupedArray()
 
-    expect(formCalls).toEqual([
-      'default',
-      'local',
-      'default',
-      'local',
-      'default',
-      'local',
-      'default',
-      'local',
-    ])
+    expect(formCalls).toEqual(['default', 'local', 'default', 'local'])
     expect(fieldCalls).toEqual([
       'local:direct',
       'default:direct',

@@ -3,7 +3,7 @@ id: ReactFormGroupComponent
 title: ReactFormGroupComponent
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L337)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:363](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L363)
 
 ## Type Parameters
 
@@ -11,19 +11,19 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https:/
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
 `TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ```ts
-ReactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators>(props): ReactNode;
+ReactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators, TSubmitReturn>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:342](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L342)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:368](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L368)
 
 ## Type Parameters
 
@@ -39,11 +39,15 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:342](https:/
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Parameters
 
 ### props
 
-[`ReactFormGroupProps`](ReactFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormGroupProps`](ReactFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`, `TSubmitReturn`\>
 
 ## Returns
 

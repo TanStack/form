@@ -65,10 +65,15 @@ export type FieldGroupWithFieldsFn<
 >(
   Component: Component<TProps>,
   fieldsPropName: TPropName,
-) => (new <TFormData>(
+) => (new <
+  TFormData,
+  TParentFieldComponents extends FieldGroupFieldComponentsOf<TGroup>,
+>(
   options: ComponentConstructorOptions<
     Omit<TProps, TPropName | 'form'> & {
-      form: FieldGroupForm<FieldGroupFieldComponentsOf<TGroup>, TFormData>
+      form:
+        | FieldGroupForm<TParentFieldComponents, TFormData>
+        | FieldGroupApi<TFormData, TParentFieldComponents>
     } & FieldGroupFieldBindingsProps<
         FieldGroupFieldsOf<TGroup>,
         TFormData,

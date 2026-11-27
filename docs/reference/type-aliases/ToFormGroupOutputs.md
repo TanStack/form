@@ -7,7 +7,7 @@ title: ToFormGroupOutputs
 type ToFormGroupOutputs<TGroupValidators> = ToOutputs<TGroupValidators, FormGroupValidators<any>>;
 ```
 
-Defined in: [validation.public.ts:1271](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1271)
+Defined in: [pipeline/validation/validation.public.ts:730](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L730)
 
 Infers submission output slots from group validators in configuration order.
 

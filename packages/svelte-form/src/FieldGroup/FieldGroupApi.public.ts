@@ -5,9 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
-  ValidationIssue,
+  ScopedErrorTypes,
 } from '@tanstack/form-core'
 import type {
   Component,
@@ -20,6 +19,7 @@ import type {
   WithoutFunction,
 } from '../Components.public'
 import type { ReadonlyAtom } from '@tanstack/svelte-store'
+import type { SvelteFieldComponentsType } from '../fieldComponentsType.lib'
 
 export type FieldGroupFieldComponent<
   TFieldData,
@@ -35,9 +35,9 @@ export type FieldGroupFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >
   >,
@@ -61,9 +61,9 @@ export type FieldGroupArrayFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >
   >,
@@ -73,7 +73,7 @@ export type FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeComponent = (new <const TSelected>(
   options: ComponentConstructorOptions<
-    SvelteFormSubscribeProps<unknown, FormErrorTypes, TSelected>
+    SvelteFormSubscribeProps<unknown, ScopedErrorTypes, TSelected>
   >,
 ) => SvelteComponent) &
   Component<any> &
@@ -86,7 +86,10 @@ export interface FieldGroupApi<
     never
   >,
 >
-  extends FormApiFieldMethods<TFieldData>, FormApiArrayMethods<TFieldData> {
+  extends
+    FormApiFieldMethods<TFieldData>,
+    FormApiArrayMethods<TFieldData>,
+    SvelteFieldComponentsType<TFieldComponents> {
   atom: ReadonlyAtom<TFieldData>
   Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>
   ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>
@@ -97,4 +100,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   any,
   Record<string, Component<any>>
 >
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

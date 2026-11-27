@@ -28,7 +28,3 @@ title: "@tanstack/lit-form"
 ## Variables
 
 - [defineFieldGroup](variables/defineFieldGroup.md)
-
-## Functions
-
-- [getFormType](functions/getFormType.md)

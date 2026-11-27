@@ -1,10 +1,11 @@
 <script module lang="ts">
   import { shallow, useSelector } from '@tanstack/svelte-store'
+  import { untrack } from 'svelte'
   import type {
     FieldApi,
     FieldApiOptions,
     FieldValidators,
-    FormErrorTypes,
+    ScopedErrorTypes,
     ToFieldError,
   } from '@tanstack/form-core'
   import type {
@@ -13,8 +14,15 @@
     InternalBaseFieldMeta,
   } from '@tanstack/form-core/internals'
 
-  interface InternalFieldOptions
-    extends FieldApiOptions<any, any, any, any, any, any, any> {
+  interface InternalFieldOptions extends FieldApiOptions<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > {
     form: AnyInternalFormApi
   }
 
@@ -30,7 +38,7 @@
         const next = selector(field)
         if (!shallow(selected, next)) selected = next
       }
-      update()
+      untrack(update)
       const subscription = field.atom.subscribe(update)
       return () => subscription.unsubscribe()
     })
@@ -51,28 +59,26 @@
       TFieldName,
       TFieldValue
     >,
-    TGroupFieldError,
+    TGroupError extends ScopedErrorTypes,
     TFormData,
-    TFormErrorTypes extends FormErrorTypes,
+    TFormError extends ScopedErrorTypes,
   >(
-    options: () =>
-      & FieldApiOptions<
-        TFieldData,
-        TFieldName,
-        TFieldValue,
-        TFieldValidators,
-        TGroupFieldError,
-        TFormData,
-        TFormErrorTypes
-      >
-      & { form: AnyInternalFormApi },
+    options: () => FieldApiOptions<
+      TFieldData,
+      TFieldName,
+      TFieldValue,
+      TFieldValidators,
+      TGroupError,
+      TFormData,
+      TFormError
+    > & { form: AnyInternalFormApi },
     array = false,
   ): FieldApi<
     TFieldName,
     TFieldValue,
-    ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
+    ToFieldError<TFieldValidators, TGroupError, TFormError>,
     TFormData,
-    TFormErrorTypes
+    TFormError
   > {
     const initialForm = options().form
     const resetVersion = useSelector(initialForm._atoms.resetVersion)
@@ -128,7 +134,7 @@
 </script>
 
 <script lang="ts">
-  import { setContext, untrack, type Snippet } from 'svelte'
+  import { setContext, type Snippet } from 'svelte'
   import { fieldContextKey } from './context-keys.js'
 
   interface Props extends InternalFieldOptions {
@@ -148,7 +154,10 @@
     () => fieldOptions,
     untrack(() => array),
   )
-  Object.assign(fieldApi, untrack(() => fieldComponents))
+  Object.assign(
+    fieldApi,
+    untrack(() => fieldComponents),
+  )
   setContext(fieldContextKey, fieldApi)
 </script>
 

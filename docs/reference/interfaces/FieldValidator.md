@@ -3,7 +3,7 @@ id: FieldValidator
 title: FieldValidator
 ---
 
-Defined in: [validation.public.ts:983](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L983)
+Defined in: [pipeline/validation/validation.public.ts:611](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L611)
 
 Configures validation of a field's value, optionally reacting to related fields.
 
@@ -41,7 +41,7 @@ Library-managed. Do not specify explicitly.
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
+Defined in: [pipeline/validation/validation.public.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L35)
 
 If `true`, skips this and subsequent validators when earlier validation has failed.
 
@@ -67,36 +67,13 @@ run:
 | StandardSchemaV1<TFieldValue, any>;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [pipeline/validation/validation.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L27)
 
 The function or Standard Schema that validates the value in this validator's scope.
 
 #### Inherited from
 
 [`Validator`](Validator.md).[`run`](Validator.md#run)
-
-***
-
-### runOnMount?
-
-```ts
-optional runOnMount?: boolean;
-```
-
-Defined in: [validation.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L64)
-
-Whether this validator runs when the form is constructed or when its field
-or form group first mounts.
-
-#### Default
-
-```ts
-false
-```
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`runOnMount`](Validator.md#runonmount)
 
 ***
 
@@ -108,11 +85,11 @@ optional skipOnSubmit?:
 | ValidationPredicateFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L56)
+Defined in: [pipeline/validation/validation.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L62)
 
 Whether this validator runs during a submission attempt, independently of `triggers`.
 
-Pass a boolean directly, or pass a function that returns
+Pass a boolean to enable or disable it, or pass a function that returns
 `true` to skip it for the current attempt.
 
 #### Default
@@ -135,7 +112,7 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L74)
+Defined in: [pipeline/validation/validation.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L73)
 
 The delay in milliseconds before validation runs for change or blur events.
 
@@ -158,15 +135,21 @@ Submission validation runs immediately.
 ### triggers
 
 ```ts
-triggers: ValidationTriggerOption<TFormData, TFieldValue, ConfigurableValidationTrigger, "field">[];
+triggers: (
+  | "change"
+  | "blur"
+  | "mount"
+  | ValidationTriggerConfig<TFormData, TFieldValue, "change", "field">
+  | ValidationTriggerConfig<TFormData, TFieldValue, "blur", "field">
+  | ValidationTriggerConfig<TFormData, TFieldValue, "mount", "field">)[];
 ```
 
-Defined in: [validation.public.ts:82](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L82)
+Defined in: [pipeline/validation/validation.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L81)
 
-Change and blur events that can run this validator, optionally with conditions.
+Mount, change, and blur events that can run this validator, optionally with conditions.
 
-An empty array disables change and blur validation. Configure submission
-separately with `skipOnSubmit` and initial validation with `runOnMount`.
+An empty array disables mount, change, and blur validation. Configure
+submission separately with `skipOnSubmit`.
 
 #### Inherited from
 
@@ -180,7 +163,7 @@ separately with `skipOnSubmit` and initial validation with `runOnMount`.
 optional watchFields?: DeepKeys<TFormData>[];
 ```
 
-Defined in: [validation.public.ts:1001](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1001)
+Defined in: [pipeline/validation/validation.public.ts:629](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L629)
 
 Other field paths whose change or blur events can run this validator.
 

@@ -4,7 +4,7 @@ title: SolidAppFormApi
 ---
 
 ```ts
-type SolidAppFormApi<TFormData, TFormErrorTypes, TComponents> = SolidFormApi<TFormData, TFormErrorTypes, TComponents> & object;
+type SolidAppFormApi<TFormData, TFormError, TComponents> = SolidFormApi<TFormData, TFormError, TComponents> & object;
 ```
 
 Defined in: [packages/solid-form/src/AppForm/SolidAppFormApi.public.ts:8](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/SolidAppFormApi.public.ts#L8)
@@ -23,9 +23,9 @@ AppForm: AppFormComponent;
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

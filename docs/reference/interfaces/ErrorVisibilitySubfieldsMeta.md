@@ -3,9 +3,7 @@ id: ErrorVisibilitySubfieldsMeta
 title: ErrorVisibilitySubfieldsMeta
 ---
 
-Defined in: [validation.public.ts:266](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L266)
-
-Descendant field state available when deciding whether to show errors.
+Defined in: [FormApi/errorVisibility.public.ts:4](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L4)
 
 ## Properties
 
@@ -15,9 +13,7 @@ Descendant field state available when deciding whether to show errors.
 isEveryPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L268)
-
-`true` when no descendant field is marked as dirty.
+Defined in: [FormApi/errorVisibility.public.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L5)
 
 ***
 
@@ -27,9 +23,7 @@ Defined in: [validation.public.ts:268](https://github.com/TanStack/form/blob/mai
 isSomeDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:270](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L270)
-
-`true` when at least one descendant field is marked as dirty.
+Defined in: [FormApi/errorVisibility.public.ts:6](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L6)
 
 ***
 
@@ -39,9 +33,7 @@ Defined in: [validation.public.ts:270](https://github.com/TanStack/form/blob/mai
 isSomeTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L272)
-
-`true` when at least one descendant field is marked as touched.
+Defined in: [FormApi/errorVisibility.public.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L7)
 
 ***
 
@@ -51,6 +43,4 @@ Defined in: [validation.public.ts:272](https://github.com/TanStack/form/blob/mai
 isSomeValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L274)
-
-`true` while at least one descendant field is validating.
+Defined in: [FormApi/errorVisibility.public.ts:8](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L8)

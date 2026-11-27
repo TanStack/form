@@ -3,12 +3,34 @@ id: ValidationOutput
 title: ValidationOutput
 ---
 
-Defined in: [validation.public.ts:671](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L671)
+Defined in: [validation/results/results.public.ts:42](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L42)
 
-A successful validation result that carries data for `validatorOutputs`.
+The result of `createOutput`. Return it from a validator to store its data
+during submission.
 
-Return the result of the validator context's `createOutput` helper to provide
-data during submission or server validation.
+## Example
+
+```ts
+formOptions({
+  defaultValues: { name: '' },
+  validators: [
+    {
+      run: ({ createOutput, value }) => {
+        return createOutput({ displayName: value.name.trim() })
+      },
+    },
+    {
+      // Schemas pass their output data by default.
+      run: mySchema,
+    },
+  ],
+  onSubmit: ({ validatorOutputs }) => {
+    // Outputs follow the same order as the validators array.
+    const [customData, schemaOutput] = validatorOutputs
+    console.log(customData.displayName)
+  },
+})
+```
 
 ## Type Parameters
 
@@ -26,4 +48,4 @@ Library-managed. Do not specify explicitly.
 readonly [VALIDATION_OUTPUT]: TOutput;
 ```
 
-Defined in: [validation.public.ts:672](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L672)
+Defined in: [validation/results/results.public.ts:43](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L43)

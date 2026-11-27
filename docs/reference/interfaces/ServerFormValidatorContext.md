@@ -3,7 +3,7 @@ id: ServerFormValidatorContext
 title: ServerFormValidatorContext
 ---
 
-Defined in: [validation.public.ts:735](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L735)
+Defined in: [pipeline/validation/validation.public.ts:478](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L478)
 
 Values and helpers passed to a server form validation function.
 
@@ -20,30 +20,12 @@ Library-managed. Do not specify explicitly.
 ### createErrorMap
 
 ```ts
-createErrorMap: (initial?) => ValidationErrorMap<TFormData>;
+createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:749](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L749)
+Defined in: [pipeline/validation/validation.public.ts:490](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L490)
 
-Creates an error map with field paths inferred from the form values.
-
-Creates a mutable map of form errors and errors for individual field paths.
-
-Pass the completed map back from a form or group validator to report the errors.
-
-#### Parameters
-
-##### initial?
-
-`Partial`\<[`ValidationErrorMap`](ValidationErrorMap.md)\<`TFormData`\>\>
-
-An existing map to reuse. A missing `fields` object is added to it.
-
-#### Returns
-
-[`ValidationErrorMap`](ValidationErrorMap.md)\<`TFormData`\>
-
-The initial map, if supplied, or a new map with an empty `fields` object.
+Builds a mutable error map from optional form and field errors.
 
 ***
 
@@ -53,7 +35,7 @@ The initial map, if supplied, or a new map with an empty `fields` object.
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation.public.ts:751](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L751)
+Defined in: [pipeline/validation/validation.public.ts:494](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L494)
 
 Creates a successful result to return data in this validator's server `validatorOutputs` entry.
 
@@ -62,10 +44,10 @@ Creates a successful result to return data in this validator's server `validator
 ### event
 
 ```ts
-event: ValidationTrigger | "server";
+event: "server" | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:737](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L737)
+Defined in: [pipeline/validation/validation.public.ts:480](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L480)
 
 The validation event. `serverValidate` supplies `'server'`.
 
@@ -77,7 +59,7 @@ The validation event. `serverValidate` supplies `'server'`.
 formApi: FormApi<TFormData, any> | undefined;
 ```
 
-Defined in: [validation.public.ts:741](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L741)
+Defined in: [pipeline/validation/validation.public.ts:484](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L484)
 
 `undefined` during server validation, where no client form instance exists.
 
@@ -86,12 +68,12 @@ Defined in: [validation.public.ts:741](https://github.com/TanStack/form/blob/mai
 ### parseIssues
 
 ```ts
-parseIssues: ParseFormIssuesFn<TFormData>;
+parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:747](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L747)
+Defined in: [pipeline/validation/validation.public.ts:492](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L492)
 
-Converts Standard Schema issues into form and field errors to return from this validator.
+Converts Standard Schema issues into a mutable error map using the server values.
 
 ***
 
@@ -101,7 +83,7 @@ Converts Standard Schema issues into form and field errors to return from this v
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:739](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L739)
+Defined in: [pipeline/validation/validation.public.ts:482](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L482)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -113,7 +95,7 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:743](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L743)
+Defined in: [pipeline/validation/validation.public.ts:486](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L486)
 
 Absent during server validation, which is not triggered by a client field.
 
@@ -125,6 +107,6 @@ Absent during server validation, which is not triggered by a client field.
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:745](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L745)
+Defined in: [pipeline/validation/validation.public.ts:488](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L488)
 
 The complete form values passed to server validation.

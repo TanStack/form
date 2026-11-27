@@ -22,12 +22,12 @@ function App() {
       firstName: '',
       lastName: '',
     },
-    onSubmit: ({ value, createValidationError }) => {
+    onSubmit: ({ value, createErrorMap }) => {
       // Do something with form data
       console.log(value)
 
       // If your endpoint returned validation errors, pass them on
-      return createValidationError({
+      return createErrorMap({
         fields: {
           // Set field-specific errors from the form!
           firstName: 'Name already exists',
@@ -44,7 +44,7 @@ function App() {
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          form.handleSubmit().catch(console.error)
         }}
       >
         {/* A type-safe field component*/}

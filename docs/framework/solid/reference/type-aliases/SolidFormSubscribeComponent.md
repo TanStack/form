@@ -4,7 +4,7 @@ title: SolidFormSubscribeComponent
 ---
 
 ```ts
-type SolidFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => JSX.Element;
+type SolidFormSubscribeComponent<TFormData, TFormError> = <TSelected>(props) => JSX.Element;
 ```
 
 Defined in: [packages/solid-form/src/Components.public.ts:86](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L86)
@@ -15,9 +15,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:86](https://github.com
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:86](https://github.com
 
 ### props
 
-[`SolidFormSubscribeProps`](SolidFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\>
+[`SolidFormSubscribeProps`](SolidFormSubscribeProps.md)\<`TFormData`, `TFormError`, `TSelected`\>
 
 ## Returns
 

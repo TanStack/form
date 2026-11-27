@@ -1,237 +1,155 @@
-import type {
-  AnyInternalFieldApi,
-  InternalFieldListenerInstance,
-  InternalFieldValidatorInstance,
-} from './FieldApi.lib'
-import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
+import type { FieldDependencyChange } from '../devtoolsBridge.lib'
+import type { ListenerInstances } from '../pipeline/listeners/ListenerInstance.lib'
+import type { ValidatorInstances } from '../pipeline/validation/ValidatorInstance.lib'
 
-export interface ListenerWatchFieldOperation {
-  kind: 'listener'
-  sourceField: AnyInternalFieldApi
-  watchingField: AnyInternalFieldApi
-  listenerInstance: InternalFieldListenerInstance
+export type FieldWatchRegistry = Map<string, Set<AnyInternalFieldApi>>
+type FieldWatchChanges = {
+  added: Array<string>
+  removed: Array<string>
 }
 
-export interface ValidatorWatchFieldOperation {
-  kind: 'validator'
-  sourceField: AnyInternalFieldApi
-  watchingField: AnyInternalFieldApi
-  validatorInstance: InternalFieldValidatorInstance
+export function watchesField(
+  watchFields: ReadonlyArray<string> | undefined,
+  name: string,
+): boolean {
+  return watchFields?.includes(name) ?? false
 }
 
-export interface DetachWatchingFieldOptions {
-  pruneSourceField?: boolean
-}
+function getWatchChanges(
+  previous: Set<string> | null,
+  next: Set<string>,
+): FieldWatchChanges {
+  const added: Array<string> = []
+  const removed: Array<string> = []
 
-export function reconcileWatchedListenerFields({
-  listenerInstances,
-  field,
-  form,
-}: {
-  listenerInstances: ReadonlyArray<InternalFieldListenerInstance> | null
-  field: AnyInternalFieldApi
-  form: AnyInternalFormApi
-}): {
-  attach: Array<ListenerWatchFieldOperation>
-  detach: Array<ListenerWatchFieldOperation>
-} {
-  const attach: Array<ListenerWatchFieldOperation> = []
-  const detach: Array<ListenerWatchFieldOperation> = []
+  for (const name of previous ?? []) {
+    if (next.has(name)) continue
 
-  listenerInstances?.forEach((listenerInstance) => {
-    const previous = listenerInstance.resolvedWatchFields
-    const next = new Map<string, AnyInternalFieldApi>()
-    const names = [...new Set(listenerInstance.definition.watchFields ?? [])]
-
-    for (const name of names) {
-      const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
-      next.set(name, sourceField)
-
-      const previousField = previous?.get(name)
-      if (previousField === sourceField) continue
-
-      if (previousField) {
-        detach.push({
-          kind: 'listener',
-          sourceField: previousField,
-          watchingField: field,
-          listenerInstance,
-        })
-      }
-
-      attach.push({
-        kind: 'listener',
-        sourceField,
-        watchingField: field,
-        listenerInstance,
-      })
-    }
-
-    previous?.forEach((sourceField, name) => {
-      if (next.has(name)) return
-
-      detach.push({
-        kind: 'listener',
-        sourceField,
-        watchingField: field,
-        listenerInstance,
-      })
-    })
-
-    listenerInstance.resolvedWatchFields = next.size > 0 ? next : null
-  })
-
-  return { attach, detach }
-}
-
-export function reconcileWatchedValidatorFields({
-  validatorInstances,
-  field,
-  form,
-}: {
-  validatorInstances: ReadonlyArray<InternalFieldValidatorInstance> | null
-  field: AnyInternalFieldApi
-  form: AnyInternalFormApi
-}): {
-  attach: Array<ValidatorWatchFieldOperation>
-  detach: Array<ValidatorWatchFieldOperation>
-} {
-  const attach: Array<ValidatorWatchFieldOperation> = []
-  const detach: Array<ValidatorWatchFieldOperation> = []
-
-  validatorInstances?.forEach((validatorInstance) => {
-    const previous = validatorInstance.resolvedWatchFields
-    const next = new Map<string, AnyInternalFieldApi>()
-    const names = [...new Set(validatorInstance.definition.watchFields ?? [])]
-
-    for (const name of names) {
-      const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
-      next.set(name, sourceField)
-
-      const previousField = previous?.get(name)
-      if (previousField === sourceField) continue
-
-      if (previousField) {
-        detach.push({
-          kind: 'validator',
-          sourceField: previousField,
-          watchingField: field,
-          validatorInstance,
-        })
-      }
-
-      attach.push({
-        kind: 'validator',
-        sourceField,
-        watchingField: field,
-        validatorInstance,
-      })
-    }
-
-    previous?.forEach((sourceField, name) => {
-      if (next.has(name)) return
-
-      detach.push({
-        kind: 'validator',
-        sourceField,
-        watchingField: field,
-        validatorInstance,
-      })
-    })
-
-    validatorInstance.resolvedWatchFields = next.size > 0 ? next : null
-  })
-
-  return { attach, detach }
-}
-
-export function attachWatchingListenerField({
-  sourceField,
-  watchingField,
-  listenerInstance,
-}: ListenerWatchFieldOperation) {
-  let watchingFields = sourceField._watchingListenerFields
-  if (!watchingFields) {
-    watchingFields = new Map()
-    sourceField._watchingListenerFields = watchingFields
+    removed.push(name)
   }
 
-  let instances = watchingFields.get(watchingField)
-  if (!instances) {
-    instances = new Set()
-    watchingFields.set(watchingField, instances)
+  for (const name of next) {
+    if (previous?.has(name)) continue
+
+    added.push(name)
   }
 
-  instances.add(listenerInstance)
+  return { added, removed }
 }
 
-export function detachWatchingListenerField(
-  { sourceField, watchingField, listenerInstance }: ListenerWatchFieldOperation,
-  options: DetachWatchingFieldOptions = {},
+function replaceRegistrations(
+  field: AnyInternalFieldApi,
+  registry: FieldWatchRegistry,
+  previous: Set<string> | null,
+  next: Set<string>,
+  changes?: Array<FieldDependencyChange>,
+): FieldWatchChanges {
+  const { added, removed } = getWatchChanges(previous, next)
+
+  for (const name of removed) {
+    const watchingFields = registry.get(name)
+    watchingFields?.delete(field)
+    if (watchingFields?.size === 0) {
+      registry.delete(name)
+    }
+
+    changes?.push({ sourceFieldName: name, watchingField: field })
+  }
+
+  for (const name of added) {
+    let watchingFields = registry.get(name)
+    if (!watchingFields) {
+      watchingFields = new Set()
+      registry.set(name, watchingFields)
+    }
+    watchingFields.add(field)
+  }
+
+  if (changes) {
+    // Refresh devtools: a retained path can be watched by different listener or
+    // validator entries after an options update.
+    for (const name of next) {
+      changes.push({ sourceFieldName: name, watchingField: field })
+    }
+  }
+
+  return { added, removed }
+}
+
+function reconcileListeners(
+  field: AnyInternalFieldApi,
+  next: Set<string>,
+  changes?: Array<FieldDependencyChange>,
 ) {
-  const watchingFields = sourceField._watchingListenerFields
-  if (!watchingFields) return
+  const { added, removed } = replaceRegistrations(
+    field,
+    field.form._watchingListenerFields,
+    field._watchedListenerNames,
+    next,
+    changes,
+  )
 
-  const instances = watchingFields.get(watchingField)
-  if (!instances) return
+  field._watchedListenerNames = next.size > 0 ? next : null
 
-  instances.delete(listenerInstance)
-
-  if (instances.size === 0) {
-    watchingFields.delete(watchingField)
-    if (watchingFields.size === 0) {
-      sourceField._watchingListenerFields = null
-    }
+  for (const name of added) {
+    field.form._getOrCreateFieldApi({ name }, 'internal')
   }
-
-  if (options.pruneSourceField !== false) {
-    sourceField._pruneIfUnused()
+  for (const name of removed) {
+    field.form._tryGetFieldApi(name)?._pruneIfUnused()
   }
 }
 
-export function attachWatchingValidatorField({
-  sourceField,
-  watchingField,
-  validatorInstance,
-}: ValidatorWatchFieldOperation) {
-  let watchingFields = sourceField._watchingValidatorFields
-  if (!watchingFields) {
-    watchingFields = new Map()
-    sourceField._watchingValidatorFields = watchingFields
-  }
-
-  let instances = watchingFields.get(watchingField)
-  if (!instances) {
-    instances = new Set()
-    watchingFields.set(watchingField, instances)
-  }
-
-  instances.add(validatorInstance)
-}
-
-export function detachWatchingValidatorField(
-  {
-    sourceField,
-    watchingField,
-    validatorInstance,
-  }: ValidatorWatchFieldOperation,
-  options?: DetachWatchingFieldOptions,
+function reconcileValidators(
+  field: AnyInternalFieldApi,
+  next: Set<string>,
+  changes?: Array<FieldDependencyChange>,
 ) {
-  const watchingFields = sourceField._watchingValidatorFields
-  if (!watchingFields) return
+  replaceRegistrations(
+    field,
+    field.form._watchingValidatorFields,
+    field._watchedValidatorNames,
+    next,
+    changes,
+  )
 
-  const instances = watchingFields.get(watchingField)
-  if (!instances) return
+  field._watchedValidatorNames = next.size > 0 ? next : null
+}
 
-  instances.delete(validatorInstance)
-  if (instances.size === 0) {
-    watchingFields.delete(watchingField)
-    if (watchingFields.size === 0) {
-      sourceField._watchingValidatorFields = null
+function getWatchedNames(
+  instances: ListenerInstances<'field'> | ValidatorInstances<'field'>,
+): Set<string> {
+  const names = new Set<string>()
+  for (const instance of instances ?? []) {
+    for (const name of instance.definition.watchFields ?? []) {
+      names.add(name)
     }
   }
+  return names
+}
 
-  if (options?.pruneSourceField !== false) {
-    sourceField._pruneIfUnused()
-  }
+export function updateFieldListenerWatches(
+  field: AnyInternalFieldApi,
+  changes?: Array<FieldDependencyChange>,
+): void {
+  reconcileListeners(field, getWatchedNames(field._listenerInstances), changes)
+}
+
+export function updateFieldValidatorWatches(
+  field: AnyInternalFieldApi,
+  changes?: Array<FieldDependencyChange>,
+): void {
+  reconcileValidators(
+    field,
+    getWatchedNames(field._validatorInstances),
+    changes,
+  )
+}
+
+export function removeFieldWatches(
+  field: AnyInternalFieldApi,
+  changes?: Array<FieldDependencyChange>,
+): void {
+  reconcileListeners(field, new Set(), changes)
+  reconcileValidators(field, new Set(), changes)
 }

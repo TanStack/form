@@ -4,46 +4,23 @@ title: OnSubmitError
 ---
 
 ```ts
-type OnSubmitError<TFormValidationError> = object;
+type OnSubmitError<T> = object;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:44](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L44)
-
-A validation error wrapped for processing as an `onSubmit` failure.
-
-Create this value with the `createValidationError` or `parseIssues` helper
-provided to `onSubmit`, then return it from the callback so its form- and
-field-level errors are added to validation state.
-
-## Example
-
-```ts
-formOptions({
-  defaultValues: { name: '' },
-  onSubmit: async ({ value, createValidationError }) => {
-    const result = await saveUser(value)
-
-    if (!result.ok) {
-      return createValidationError(result.error)
-    }
-  },
-})
-```
+Defined in: [FormApi/formSubmit.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L60)
 
 ## Type Parameters
 
-### TFormValidationError
+### T
 
-`TFormValidationError` *extends* [`FormValidationError`](FormValidationError.md)\<`any`\>
-
-Library-managed. Do not specify explicitly.
+`T`
 
 ## Properties
 
-### \[SUBMIT\_ERROR\]
+### \[submitErrorSymbol\]
 
 ```ts
-readonly [SUBMIT_ERROR]: TFormValidationError;
+readonly [submitErrorSymbol]: T;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:47](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L47)
+Defined in: [FormApi/formSubmit.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L61)

@@ -3,7 +3,7 @@ id: SolidFormGroupArrayFieldComponent
 title: SolidFormGroupArrayFieldComponent
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L240)
+Defined in: [packages/solid-form/src/Components.public.ts:236](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L236)
 
 ## Type Parameters
 
@@ -15,13 +15,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.co
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -31,7 +31,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.co
 SolidFormGroupArrayFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:247](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L247)
+Defined in: [packages/solid-form/src/Components.public.ts:243](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L243)
 
 ## Type Parameters
 
@@ -47,7 +47,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:247](https://github.co
 
 ### props
 
-[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

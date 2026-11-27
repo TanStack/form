@@ -7,7 +7,7 @@ title: ValidatorFn
 type ValidatorFn<TParameter, TReturn> = (...args) => TReturn | Promise<TReturn>;
 ```
 
-Defined in: [validation.public.ts:787](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L787)
+Defined in: [pipeline/validation/validation.public.ts:503](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L503)
 
 A validation callback that can return a result immediately or asynchronously.
 

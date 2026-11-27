@@ -3,7 +3,7 @@ id: FormGroupValidatorContext
 title: FormGroupValidatorContext
 ---
 
-Defined in: [validation.public.ts:867](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L867)
+Defined in: [pipeline/validation/validation.public.ts:512](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L512)
 
 Values and helpers passed to a form group validation function.
 
@@ -20,30 +20,12 @@ Library-managed. Do not specify explicitly.
 ### createErrorMap
 
 ```ts
-createErrorMap: (initial?) => ValidationErrorMap<TGroupValue>;
+createErrorMap: CreateErrorMapFn<TGroupValue>;
 ```
 
-Defined in: [validation.public.ts:883](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L883)
+Defined in: [pipeline/validation/validation.public.ts:526](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L526)
 
-Creates an error map whose field paths are relative to this group.
-
-Creates a mutable map of form errors and errors for individual field paths.
-
-Pass the completed map back from a form or group validator to report the errors.
-
-#### Parameters
-
-##### initial?
-
-`Partial`\<[`ValidationErrorMap`](ValidationErrorMap.md)\<`TGroupValue`\>\>
-
-An existing map to reuse. A missing `fields` object is added to it.
-
-#### Returns
-
-[`ValidationErrorMap`](ValidationErrorMap.md)\<`TGroupValue`\>
-
-The initial map, if supplied, or a new map with an empty `fields` object.
+Builds a mutable error map from optional group errors and errors at group-relative field paths.
 
 ***
 
@@ -53,7 +35,7 @@ The initial map, if supplied, or a new map with an empty `fields` object.
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation.public.ts:885](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L885)
+Defined in: [pipeline/validation/validation.public.ts:530](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L530)
 
 Creates a successful result to return data in this validator's `validatorOutputs` entry.
 
@@ -62,10 +44,10 @@ Creates a successful result to return data in this validator's `validatorOutputs
 ### event
 
 ```ts
-event: ValidationTrigger;
+event: "mount" | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:869](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L869)
+Defined in: [pipeline/validation/validation.public.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L514)
 
 The event that caused this validation run.
 
@@ -77,7 +59,7 @@ The event that caused this validation run.
 formApi: FormApi<any, any>;
 ```
 
-Defined in: [validation.public.ts:873](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L873)
+Defined in: [pipeline/validation/validation.public.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L518)
 
 The owning form, including values outside this group.
 
@@ -89,7 +71,7 @@ The owning form, including values outside this group.
 groupApi: FormGroupApi<any, any, TGroupValue, any, any>;
 ```
 
-Defined in: [validation.public.ts:875](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L875)
+Defined in: [pipeline/validation/validation.public.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L520)
 
 The group whose value is being validated.
 
@@ -98,12 +80,12 @@ The group whose value is being validated.
 ### parseIssues
 
 ```ts
-parseIssues: ParseFormIssuesFn<TGroupValue>;
+parseIssues: ParseIssuesFn<TGroupValue>;
 ```
 
-Defined in: [validation.public.ts:881](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L881)
+Defined in: [pipeline/validation/validation.public.ts:528](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L528)
 
-Converts Standard Schema issues into group errors and errors at group-relative field paths.
+Converts Standard Schema issues into a mutable error map using the group's values and field paths.
 
 ***
 
@@ -113,7 +95,7 @@ Converts Standard Schema issues into group errors and errors at group-relative f
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:871](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L871)
+Defined in: [pipeline/validation/validation.public.ts:516](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L516)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -125,7 +107,7 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:877](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L877)
+Defined in: [pipeline/validation/validation.public.ts:522](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L522)
 
 The field that caused validation, when available.
 
@@ -137,6 +119,6 @@ The field that caused validation, when available.
 value: TGroupValue;
 ```
 
-Defined in: [validation.public.ts:879](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L879)
+Defined in: [pipeline/validation/validation.public.ts:524](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L524)
 
 The group's current value, without the surrounding form values.

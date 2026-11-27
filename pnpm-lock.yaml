@@ -2084,6 +2084,31 @@ importers:
         specifier: ^3.3.11
         version: 3.3.11(typescript@6.0.3)
 
+  examples/vue/field-groups:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^2.0.0-alpha.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.6.0-rc.9
+        version: 3.6.0-rc.9(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.9
+        version: 6.0.9(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.9(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.2.1
+        version: 8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.11
+        version: 3.3.11(typescript@6.0.3)
+
   examples/vue/large-form:
     dependencies:
       '@tanstack/vue-form':
@@ -2244,9 +2269,6 @@ importers:
 
   packages/form-core:
     dependencies:
-      '@tanstack/pacer-lite':
-        specifier: ^0.2.2
-        version: 0.2.2
       '@tanstack/store':
         specifier: ^0.11.1
         version: 0.11.1
@@ -2459,12 +2481,6 @@ importers:
       '@tanstack/react-start':
         specifier: ^1.168.40
         version: 1.168.40(crossws@0.4.10(srvx@0.12.5))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.3)(rollup@4.62.4)(supports-color@7.2.0)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.1))(solid-js@1.9.14)(supports-color@7.2.0)(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@7.2.0))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)))(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@7.2.0))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@vitejs/plugin-react':
-        specifier: ^6.1.1
-        version: 6.1.1(babel-plugin-react-compiler@1.0.0)(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@7.2.0))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      vitest-browser-react:
-        specifier: ^2.3.0
-        version: 2.3.0(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@5.0.1)
 
   packages/solid-form:
     dependencies:
@@ -18938,6 +18954,12 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@7.2.0))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue: 3.6.0-rc.9(typescript@6.0.3)
+
+  '@vitejs/plugin-vue@6.0.9(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.9(typescript@6.0.3))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vue: 3.6.0-rc.9(typescript@6.0.3)
 
   '@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)':

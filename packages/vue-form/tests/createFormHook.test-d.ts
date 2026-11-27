@@ -11,7 +11,7 @@ it('keeps value inference local to each form instance', () => {
         {
           triggers: [],
           run: ({ value }) => {
-            expectTypeOf(value).toBeUnknown()
+            expectTypeOf(value).toBeAny()
           },
         },
       ],

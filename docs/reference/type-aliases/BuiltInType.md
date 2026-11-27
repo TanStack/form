@@ -7,4 +7,4 @@ title: BuiltInType
 type BuiltInType = Primitive | Date | RegExp | Function;
 ```
 
-Defined in: [utils.public.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L7)
+Defined in: [utils.public.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L3)

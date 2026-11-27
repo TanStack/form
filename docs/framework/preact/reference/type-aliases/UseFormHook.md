@@ -4,7 +4,7 @@ title: UseFormHook
 ---
 
 ```ts
-type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => PreactFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
+type UseFormHook<TComponents> = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => PreactFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, TComponents>;
 ```
 
 Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/useForm.public.ts#L13)
@@ -21,9 +21,13 @@ Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://g
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -33,8 +37,8 @@ Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://g
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`PreactFormApi`](PreactFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>
+[`PreactFormApi`](PreactFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, `TComponents`\>

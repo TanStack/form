@@ -4,17 +4,10 @@ title: FormListenerTriggers
 ---
 
 ```ts
-type FormListenerTriggers = ValidationTrigger | "mount" | "reset";
+type FormListenerTriggers = 
+  | ClientSideEvents
+  | PreprocessEvents
+  | "reset";
 ```
 
-Defined in: [listeners.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L17)
-
-Events that can invoke a listener configured on a form.
-
-- `'change'`: A field value changed. The listener receives the updated form
-  values.
-- `'blur'`: A field was marked as blurred.
-- `'submit'`: A submission attempt started. The listener runs before
-  submission validation.
-- `'mount'`: The component using the form was mounted.
-- `'reset'`: The form finished resetting its values and state.
+Defined in: [pipeline/listeners/formListeners.public.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L7)

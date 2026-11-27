@@ -2,11 +2,10 @@ import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions } from '../../src'
 import type {
   CreateSubmitErrorMapFn,
-  OnSubmitError,
+  GetFormErrorTypes,
   ParseSubmitIssuesFn,
   StandardSchemaV1Issue,
-  ToFormErrorTypes,
-  ValidationErrorMap,
+  ValidationFailureItem,
   ValidationIssue,
 } from '../../src'
 
@@ -23,15 +22,19 @@ describe('FormSubmitContext', () => {
         expectTypeOf(parseIssues).toEqualTypeOf<ParseSubmitIssuesFn<FormData>>()
 
         const errors = createErrorMap({ form: 'Submission failed' })
-        expectTypeOf(errors).toEqualTypeOf<
-          ValidationErrorMap<FormData> &
-            OnSubmitError<ValidationErrorMap<FormData>>
-        >()
 
-        errors.fields.name = 'Name is required'
-        errors.fields['user.age'] = { message: 'Age is required' }
+        expectTypeOf(errors.fields.name).toEqualTypeOf<
+          Array<ValidationFailureItem> | undefined
+        >()
+        errors.addFormError('Please check the form')
+        errors.addFieldError('name', 'Name is required')
+        errors.addFieldError('user.age', { message: 'Age is required' })
+        // @ts-expect-error Submission error methods require valid form field paths.
+        errors.addFieldError('missing', 'Missing')
+        errors.fields.name = ['Name is required']
+        errors.fields['user.age'] = [{ message: 'Age is required' }]
         // @ts-expect-error Submission error maps require valid form field paths.
-        errors.fields.missing = 'Missing'
+        errors.fields.missing = ['Missing']
         // @ts-expect-error Initial error maps require valid form field paths.
         createErrorMap({ fields: { missing: 'Missing' } })
         // @ts-expect-error Standard Schema issues are handled by parseIssues.
@@ -43,10 +46,10 @@ describe('FormSubmitContext', () => {
 
     type SubmitReturn = ReturnType<NonNullable<typeof options.onSubmit>>
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['formError']
+      GetFormErrorTypes<[], SubmitReturn>['selfError']
     >().toEqualTypeOf<ValidationIssue>()
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['fieldError']
+      GetFormErrorTypes<[], SubmitReturn>['subfieldError']
     >().toEqualTypeOf<ValidationIssue>()
   })
 
@@ -59,10 +62,10 @@ describe('FormSubmitContext', () => {
 
     type SubmitReturn = ReturnType<NonNullable<typeof options.onSubmit>>
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['formError']
+      GetFormErrorTypes<[], SubmitReturn>['selfError']
     >().toEqualTypeOf<StandardSchemaV1Issue>()
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['fieldError']
+      GetFormErrorTypes<[], SubmitReturn>['subfieldError']
     >().toEqualTypeOf<StandardSchemaV1Issue>()
   })
 })

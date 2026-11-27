@@ -4,12 +4,12 @@ title: ServerValidateResult
 ---
 
 ```ts
-type ServerValidateResult<TFormData, TFormValidators> = 
-  | ServerValidateSuccess<TFormData, TFormValidators>
-| ServerValidateFailure<TFormData, TFormValidators>;
+type ServerValidateResult<TFormData, TValidators> = 
+  | ServerValidateSuccess<TFormData, TValidators>
+| ServerValidateFailure<TFormData>;
 ```
 
-Defined in: [ssr.public.ts:78](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L78)
+Defined in: [FormApi/formServerState.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L64)
 
 ## Type Parameters
 
@@ -17,6 +17,6 @@ Defined in: [ssr.public.ts:78](https://github.com/TanStack/form/blob/main/packag
 
 `TFormData`
 
-### TFormValidators
+### TValidators
 
-`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`TFormData`\>
+`TValidators`

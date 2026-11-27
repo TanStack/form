@@ -14,12 +14,15 @@ import type {
   FieldGroupHelper,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
-  ValidationIssue,
+  ScopedErrorTypes,
 } from '@tanstack/form-core'
 import type { ReadonlyAtom } from '@tanstack/lit-store'
 import type { Part, PartInfo } from 'lit/directive.js'
-import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
+import type {
+  InternalFieldGroupBindings,
+  InternalFieldGroupOptions,
+} from '@tanstack/form-core/internals'
+import type { AnyLitFormApi } from './get-form-type.js'
 import type {
   LitFieldMethods,
   LitSubscribeMethod,
@@ -30,9 +33,9 @@ declare const fieldGroupFieldsSymbol: unique symbol
 
 export type LitFieldGroupApi<TFieldData> = LitFieldMethods<
   TFieldData,
-  ValidationIssue,
+  ScopedErrorTypes,
   unknown,
-  FormErrorTypes
+  ScopedErrorTypes
 > &
   LitSubscribeMethod<TFieldData> &
   FormApiFieldMethods<TFieldData> &
@@ -57,7 +60,26 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
     ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
     : never
 
-type AnyLitForm<TFormData = any> = TanStackFormController<TFormData, any, any>
+type AnyLitForm<TFormData = any> = TanStackFormController<
+  TFormData,
+  any,
+  any,
+  any,
+  any
+>
+
+class InternalLitFieldGroupApi extends InternalFieldGroupApi {
+  readonly formController: AnyLitFormApi
+  constructor(
+    options: InternalFieldGroupOptions,
+    formController: AnyLitFormApi,
+  ) {
+    super(options)
+    this.formController = formController
+  }
+}
+
+type InternalLitFieldGroupParent = AnyLitForm | InternalLitFieldGroupApi
 
 export type FieldGroupWithFieldsFn<
   TFieldGroup extends {
@@ -71,7 +93,7 @@ export type FieldGroupWithFieldsFn<
   fieldsPropName: TFieldsPropName,
 ) => <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
-    form: AnyLitForm<TFormData>
+    form: AnyLitForm<TFormData> | LitFieldGroupApi<TFormData>
   } & FieldGroupFieldBindingsProps<
       FieldGroupFieldsOf<TFieldGroup>,
       TFormData,
@@ -91,9 +113,10 @@ export type DefineFieldGroupFn = <const TFields extends FieldGroupFields>(
 ) => FieldGroupDefinition<TFields>
 
 function attachLitFieldGroupMethods(
-  group: InternalFieldGroupApi,
-  form: AnyLitForm,
+  group: InternalLitFieldGroupApi,
 ): LitFieldGroupApi<any> {
+  const form = group.formController
+
   const resolveOptions = (options: { name: string }) =>
     group._getFormFieldOptions(options, (base, overrides) => ({
       ...base,
@@ -114,7 +137,7 @@ function attachLitFieldGroupMethods(
 }
 
 class ReusableFieldGroupDirective extends Directive {
-  private form?: AnyLitForm
+  private form?: InternalLitFieldGroupParent
   private fieldNames?: Array<string>
   private bindings = createAtom<InternalFieldGroupBindings | undefined>(
     undefined,
@@ -139,20 +162,24 @@ class ReusableFieldGroupDirective extends Directive {
     if (this.form !== form || this.fieldNames !== fieldNames || !this.api) {
       this.form = form
       this.fieldNames = fieldNames
+      const isFieldGroup = form instanceof InternalLitFieldGroupApi
+      const controller = isFieldGroup ? form.formController : form
       this.api = attachLitFieldGroupMethods(
-        new InternalFieldGroupApi({
-          form: form.api as never,
-          fieldNames,
-          getBindings: () => this.bindings.get(),
-        }),
-        form,
+        new InternalLitFieldGroupApi(
+          {
+            form: isFieldGroup ? form : (form.api as never),
+            fieldNames,
+            getBindings: () => this.bindings.get(),
+          },
+          controller,
+        ),
       )
     }
     return render({ ...props, [propName]: this.api })
   }
 
   render(
-    form: AnyLitForm,
+    form: InternalLitFieldGroupParent,
     bindings: InternalFieldGroupBindings | undefined,
     fieldNames: Array<string>,
     render: (props: Record<string, unknown>) => unknown,
@@ -183,7 +210,7 @@ const withFieldsRuntime = (
       throw new Error('TanStack Form: Field groups must receive a `form` prop.')
     }
     return reusableFieldGroupDirective(
-      form as AnyLitForm,
+      form as InternalLitFieldGroupParent,
       bindings as InternalFieldGroupBindings | undefined,
       fieldNames,
       render,

@@ -3,7 +3,11 @@ id: SvelteTanStackFormComponents
 title: SvelteTanStackFormComponents
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:351](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L351)
+Defined in: [packages/svelte-form/src/Components.public.ts:352](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L352)
+
+## Extends
+
+- `SvelteFieldComponentsType`\<`TFieldComponents`\>
 
 ## Type Parameters
 
@@ -11,9 +15,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:351](https://github.c
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -21,40 +25,56 @@ Defined in: [packages/svelte-form/src/Components.public.ts:351](https://github.c
 
 ## Properties
 
+### \[fieldComponentsSymbol\]?
+
+```ts
+readonly optional [fieldComponentsSymbol]?: TFieldComponents;
+```
+
+Defined in: [packages/svelte-form/src/fieldComponentsType.lib.ts:9](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/fieldComponentsType.lib.ts#L9)
+
+#### Inherited from
+
+```ts
+SvelteFieldComponentsType.[fieldComponentsSymbol]
+```
+
+***
+
 ### ArrayField
 
 ```ts
-ArrayField: SvelteFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+ArrayField: SvelteFormArrayFieldComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:360](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L360)
+Defined in: [packages/svelte-form/src/Components.public.ts:361](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L361)
 
 ***
 
 ### Field
 
 ```ts
-Field: SvelteFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+Field: SvelteFormFieldComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:359](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L359)
+Defined in: [packages/svelte-form/src/Components.public.ts:360](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L360)
 
 ***
 
 ### FormGroup
 
 ```ts
-FormGroup: SvelteFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+FormGroup: SvelteFormGroupComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:366](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L366)
+Defined in: [packages/svelte-form/src/Components.public.ts:367](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L367)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: SvelteFormSubscribeComponent<TFormData, TFormErrorTypes>;
+Subscribe: SvelteFormSubscribeComponent<TFormData, TFormError>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:365](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L365)
+Defined in: [packages/svelte-form/src/Components.public.ts:366](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L366)

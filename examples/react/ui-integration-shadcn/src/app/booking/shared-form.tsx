@@ -1,7 +1,7 @@
 import { createValidator } from '@tanstack/react-form'
 import { bookingFormSchema } from './schema'
-import type { ReactNode } from 'react'
 import type { ReactFormType } from '@tanstack/react-form'
+import type { ReactNode } from 'react'
 import { appFormOptions } from '@/components/form/app-form'
 import { FieldGroup } from '@/components/ui/field'
 
@@ -10,7 +10,7 @@ import { FieldGroup } from '@/components/ui/field'
 export const formGroupId = 'booking-form-step' as const
 
 export interface StepFormProps {
-  onSubmit: () => void
+  onSubmit: () => Promise<unknown>
   children: ReactNode
 }
 export function StepForm(props: StepFormProps) {
@@ -20,7 +20,7 @@ export function StepForm(props: StepFormProps) {
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
-        void props.onSubmit()
+        void props.onSubmit().catch(console.error)
       }}
     >
       <FieldGroup>{props.children}</FieldGroup>

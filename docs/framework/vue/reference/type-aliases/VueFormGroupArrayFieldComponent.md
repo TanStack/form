@@ -4,14 +4,14 @@ title: VueFormGroupArrayFieldComponent
 ---
 
 ```ts
-type VueFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => VueComponentInstance<VueFormFieldProps<TGroupValue, TFieldName, DeepValue<TGroupValue, TFieldName>, TFieldValidators, TGroupErrorTypes["fieldError"], TFormData, TFormErrorTypes, TFieldComponents>, {
+type VueFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => VueComponentInstance<VueFormFieldProps<TGroupValue, TFieldName, DeepValue<TGroupValue, TFieldName>, TFieldValidators, TGroupError, TFormData, TFormError, TFieldComponents>, {
   default: {
-     field: VueFieldApi<TFieldName, DeepValue<TGroupValue, TFieldName>, ToFieldError<NoInfer<TFieldValidators>, TGroupErrorTypes["fieldError"], TFormErrorTypes>, TFormData, TFormErrorTypes, TFieldComponents>;
+     field: VueFieldApi<TFieldName, DeepValue<TGroupValue, TFieldName>, ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>, TFormData, TFormError, TFieldComponents>;
   };
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:289](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L289)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:284](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L284)
 
 ## Type Parameters
 
@@ -23,13 +23,13 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:289](https://git
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -39,12 +39,12 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:289](https://git
 
 ### props
 
-[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\> & `PublicProps`
+[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`, `TFieldComponents`\> & `PublicProps`
 
 ## Returns
 
-`VueComponentInstance`\<[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>, \{
+`VueComponentInstance`\<[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`, `TFieldComponents`\>, \{
   `default`: \{
-     `field`: [`VueFieldApi`](VueFieldApi.md)\<`TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupErrorTypes`\[`"fieldError"`\], `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>;
+     `field`: [`VueFieldApi`](VueFieldApi.md)\<`TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupError`, `TFormError`\>, `TFormData`, `TFormError`, `TFieldComponents`\>;
   \};
 \}\>

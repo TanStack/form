@@ -14,16 +14,15 @@ import type {
   FieldApiOptions,
   FieldValidators,
   FormApi,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormOptions,
   FormState,
-  FormValidators,
+  GetFormErrorTypes,
+  ScopedErrorTypes,
   ToFieldError,
-  ToFormErrorTypes,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
 import type {
@@ -49,17 +48,17 @@ type LitFieldOptions<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = FieldApiOptions<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 >
 
 type LitFieldRenderApi<
@@ -67,22 +66,22 @@ type LitFieldRenderApi<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = FieldApi<
   TFieldName,
   TFieldValue,
-  ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormErrorTypes>,
+  ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
   TFormData,
-  TFormErrorTypes
+  TFormError
 >
 
 export interface LitFieldMethods<
   TFieldData,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > {
   field<
     const TFieldName extends DeepKeys<TFieldData>,
@@ -97,9 +96,9 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
-      TFormErrorTypes
+      TFormError
     >,
     render: RenderCallback<
       LitFieldRenderApi<
@@ -107,9 +106,9 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
-        TFormErrorTypes
+        TFormError
       >
     >,
   ): unknown
@@ -127,9 +126,9 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
-      TFormErrorTypes
+      TFormError
     >,
     render: RenderCallback<
       LitFieldRenderApi<
@@ -137,9 +136,9 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
-        TFormErrorTypes
+        TFormError
       >
     >,
   ): unknown
@@ -157,22 +156,11 @@ export type LitFormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
-> = FormGroupApi<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
-> &
-  LitFieldMethods<
-    TGroupValue,
-    TGroupErrorTypes['fieldError'],
-    TFormData,
-    TFormErrorTypes
-  > &
-  LitSubscribeMethod<FormGroupState<TGroupValue, TGroupErrorTypes>>
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
+> = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError> &
+  LitFieldMethods<TGroupValue, TGroupError, TFormData, TFormError> &
+  LitSubscribeMethod<FormGroupState<TGroupValue, TGroupError>>
 
 /**
  * Owns a form for a Lit reactive-controller host and provides Lit-specific
@@ -208,29 +196,24 @@ export type LitFormGroupApi<
  */
 export class TanStackFormController<
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
+  TFormError extends ScopedErrorTypes = GetFormErrorTypes<
+    TValidators,
+    TSubmitReturn
+  >,
 >
   implements
     ReactiveController,
-    LitFieldMethods<
-      TFormData,
-      never,
-      TFormData,
-      ToFormErrorTypes<TFormValidators, TSubmitReturn>
-    >,
-    LitSubscribeMethod<
-      FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>
-    >
+    LitFieldMethods<TFormData, never, TFormData, TFormError>,
+    LitSubscribeMethod<FormState<TFormData, TFormError>>
 {
-  readonly #form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>
+  readonly #form: InternalFormApi<TFormData>
   #unmount?: () => void
 
-  get api(): FormApi<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  > {
-    return this.#form
+  get api(): FormApi<TFormData, TFormError> {
+    return this.#form as never
   }
 
   /**
@@ -240,7 +223,13 @@ export class TanStackFormController<
    */
   constructor(
     host: ReactiveControllerHost,
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+    options: FormOptions<
+      TFormData,
+      TValidatorConfig,
+      TValidators,
+      TSubmitReturn,
+      unknown
+    >,
   ) {
     this.#form = new InternalFormApi(options)
     new TanStackStoreSelector(host, () => this.#form._atoms.resetVersion)
@@ -263,7 +252,13 @@ export class TanStackFormController<
 
   /** Updates reactive form options without replacing the form instance. */
   update(
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+    options: FormOptions<
+      TFormData,
+      TValidatorConfig,
+      TValidators,
+      TSubmitReturn,
+      unknown
+    >,
   ) {
     this.#form._update(options)
   }
@@ -283,7 +278,7 @@ export class TanStackFormController<
       TFieldValidators,
       never,
       TFormData,
-      ToFormErrorTypes<TFormValidators, TSubmitReturn>
+      TFormError
     >,
     render: RenderCallback<
       LitFieldRenderApi<
@@ -293,7 +288,7 @@ export class TanStackFormController<
         TFieldValidators,
         never,
         TFormData,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        TFormError
       >
     >,
   ): unknown {
@@ -320,7 +315,7 @@ export class TanStackFormController<
       TFieldValidators,
       never,
       TFormData,
-      ToFormErrorTypes<TFormValidators, TSubmitReturn>
+      TFormError
     >,
     render: RenderCallback<
       LitFieldRenderApi<
@@ -330,7 +325,7 @@ export class TanStackFormController<
         TFieldValidators,
         never,
         TFormData,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        TFormError
       >
     >,
   ): unknown {
@@ -343,12 +338,7 @@ export class TanStackFormController<
   }
 
   subscribe<const TSelected>(
-    selector: (
-      state: FormState<
-        TFormData,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
-      >,
-    ) => TSelected,
+    selector: (state: FormState<TFormData, TFormError>) => TSelected,
     render: RenderCallback<NoInfer<TSelected>>,
     when?: (selected: NoInfer<TSelected>) => boolean,
   ): unknown {
@@ -359,6 +349,7 @@ export class TanStackFormController<
     const TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TGroupSubmitReturn = void,
   >(
     options: Omit<
       FormGroupOptions<
@@ -366,7 +357,8 @@ export class TanStackFormController<
         TGroupName,
         TGroupValue,
         TGroupValidators,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        TFormError,
+        TGroupSubmitReturn
       >,
       'form'
     >,
@@ -375,8 +367,8 @@ export class TanStackFormController<
         TFormData,
         TGroupName,
         TGroupValue,
-        ToFormGroupErrorTypes<TGroupValidators>,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        ToFormGroupErrorTypes<TGroupValidators, NoInfer<TGroupSubmitReturn>>,
+        TFormError
       >
     >,
   ): unknown {
@@ -588,13 +580,20 @@ class SubscribeDirective extends AsyncDirective {
   }
 }
 
-type AnyInternalFormGroupApi = InternalFormGroupApi<any, any, any, any, any> &
+type AnyInternalFormGroupApi = InternalFormGroupApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+> &
   LitFieldMethods<any, any, any, any> &
   LitSubscribeMethod<any>
 
 class FormGroupDirective extends AsyncDirective {
   #form?: AnyInternalFormApi
-  #options?: Omit<FormGroupOptions<any, any, any, any, any>, 'form'>
+  #options?: Omit<FormGroupOptions<any, any, any, any, any, any>, 'form'>
   #renderCallback?: AnyRender
   #group?: AnyInternalFormGroupApi
   #unsubscribe?: () => void
@@ -620,7 +619,7 @@ class FormGroupDirective extends AsyncDirective {
 
   render(
     form: AnyInternalFormApi,
-    options: Omit<FormGroupOptions<any, any, any, any, any>, 'form'>,
+    options: Omit<FormGroupOptions<any, any, any, any, any, any>, 'form'>,
     renderCallback: AnyRender,
   ) {
     void form
@@ -687,7 +686,7 @@ class FormGroupDirective extends AsyncDirective {
 }
 
 function attachGroupMethods(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   form: AnyInternalFormApi,
 ): AnyInternalFormGroupApi {
   const result = group as AnyInternalFormGroupApi

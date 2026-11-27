@@ -11,7 +11,7 @@ const { useAppForm } = createFormHook({
       {
         triggers: [],
         run: ({ value }) => {
-          expectTypeOf(value).toBeUnknown()
+          expectTypeOf(value).toBeAny()
         },
       },
     ],

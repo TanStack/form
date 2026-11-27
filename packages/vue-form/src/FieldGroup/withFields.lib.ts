@@ -10,11 +10,12 @@ import type {
   InternalFieldGroupBindings,
 } from '@tanstack/form-core/internals'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
+import type { InternalVueFormApi } from '../VueForm/VueFormApi.lib'
 
 function attachVueFieldGroupComponents(
   group: InternalFieldGroupApi,
-  form: any,
 ): AnyFieldGroupApi {
+  const form = group.form as InternalVueFormApi
   const forwardField = (component: Component, name: string) =>
     defineComponent(
       (_props, context) => {
@@ -88,7 +89,6 @@ function withFieldsRuntime(
             context.attrs[fieldsPropName] as
               InternalFieldGroupBindings | undefined,
         }),
-        form,
       )
 
       return () => {

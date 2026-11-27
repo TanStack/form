@@ -7,16 +7,14 @@ title: ResetFn
 type ResetFn<TFormData> = (values?, opts?) => void;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:624](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L624)
+Defined in: [FormApi/FormApi.public.ts:207](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L207)
 
-Resets form values, metadata, validation state, and mounted fields.
+Resets form values, field metadata, validation errors, and submission state.
 
-Calling without values restores the current `defaultValues`. Supplying
-values sets the current values and also updates `defaultValues` to those
-values. This can apply expected values immediately while fresh data is
-fetched from the backend.
-
-Results from validation or submission work pending at reset are discarded.
+- Omitting `values` restores the current `defaultValues`.
+- Supplying `values` also replaces `defaultValues` unless
+  `opts.updateDefaultValues` is `false`.
+- Results from pending validation and submission cannot update the reset state.
 
 ## Type Parameters
 
@@ -32,15 +30,18 @@ Library-managed. Do not specify explicitly.
 
 `TFormData`
 
-Values to apply, or omit to restore `defaultValues`.
+Replacement values for the entire form.
 
 ### opts?
 
 [`FormResetOptions`](../interfaces/FormResetOptions.md)
 
-Options controlling whether supplied values replace
-`defaultValues`.
-
 ## Returns
 
 `void`
+
+## Remarks
+
+**Important:** Reset aborts submission signals but does not wait for callbacks
+that already started. Their submission promises still settle with the
+callbacks' results or exceptions.

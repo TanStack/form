@@ -4,10 +4,10 @@ title: PreactFormGroupSubscribeProps
 ---
 
 ```ts
-type PreactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = PreactSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
+type PreactFormGroupSubscribeProps<TGroupValue, TFormError, TSelected> = PreactSubscribeProps<FormGroupState<TGroupValue, TFormError>, TSelected>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:203](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L203)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:199](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L199)
 
 ## Type Parameters
 
@@ -15,9 +15,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:203](https
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TFormError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

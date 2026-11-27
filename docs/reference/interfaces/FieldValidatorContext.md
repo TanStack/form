@@ -3,7 +3,7 @@ id: FieldValidatorContext
 title: FieldValidatorContext
 ---
 
-Defined in: [validation.public.ts:942](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L942)
+Defined in: [pipeline/validation/validation.public.ts:572](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L572)
 
 Values and helpers passed to a field validation function.
 
@@ -32,10 +32,10 @@ Library-managed. Do not specify explicitly.
 ### event
 
 ```ts
-event: ValidationTrigger;
+event: "mount" | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:948](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L948)
+Defined in: [pipeline/validation/validation.public.ts:578](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L578)
 
 The event that caused this validation run.
 
@@ -47,7 +47,7 @@ The event that caused this validation run.
 fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:954](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L954)
+Defined in: [pipeline/validation/validation.public.ts:584](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L584)
 
 The field being validated, including when a watched field caused the event.
 
@@ -59,21 +59,9 @@ The field being validated, including when a watched field caused the event.
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:952](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L952)
+Defined in: [pipeline/validation/validation.public.ts:582](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L582)
 
 The owning form. Read other field values here for cross-field validation.
-
-***
-
-### parseIssues
-
-```ts
-parseIssues: ParseFieldIssuesFn;
-```
-
-Defined in: [validation.public.ts:958](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L958)
-
-Converts Standard Schema issues into errors for this field, without routing their paths.
 
 ***
 
@@ -83,7 +71,7 @@ Converts Standard Schema issues into errors for this field, without routing thei
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:950](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L950)
+Defined in: [pipeline/validation/validation.public.ts:580](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L580)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -95,6 +83,6 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 value: TFieldValue;
 ```
 
-Defined in: [validation.public.ts:956](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L956)
+Defined in: [pipeline/validation/validation.public.ts:586](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L586)
 
 The current value of the field being validated.

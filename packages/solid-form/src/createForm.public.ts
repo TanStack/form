@@ -1,8 +1,8 @@
 import { createInternalForm, initializeForm } from './SolidFormApi.lib'
 import type {
+  AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type { Accessor } from 'solid-js'
 import type { SolidFormApi } from './formApiTypes.public'
@@ -10,21 +10,26 @@ import type { DefaultSolidFormComponentMap } from './AppForm/componentMap.public
 
 export type CreateFormHook = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
   options: Accessor<
-    FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>
+    FormOptions<
+      TFormData,
+      TValidatorConfig,
+      TValidators,
+      TSubmitReturn,
+      unknown
+    >
   >,
 ) => SolidFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   DefaultSolidFormComponentMap
 >
 
-function createFormHook(
-  options: Accessor<FormOptions<any, any, any, unknown>>,
-) {
+function createFormHook(options: Accessor<AnyFormOptions>) {
   return createInternalForm(options, initializeForm)
 }
 

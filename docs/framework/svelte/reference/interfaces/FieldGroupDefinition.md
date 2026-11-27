@@ -3,7 +3,7 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:82](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L82)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:87](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L87)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:82](https:
 bindComponent: FieldGroupWithFieldsFn<SvelteFieldGroup<TFields, TComponents>>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:89](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L89)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:94](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L94)
 
 Binds a component's virtual field API to concrete paths in a form.
 
@@ -35,6 +35,6 @@ Binds a component's virtual field API to concrete paths in a form.
 fields: SvelteFieldGroup<TFields, TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:87](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L87)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:92](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L92)
 
 The virtual field-group API injected into the bound component.

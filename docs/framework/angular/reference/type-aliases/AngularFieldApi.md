@@ -4,10 +4,10 @@ title: AngularFieldApi
 ---
 
 ```ts
-type AngularFieldApi<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormValidators, TSubmitReturn> = FieldApi<TFieldName, TFieldValue, ToFieldError<TFieldValidators, never, ToFormErrorTypes<TFormValidators, TSubmitReturn>>, TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
+type AngularFieldApi<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormError> = FieldApi<TFieldName, TFieldValue, ToFieldError<TFieldValidators, never, TFormError>, TFormData, TFormError>;
 ```
 
-Defined in: [tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L96)
+Defined in: [tanstack-field.ts:101](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L101)
 
 ## Type Parameters
 
@@ -27,10 +27,6 @@ Defined in: [tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/pa
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFormData`, `TFieldName`, `TFieldValue`\>
 
-### TFormValidators
+### TFormError
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormError` *extends* `ScopedErrorTypes`

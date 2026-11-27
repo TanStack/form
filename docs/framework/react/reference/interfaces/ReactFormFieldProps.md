@@ -3,11 +3,15 @@ id: ReactFormFieldProps
 title: ReactFormFieldProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L115)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:111](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L111)
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
+
+## Extended by
+
+- [`ReactFormArrayFieldProps`](ReactFormArrayFieldProps.md)
 
 ## Type Parameters
 
@@ -27,17 +31,17 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https:/
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -51,13 +55,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https:/
 children: (fieldApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:137](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L137)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:133](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L133)
 
 #### Parameters
 
 ##### fieldApi
 
-[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupFieldError`, `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `NoInfer`\<`ToFieldError`\<`TFieldValidators`, `TGroupError`, `TFormError`\>\>, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

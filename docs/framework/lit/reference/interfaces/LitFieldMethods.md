@@ -3,7 +3,7 @@ id: LitFieldMethods
 title: LitFieldMethods
 ---
 
-Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
+Defined in: [tanstack-form-controller.ts:80](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L80)
 
 ## Type Parameters
 
@@ -11,17 +11,17 @@ Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/bl
 
 `TFieldData`
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Methods
 
@@ -31,7 +31,7 @@ Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/bl
 arrayField<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:117](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L117)
+Defined in: [tanstack-form-controller.ts:116](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L116)
 
 #### Type Parameters
 
@@ -47,11 +47,11 @@ Defined in: [tanstack-form-controller.ts:117](https://github.com/TanStack/form/b
 
 ##### options
 
-`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 
@@ -65,7 +65,7 @@ Defined in: [tanstack-form-controller.ts:117](https://github.com/TanStack/form/b
 field<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:87](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L87)
+Defined in: [tanstack-form-controller.ts:86](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L86)
 
 #### Type Parameters
 
@@ -81,11 +81,11 @@ Defined in: [tanstack-form-controller.ts:87](https://github.com/TanStack/form/bl
 
 ##### options
 
-`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 

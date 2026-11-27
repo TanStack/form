@@ -7,7 +7,7 @@ title: AnyReactFormApi
 type AnyReactFormApi = AnyFormApi & ReactTanStackFormComponents<any, any, any>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:51](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L51)
+Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:47](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L47)
 
 A React form API whose form data and error types are erased.
 

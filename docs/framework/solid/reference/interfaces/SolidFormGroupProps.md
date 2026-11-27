@@ -3,11 +3,11 @@ id: SolidFormGroupProps
 title: SolidFormGroupProps
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L328)
+Defined in: [packages/solid-form/src/Components.public.ts:324](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L324)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,13 +27,17 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
 `TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
+
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
 
 ## Properties
 
@@ -43,13 +47,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 children: (groupApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:345](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L345)
+Defined in: [packages/solid-form/src/Components.public.ts:343](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L343)
 
 #### Parameters
 
 ##### groupApi
 
-[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`, `TFieldComponents`\>
+[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

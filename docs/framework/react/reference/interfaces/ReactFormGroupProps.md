@@ -3,11 +3,11 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L308)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:332](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L332)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,13 +27,17 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https:/
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
 `TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
+
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
 
 ## Properties
 
@@ -43,13 +47,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https:/
 children: (groupApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:325](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L325)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:351](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L351)
 
 #### Parameters
 
 ##### groupApi
 
-[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

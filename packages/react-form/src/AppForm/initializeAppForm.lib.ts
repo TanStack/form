@@ -1,16 +1,19 @@
 import { createInternalReactAppFormApiClass } from './ReactAppFormApi.lib'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
-import type { ReactComponentTree } from './componentMap.public'
 import type {
+  ReactComponentTree,
+  ReactFormComponents,
+} from './componentMap.public'
+import type {
+  AnyFormOptions,
   DefaultFieldOptions,
   DefaultFormGroupOptions,
   DefaultFormOptions,
   DefaultOptions,
-  FormOptions,
 } from '@tanstack/form-core'
 
 interface AnyCreateFormHookOptions {
-  formComponents: ReactComponentTree
+  formComponents: ReactFormComponents
   fieldComponents: ReactComponentTree
   defaultFormOptions?: DefaultFormOptions
   defaultFieldOptions?: DefaultFieldOptions
@@ -19,7 +22,7 @@ interface AnyCreateFormHookOptions {
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
-): (options: FormOptions<any, any, any, unknown>) => InternalReactFormApi {
+): (options: AnyFormOptions) => InternalReactFormApi {
   const InternalReactAppFormApi = createInternalReactAppFormApiClass(
     createOptions.formComponents,
     createOptions.fieldComponents,

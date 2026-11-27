@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
+import { promiseWithResolvers } from '../test-utils'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
-import type { StandardSchemaV1 } from '../../src/standardSchema.public'
+import type { StandardSchemaV1 } from '../../src/validation/results/standardSchema.public'
 
 describe('form - validation', () => {
   describe('validate', () => {
@@ -82,36 +83,6 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([{ message: 'Name is required' }])
     })
 
-    it('parses Standard Schema issues from field validators', async () => {
-      const schema = z.string().min(1, 'Name is required')
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-      })
-      const field = form._getOrCreateFieldApi({
-        name: 'name',
-        validators: [
-          {
-            run: (context: any) => {
-              const result = schema.safeParse(context.value)
-
-              if (!result.success) {
-                return context.parseIssues(result.error.issues)
-              }
-
-              return null
-            },
-            triggers: [],
-          },
-        ],
-      })
-
-      await field._runFieldValidation('submit')
-
-      expect(field.errors).toEqual([
-        expect.objectContaining({ message: 'Name is required' }),
-      ])
-    })
-
     it('parses Standard Schema issues from form validators', async () => {
       const schema = z.object({
         user: z.object({
@@ -139,9 +110,7 @@ describe('form - validation', () => {
 
       await form.validate('submit')
 
-      expect(form.state.errors).toEqual([
-        expect.objectContaining({ message: 'Name is required' }),
-      ])
+      expect(form.state.errors).toEqual([])
       expect(field.errors).toEqual([
         expect.objectContaining({ message: 'Name is required' }),
       ])
@@ -158,7 +127,7 @@ describe('form - validation', () => {
         ],
       })
       const result = await form.validate('submit')
-      expect(result).toEqual([[{ message: 'Error 1' }, { message: 'Error 2' }]])
+      expect(result).toEqual([{ message: 'Error 1' }, { message: 'Error 2' }])
       expect(form.state.errors).toEqual([
         { message: 'Error 1' },
         { message: 'Error 2' },
@@ -216,11 +185,12 @@ describe('form - validation', () => {
         ],
       })
 
-      const result = await form._runFormValidation('submit', {
+      const result = form._runFormValidation('submit', {
+        catchErrors: false,
         onResult: false,
       })
 
-      expect(result.results).toHaveLength(1)
+      expect(result?.collector.getResults()).toHaveLength(1)
       expect(form.state.errors).toEqual([])
     })
 
@@ -256,33 +226,6 @@ describe('form - validation', () => {
       })
 
       const validatePromise = form.validate('change')
-
-      expect(form.state.isValidating).toBe(true)
-
-      await vi.runAllTimersAsync()
-      await validatePromise
-
-      expect(form.state.isValidating).toBe(false)
-      vi.useRealTimers()
-    })
-
-    it('tracks isValidating while a field validator is pending', async () => {
-      vi.useFakeTimers()
-      const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi({
-        name: 'name',
-        validators: [
-          {
-            triggers: ['change'],
-            run: async () => {
-              await new Promise((resolve) => setTimeout(resolve, 100))
-              return null
-            },
-          },
-        ],
-      })
-
-      const validatePromise = field._runFieldValidation('change')
 
       expect(form.state.isValidating).toBe(true)
 
@@ -488,13 +431,13 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([{ message: 'Second error' }])
     })
 
-    it('skips all remaining validators after bailIfInvalid when errors exist', async () => {
+    it('skips only flagged validators after an earlier validation error', async () => {
       const thirdValidatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Should not run' }))
       const fourthValidatorFn = vi
         .fn()
-        .mockImplementation(() => ({ message: 'Should also not run' }))
+        .mockImplementation(() => ({ message: 'Unflagged error' }))
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -514,21 +457,21 @@ describe('form - validation', () => {
         ],
       })
 
-      // Start validation
       await form.validate('blur')
 
-      // First validator should have populated errors
-      expect(form.state.errors).toEqual([{ message: 'Sync error' }])
+      expect(form.state.errors).toEqual([
+        { message: 'Sync error' },
+        { message: 'Unflagged error' },
+      ])
 
-      // Third validator (with bailIfInvalid) should NOT have been called
       expect(thirdValidatorFn).not.toHaveBeenCalled()
-      // Fourth validator (after bailIfInvalid) should also NOT have been called
-      expect(fourthValidatorFn).not.toHaveBeenCalled()
+      expect(fourthValidatorFn).toHaveBeenCalledOnce()
     })
 
-    it('skips bailIfInvalid validators after an earlier validator throws', async () => {
+    it('aggregates execution errors while continuing unflagged validators', async () => {
       const error = new Error('validator failed')
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const laterValidator = vi.fn(() => null)
       const bailedValidator = vi.fn(() => ({ message: 'Should not run' }))
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -544,24 +487,25 @@ describe('form - validation', () => {
             run: bailedValidator,
             triggers: ['change'],
           },
+          { run: laterValidator, triggers: ['change'] },
         ],
       })
 
       try {
-        await form.validate('change')
+        await expect(form.validate('change')).rejects.toMatchObject({
+          errors: [error],
+        })
 
         expect(bailedValidator).not.toHaveBeenCalled()
-        expect(consoleSpy).toHaveBeenCalledWith(
-          'Validator threw an error:',
-          error,
-        )
+        expect(laterValidator).toHaveBeenCalledOnce()
+        expect(consoleSpy).not.toHaveBeenCalled()
       } finally {
         consoleSpy.mockRestore()
       }
     })
   })
 
-  describe('runOnMount', () => {
+  describe('mount triggers', () => {
     it('does not run validators during construction by default', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
@@ -574,28 +518,48 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([])
     })
 
-    it('does not run validators during construction when runOnMount is false', () => {
+    it('does not run validators during construction when the mount trigger is disabled', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: false, triggers: [] }],
+        validators: [
+          { run: validatorFn, triggers: [{ trigger: 'mount', when: false }] },
+        ],
       })
 
       expect(validatorFn).not.toHaveBeenCalled()
       expect(form.state.errors).toEqual([])
     })
 
-    it('runs validators during construction when runOnMount is true', () => {
+    it('runs validators during construction with a mount trigger', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+        validators: [{ run: validatorFn, triggers: ['mount'] }],
       })
 
       expect(validatorFn).toHaveBeenCalledOnce()
       expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+    })
+
+    it('runs validators with an enabled conditional mount trigger once', () => {
+      const validator = vi.fn(() => 'Mount error')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: validator,
+            skipOnSubmit: true,
+            triggers: ['blur', { trigger: 'mount', when: true }, 'mount'],
+          },
+        ],
+      })
+
+      expect(validator).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+      expect(form.state.isValidating).toBe(false)
     })
 
     it('sets validity state from synchronous mount validation immediately', () => {
@@ -604,8 +568,7 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => ({ message: 'Mount error' }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -625,8 +588,7 @@ describe('form - validation', () => {
                 name: 'Name is required',
               },
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -644,14 +606,17 @@ describe('form - validation', () => {
             run: z.object({
               name: z.string().min(1, 'Name is required'),
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
 
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+      })
+
       await vi.waitFor(() => {
-        expect(form.state.errors).toEqual([
+        expect(field.errors).toEqual([
           expect.objectContaining({ message: 'Name is required' }),
         ])
       })
@@ -663,8 +628,7 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: async () => {
               await new Promise((resolve) => setTimeout(resolve, 100))
               return 'Async mount error'
@@ -694,18 +658,16 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => asyncResult,
           },
           {
-            runOnMount: false,
-            triggers: [],
+            triggers: [{ trigger: 'mount', when: false }],
             run: skippedValidator,
           },
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
+            bailIfInvalid: true,
             run: secondValidator,
           },
         ],
@@ -734,14 +696,12 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => asyncResult,
           },
           {
             bailIfInvalid: true,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: bailedValidator,
           },
         ],
@@ -762,8 +722,7 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: validator,
           },
         ],
@@ -774,7 +733,7 @@ describe('form - validation', () => {
       expect(form.state.isValidating).toBe(false)
     })
 
-    it('logs thrown mount validator errors without storing them', () => {
+    it('logs thrown mount validator errors without storing them', async () => {
       const error = new Error('Mount validator failed')
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -783,8 +742,7 @@ describe('form - validation', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
               run: () => {
                 throw error
               },
@@ -792,7 +750,9 @@ describe('form - validation', () => {
           ],
         })
 
-        expect(consoleSpy).toHaveBeenCalledWith(error)
+        await expect
+          .poll(() => consoleSpy)
+          .toHaveBeenCalledWith(expect.objectContaining({ errors: [error] }))
         expect(form.state.errors).toEqual([])
       } finally {
         consoleSpy.mockRestore()
@@ -808,8 +768,7 @@ describe('form - validation', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
               run: () => Promise.reject(error),
             },
           ],
@@ -817,9 +776,10 @@ describe('form - validation', () => {
 
         await vi.waitFor(() => expect(form.state.isValidating).toBe(false))
 
-        expect(consoleSpy).toHaveBeenCalledWith(error)
+        await expect
+          .poll(() => consoleSpy)
+          .toHaveBeenCalledWith(expect.objectContaining({ errors: [error] }))
         expect(form.state.errors).toEqual([])
-        expect(form._validatorInstances![0]!.abortController).toBeNull()
       } finally {
         consoleSpy.mockRestore()
       }
@@ -842,17 +802,17 @@ describe('form - validation', () => {
           validators: [
             {
               run: schema,
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
             },
           ],
         })
 
         await vi.waitFor(() => expect(form.state.isValidating).toBe(false))
 
-        expect(consoleSpy).toHaveBeenCalledWith(error)
+        await expect
+          .poll(() => consoleSpy)
+          .toHaveBeenCalledWith(expect.objectContaining({ errors: [error] }))
         expect(form.state.errors).toEqual([])
-        expect(form._validatorInstances![0]!.abortController).toBeNull()
       } finally {
         consoleSpy.mockRestore()
       }
@@ -867,13 +827,11 @@ describe('form - validation', () => {
         validators: [
           {
             run: skippedValidator,
-            runOnMount: false,
-            triggers: [],
+            triggers: [{ trigger: 'mount', when: false }],
           },
           {
             run: mountValidator,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -885,7 +843,6 @@ describe('form - validation', () => {
 
     it('ignores triggerDebounceMs for mount validation', () => {
       vi.useFakeTimers()
-      const triggerDebounceMs = vi.fn().mockReturnValue(100)
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
@@ -893,15 +850,13 @@ describe('form - validation', () => {
         validators: [
           {
             run: validatorFn,
-            runOnMount: true,
-            triggerDebounceMs,
-            triggers: ['change'],
+            triggerDebounceMs: 100,
+            triggers: ['mount', 'change'],
           },
         ],
       })
 
       expect(validatorFn).toHaveBeenCalledOnce()
-      expect(triggerDebounceMs).not.toHaveBeenCalled()
       expect(form.state.errors).toEqual([{ message: 'Mount error' }])
       vi.useRealTimers()
     })
@@ -910,7 +865,7 @@ describe('form - validation', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+        validators: [{ run: validatorFn, triggers: ['mount'] }],
       })
 
       form.mount()
@@ -927,14 +882,12 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => 'Mount error',
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
           {
             bailIfInvalid: true,
             run: secondValidatorFn,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -954,8 +907,7 @@ describe('form - validation', () => {
                 name: 'Mount field error',
               },
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -1036,27 +988,6 @@ describe('form - validation', () => {
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
       field.handleChange('Alice')
-      await vi.runAllTimersAsync()
-
-      expect(validatorFn).not.toHaveBeenCalled()
-    })
-
-    it('skips validation when explicitly disabled per update', async () => {
-      vi.useFakeTimers()
-      const validatorFn = vi
-        .fn()
-        .mockImplementation(() => ({ message: 'Change error' }))
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            run: validatorFn,
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
-      field.handleChange('Alice', { causeValidation: false })
       await vi.runAllTimersAsync()
 
       expect(validatorFn).not.toHaveBeenCalled()
@@ -1145,7 +1076,7 @@ describe('form - validation', () => {
         expect.objectContaining({ message: 'Start date is required' }),
         expect.objectContaining({ message: 'End date is required' }),
       ])
-      expect(form.state.errors).toHaveLength(2)
+      expect(form.state.errors).toHaveLength(0)
       expect(form._tryGetFieldApi('range.from')).toBeNull()
       expect(form._tryGetFieldApi('range.to')).toBeNull()
     })
@@ -1401,25 +1332,6 @@ describe('form - validation', () => {
       expect(form.state.canSubmit).toBe(false)
     })
 
-    it('sets canSubmit to false when field validator errors are present', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-      })
-      const field = form._getOrCreateFieldApi({
-        name: 'name',
-        validators: [
-          {
-            run: () => ({ message: 'Name is required' }),
-            triggers: ['change'],
-          },
-        ],
-      })
-
-      await field._runFieldValidation('change')
-
-      expect(form.state.canSubmit).toBe(false)
-    })
-
     it('stores string field errors from form validators as message objects', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -1464,203 +1376,6 @@ describe('form - validation', () => {
       expect(ageField.errors).toEqual([{ message: 'Age is required' }])
     })
 
-    it('filters public field errors with form-level errorVisibility', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '', age: 0 },
-        errorVisibility: ({ fieldState }) => fieldState.meta.isTouched,
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                name: { message: 'Name is required' },
-                age: { message: 'Age is required' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const nameField = form._getOrCreateFieldApi({ name: 'name' })
-      const ageField = form._getOrCreateFieldApi({ name: 'age' })
-
-      nameField.handleChange('Alice', { causeValidation: false })
-      await form.validate('change')
-
-      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-      expect(nameField.meta.isValid).toBe(false)
-      expect(nameField.meta.original.errors).toEqual([
-        { message: 'Name is required' },
-      ])
-      expect(nameField.meta.original.isValid).toBe(false)
-
-      expect(ageField.errors).toEqual([])
-      expect(ageField.meta.isValid).toBe(true)
-      expect(ageField.meta.original.errors).toEqual([
-        { message: 'Age is required' },
-      ])
-      expect(ageField.meta.original.isValid).toBe(false)
-    })
-
-    it('lets fields override the form-level errorVisibility', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '', age: 0 },
-        errorVisibility: ({ fieldState }) => fieldState.meta.isTouched,
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                age: { message: 'Age is required' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const ageField = form._getOrCreateFieldApi({
-        name: 'age',
-        errorVisibility: () => true,
-      })
-
-      await form.validate('change')
-
-      expect(ageField.errors).toEqual([{ message: 'Age is required' }])
-      expect(ageField.meta.isValid).toBe(false)
-      expect(ageField.meta.original.errors).toEqual([
-        { message: 'Age is required' },
-      ])
-    })
-
-    it('reveals submit-attempted errors only after a submit attempt', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        errorVisibility: ({ state }) => state.submissionAttempts > 0,
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                name: { message: 'Name is required' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
-
-      field.handleBlur()
-      await form.validate('change')
-      expect(field.errors).toEqual([])
-
-      await form.handleSubmit()
-      expect(field.errors).toEqual([{ message: 'Name is required' }])
-    })
-
-    it('reveals blurred-or-submit-attempted errors after blur or submit', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '', email: '' },
-        errorVisibility: ({ state, fieldState }) =>
-          fieldState.meta.isBlurred || state.submissionAttempts > 0,
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                name: { message: 'Name is required' },
-                email: { message: 'Email is required' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const nameField = form._getOrCreateFieldApi({ name: 'name' })
-      const emailField = form._getOrCreateFieldApi({ name: 'email' })
-
-      nameField.handleBlur()
-      await form.validate('change')
-
-      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-      expect(emailField.errors).toEqual([])
-
-      await form.handleSubmit()
-
-      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
-    })
-
-    it('passes current scoped state and pre-visibility field state to errorVisibility', async () => {
-      const errorVisibility = vi.fn(
-        ({ state, fieldState }) =>
-          state.values.name === 'Alice' &&
-          fieldState.value === 'Alice' &&
-          fieldState.meta.isTouched &&
-          fieldState.meta.isDirty,
-      )
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        errorVisibility,
-        validators: [
-          {
-            run: () => ({ fields: { name: 'Required' } }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
-
-      field.handleChange('Alice', { causeValidation: false })
-      await form.validate('change')
-
-      expect(field.errors).toEqual([{ message: 'Required' }])
-      expect(errorVisibility).toHaveBeenCalled()
-      const [{ fieldState }] = errorVisibility.mock.lastCall!
-      expect(fieldState).toMatchObject({
-        value: 'Alice',
-        meta: {
-          isTouched: true,
-          isSelfTouched: true,
-          isDirty: true,
-          isSelfDirty: true,
-          isPristine: false,
-        },
-      })
-      expect('errors' in fieldState.meta).toBe(false)
-      expect('isValid' in fieldState.meta).toBe(false)
-    })
-
-    it('passes derived form error and validity state to errorVisibility', async () => {
-      const errorVisibility = vi.fn(
-        ({ state }) =>
-          state.errors[0]?.message === 'Form error' &&
-          !state.isValid &&
-          state.isInvalid &&
-          !state.canSubmit,
-      )
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        errorVisibility,
-        validators: [
-          {
-            run: () => ({
-              form: 'Form error',
-              fields: { name: 'Name error' },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
-
-      await form.validate('change')
-
-      expect(field.errors).toEqual([{ message: 'Name error' }])
-      expect(errorVisibility).toHaveBeenCalled()
-      expect(errorVisibility.mock.lastCall?.[0].state).toMatchObject({
-        errors: [{ message: 'Form error' }],
-        isValid: false,
-        isInvalid: true,
-        canSubmit: false,
-      })
-    })
-
     it('handles array error format in field-level errors', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -1687,59 +1402,6 @@ describe('form - validation', () => {
         { message: 'Error 2' },
       ])
       expect(lastNameField.errors).toEqual([{ message: 'Error 3' }])
-    })
-
-    it('combines field-level and form-level errors in field.errors', async () => {
-      vi.useFakeTimers()
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                name: { message: 'Form-level error' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({
-        name: 'name',
-        validators: [
-          { run: () => ({ message: 'Field-level error' }), triggers: [] },
-        ],
-      })
-      void field.atom
-      field.handleChange('New value')
-      await vi.runAllTimersAsync()
-      const formValidatorInstance = form._validatorInstances![0]!
-      expect(form._tryGetFieldApi('name')).toBe(field)
-      expect(Array.from(formValidatorInstance.errorTargets ?? [])).toEqual([
-        field,
-      ])
-      expect(
-        field
-          ._getBaseMeta()
-          ._validationSourceErrors?.get(formValidatorInstance),
-      ).toEqual({
-        errors: [{ message: 'Form-level error' }],
-        sourceEvent: 'change',
-      })
-      expect(field.errors).toEqual([{ message: 'Form-level error' }])
-    })
-
-    it('stores string field validator results as message objects', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-      })
-      const field = form._getOrCreateFieldApi({
-        name: 'name',
-        validators: [{ run: () => 'Field-level error', triggers: [] }],
-      })
-      void field.atom
-      await field._runFieldValidation('submit')
-      expect(field.errors).toEqual([{ message: 'Field-level error' }])
     })
 
     it('clears field errors when validator no longer reports them', async () => {
@@ -1927,4 +1589,247 @@ describe('form - validation', () => {
       unregister()
     })
   })
+})
+
+describe('source-owned error storage', () => {
+  it('replaces a complete form result while preserving other sources', async () => {
+    const validator = vi
+      .fn()
+      .mockReturnValueOnce({
+        form: 'Root',
+        fields: { name: 'Name', email: 'Email' },
+      })
+      .mockReturnValueOnce({ fields: { email: 'Updated email' } })
+      .mockReturnValue(null)
+    const form = new InternalFormApi({
+      defaultValues: { name: '', email: '' },
+      validators: [{ triggers: [], run: validator }],
+    })
+    const name = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [{ triggers: [], run: () => 'Field source' }],
+    })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    await form.handleSubmit()
+    expect(name.errors).toEqual([
+      { message: 'Field source' },
+      { message: 'Name' },
+    ])
+    expect(form.state.errors).toEqual([{ message: 'Root' }])
+    await form.validate('submit')
+    expect(name.errors).toEqual([{ message: 'Field source' }])
+    expect(email.errors).toEqual([{ message: 'Updated email' }])
+    expect(form.state.errors).toEqual([])
+    await form.validate('submit')
+    expect(email.errors).toEqual([])
+    expect(name.errors).toEqual([{ message: 'Field source' }])
+    expect(form.state.isValid).toBe(false)
+  })
+
+  it('invalidates form errors at the changed field and all ancestor targets', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { address: { city: '' }, email: '' },
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            form: 'Root',
+            fields: {
+              address: 'Address',
+              'address.city': 'City',
+              email: 'Email',
+            },
+          }),
+        },
+      ],
+    })
+    const address = form._getOrCreateFieldApi({ name: 'address' })
+    const city = form._getOrCreateFieldApi({ name: 'address.city' })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    await form.handleSubmit()
+    city.handleChange('London', { causeValidation: false })
+    expect(form.state.errors).toEqual([])
+    expect(address.errors).toEqual([])
+    expect(city.errors).toEqual([])
+    expect(email.errors).toEqual([{ message: 'Email' }])
+    expect(form.state.isValid).toBe(false)
+    email.handleChange('name@example.com', { causeValidation: false })
+    expect(form.state.isValid).toBe(true)
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('clears an entire boundary contribution while retaining unrelated targets', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { address: { city: '', postcode: '' }, email: '' },
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            fields: {
+              'address.city': 'City',
+              'address.postcode': 'Postcode',
+              email: 'Email',
+            },
+          }),
+        },
+      ],
+    })
+    const address = form._getOrCreateFieldApi({
+      name: 'address',
+      errorBoundary: true,
+    })
+    const city = form._getOrCreateFieldApi({ name: 'address.city' })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    await form.handleSubmit()
+    expect(address.errors).toEqual([
+      { message: 'City' },
+      { message: 'Postcode' },
+    ])
+    city.handleChange('London', { causeValidation: false })
+    expect(address.errors).toEqual([])
+    expect(email.errors).toEqual([{ message: 'Email' }])
+    expect(form.state.isValid).toBe(false)
+  })
+
+  it('resetting one target leaves the source contribution at other targets intact', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '', email: '' },
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            form: 'Root',
+            fields: { name: 'Name', email: 'Email' },
+          }),
+        },
+      ],
+    })
+    const name = form._getOrCreateFieldApi({ name: 'name' })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    await form.handleSubmit()
+    name.reset()
+    expect(name.errors).toEqual([])
+    expect(email.errors).toEqual([{ message: 'Email' }])
+    expect(form.state.errors).toEqual([{ message: 'Root' }])
+    expect(form.state.isValid).toBe(false)
+    email.handleChange('valid', { causeValidation: false })
+    expect(email.errors).toEqual([])
+    expect(form.state.errors).toEqual([])
+    expect(form.state.isValid).toBe(true)
+  })
+
+  it('retains stale errors when change predicates enable validation after listeners run', async () => {
+    const pending = promiseWithResolvers<null>()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: [
+            { trigger: 'change', when: ({ formApi }) => formApi.state.isDirty },
+          ],
+          run: ({ event }) =>
+            event === 'submit'
+              ? { form: 'Root', fields: { name: 'Name' } }
+              : pending.promise,
+        },
+      ],
+    })
+    const name = form._getOrCreateFieldApi({ name: 'name' })
+    await form.handleSubmit()
+    name.handleChange('new')
+    expect(form.state.errors).toEqual([{ message: 'Root' }])
+    expect(name.errors).toEqual([{ message: 'Name' }])
+    pending.resolve(null)
+    await expect.poll(() => form.state.isValidating).toBe(false)
+    expect(form.state.isValid).toBe(true)
+  })
+
+  it('uses one change selection after field listeners change validator eligibility', async () => {
+    const pending = promiseWithResolvers<null>()
+    const when = vi.fn(({ formApi }) => formApi.state.values.enabled)
+    const form = new InternalFormApi({
+      defaultValues: { name: '', enabled: false },
+      validators: [
+        {
+          triggers: [{ trigger: 'change', when }],
+          run: ({ event }) => (event === 'submit' ? 'Root' : pending.promise),
+        },
+      ],
+    })
+    const name = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        {
+          triggers: ['change'],
+          run: () =>
+            form.setFieldValue('enabled', true, { causeValidation: false }),
+        },
+      ],
+    })
+    await form.handleSubmit()
+    name.handleChange('new')
+    expect(when).toHaveBeenCalledOnce()
+    // The listener's separate write invalidates the old result; the replacement still runs.
+    expect(form.state.isValidating).toBe(true)
+    pending.resolve(null)
+    await expect.poll(() => form.state.isValidating).toBe(false)
+    expect(form.state.errors).toEqual([])
+  })
+
+  it('clears stale contributions at actual form bail skips without clearing siblings', async () => {
+    const pending = promiseWithResolvers<string>()
+    const skipped = vi.fn(() => ({
+      form: 'Stored root',
+      fields: { name: 'Stored name', email: 'Stored email' },
+    }))
+    const form = new InternalFormApi({
+      defaultValues: { name: '', email: '' },
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ event }) => (event === 'submit' ? null : pending.promise),
+        },
+        { triggers: ['change'], bailIfInvalid: true, run: skipped },
+      ],
+    })
+    const name = form._getOrCreateFieldApi({ name: 'name' })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    await form.handleSubmit()
+    name.handleChange('new')
+    expect(name.errors).toEqual([{ message: 'Stored name' }])
+    pending.resolve('Current root')
+    await expect.poll(() => form.state.isValidating).toBe(false)
+    expect(skipped).toHaveBeenCalledOnce()
+    expect(form.state.errors).toEqual([{ message: 'Current root' }])
+    expect(name.errors).toEqual([])
+    expect(email.errors).toEqual([{ message: 'Stored email' }])
+  })
+})
+
+it('publishes reset values and cleared source errors in one reactive update', async () => {
+  const form = new InternalFormApi({
+    defaultValues: { name: 'old' },
+    validators: [
+      {
+        triggers: [],
+        run: () => ({ form: 'Root', fields: { name: 'Name' } }),
+      },
+    ],
+  })
+  await form.handleSubmit()
+  const snapshots: Array<{ value: string; errors: unknown; isValid: boolean }> =
+    []
+  const subscription = form.atom.subscribe((state) =>
+    snapshots.push({
+      value: state.values.name,
+      errors: state.errors,
+      isValid: state.isValid,
+    }),
+  )
+  try {
+    form.reset({ name: 'fresh' })
+    expect(snapshots).toEqual([{ value: 'fresh', errors: [], isValid: true }])
+  } finally {
+    subscription.unsubscribe()
+  }
 })

@@ -9,7 +9,7 @@ type ListenerTriggerOption<TTriggers, TFormData, TValue> =
 | ListenerTriggerConfig<TTriggers, TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L124)
+Defined in: [pipeline/listeners/listeners.public.ts:112](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L112)
 
 A listener event, optionally paired with a condition that enables it.
 

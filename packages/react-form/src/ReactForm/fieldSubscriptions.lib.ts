@@ -5,7 +5,7 @@ import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 export function useValueFieldSubscription(
   fieldApi: AnyInternalFieldApi,
 ): AnyInternalFieldApi {
-  const state = useSelector(fieldApi.atom, (state) => state)
+  const state = useSelector(fieldApi.atom, (s) => s)
 
   return useMemo(() => {
     void state
@@ -15,16 +15,20 @@ export function useValueFieldSubscription(
 
 export function useArrayFieldSubscription(
   fieldApi: AnyInternalFieldApi,
+  subscribeToMeta = false,
 ): AnyInternalFieldApi {
-  const length = useSelector(fieldApi.atom, (state) => state.value.length)
-  const arrayVersion = useSelector(
-    fieldApi.atom,
-    (state) => state.meta._arrayVersion,
-  )
+  const length = useSelector(fieldApi.atom, (s) => s.value.length)
+  const metaOrArrayVersion = useSelector(fieldApi.atom, (s) => {
+    if (subscribeToMeta) {
+      return s.meta
+    } else {
+      return s.meta._arrayVersion
+    }
+  })
 
   return useMemo(() => {
     void length
-    void arrayVersion
+    void metaOrArrayVersion
     return Object.create(fieldApi)
-  }, [fieldApi, arrayVersion, length])
+  }, [fieldApi, metaOrArrayVersion, length])
 }

@@ -4,10 +4,10 @@ title: SvelteFormFieldComponent
 ---
 
 ```ts
-type SvelteFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
+type SvelteFormFieldComponent<TFormData, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:136](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L136)
+Defined in: [packages/svelte-form/src/Components.public.ts:133](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L133)
 
 ## Type Parameters
 
@@ -15,9 +15,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:136](https://github.c
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

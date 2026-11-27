@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Input } from '@/components/ui/input'
@@ -27,4 +27,7 @@ function FormNumberInput(props: TanStackFormNumberInputProps) {
   )
 }
 
-export default fieldComponent.strict(FormNumberInput, 'field')
+export default fieldComponent.strict()({
+  component: FormNumberInput,
+  replaceProperty: 'field',
+})

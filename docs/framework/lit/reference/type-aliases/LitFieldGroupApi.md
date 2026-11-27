@@ -4,10 +4,10 @@ title: LitFieldGroupApi
 ---
 
 ```ts
-type LitFieldGroupApi<TFieldData> = LitFieldMethods<TFieldData, ValidationIssue, unknown, FormErrorTypes> & LitSubscribeMethod<TFieldData> & FormApiFieldMethods<TFieldData> & FormApiArrayMethods<TFieldData> & object;
+type LitFieldGroupApi<TFieldData> = LitFieldMethods<TFieldData, ScopedErrorTypes, unknown, ScopedErrorTypes> & LitSubscribeMethod<TFieldData> & FormApiFieldMethods<TFieldData> & FormApiArrayMethods<TFieldData> & object;
 ```
 
-Defined in: [with-fields.ts:31](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L31)
+Defined in: [with-fields.ts:34](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L34)
 
 ## Type Declaration
 

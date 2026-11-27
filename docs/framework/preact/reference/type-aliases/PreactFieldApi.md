@@ -4,7 +4,7 @@ title: PreactFieldApi
 ---
 
 ```ts
-type PreactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
+type PreactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:78](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L78)
@@ -27,9 +27,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:78](https:
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

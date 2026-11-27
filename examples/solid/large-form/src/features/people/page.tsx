@@ -15,7 +15,7 @@ export function PeoplePage() {
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        form.handleSubmit()
+        form.handleSubmit().catch(console.error)
       }}
     >
       <h1>Personal Information</h1>

@@ -5,9 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
-  ValidationIssue,
+  ScopedErrorTypes,
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'preact/compat'
 import type { CrossVersionPreactNode } from '../preactTypes.public'
@@ -16,6 +15,9 @@ import type {
   PreactFormSubscribeProps,
 } from '../PreactForm/Components.public'
 import type { ReadonlyAtom } from '@tanstack/preact-store'
+
+// TODO what's going on with these types? It seems like it loses basically all form info.
+// Is that intentional?
 
 export interface FieldGroupFieldComponent<
   in out TFieldData,
@@ -31,9 +33,9 @@ export interface FieldGroupFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -53,9 +55,9 @@ export interface FieldGroupArrayFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): CrossVersionPreactNode
@@ -63,7 +65,7 @@ export interface FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = PreactFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -88,4 +90,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   Record<string, FunctionComponent<any>>
 >
 
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

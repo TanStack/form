@@ -12,6 +12,10 @@ const form = useForm({
     alert(`Submitted ${value.items.length} items.`)
   },
 })
+
+function handleSubmit() {
+  form.handleSubmit().catch(console.error)
+}
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const form = useForm({
     <h2>Item amount: {{ amount.toLocaleString() }}</h2>
   </form.Subscribe>
 
-  <form @submit.prevent.stop="form.handleSubmit()">
+  <form @submit.prevent.stop="handleSubmit">
     <button type="submit">Submit</button>
     <button type="button" @click="form.pushFieldValue('items', 'New Field')">
       Create item

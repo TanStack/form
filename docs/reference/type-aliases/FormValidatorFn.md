@@ -4,12 +4,12 @@ title: FormValidatorFn
 ---
 
 ```ts
-type FormValidatorFn<TFormData> = ValidatorFn<FormValidatorContext<TFormData>, FormValidateResult<TFormData>>;
+type FormValidatorFn<TFormData, TEvents> = (context) => Awaitable<FormValidationResult<TFormData>>;
 ```
 
-Defined in: [validation.public.ts:796](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L796)
+Defined in: [pipeline/validation/formValidators.public.ts:217](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L217)
 
-Validates complete form values and can return form errors, field errors, or output data.
+Validates the complete form values with a context selected from its configured events.
 
 ## Type Parameters
 
@@ -18,3 +18,23 @@ Validates complete form values and can return form errors, field errors, or outp
 `TFormData`
 
 Library-managed. Do not specify explicitly.
+
+### TEvents
+
+`TEvents` *extends* [`ValidatorEvents`](ValidatorEvents.md)
+
+Library-managed. Do not specify explicitly.
+
+## Parameters
+
+### context
+
+`GetValidatorContext`\<`TFormData`, `TEvents`\>
+
+## Returns
+
+[`Awaitable`](Awaitable.md)\<[`FormValidationResult`](FormValidationResult.md)\<`TFormData`\>\>
+
+Form or field errors, a successful result from `createOutput`, or
+`null`, `undefined`, or `false` for success without output data. The result
+can also be returned in a promise.

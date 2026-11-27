@@ -3,7 +3,7 @@ id: VueTanStackFormComponents
 title: VueTanStackFormComponents
 ---
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:435](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L435)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:434](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L434)
 
 ## Type Parameters
 
@@ -11,9 +11,9 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:435](https://git
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -24,37 +24,37 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:435](https://git
 ### ArrayField
 
 ```ts
-ArrayField: VueFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
-```
-
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:444](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L444)
-
-***
-
-### Field
-
-```ts
-Field: VueFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+ArrayField: VueFormArrayFieldComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:443](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L443)
 
 ***
 
+### Field
+
+```ts
+Field: VueFormFieldComponent<TFormData, TFormError, TFieldComponents>;
+```
+
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:442](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L442)
+
+***
+
 ### FormGroup
 
 ```ts
-FormGroup: VueFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
+FormGroup: VueFormGroupComponent<TFormData, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:450](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L450)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:449](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L449)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: VueFormSubscribeComponent<TFormData, TFormErrorTypes>;
+Subscribe: VueFormSubscribeComponent<TFormData, TFormError>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:449](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L449)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:448](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L448)
