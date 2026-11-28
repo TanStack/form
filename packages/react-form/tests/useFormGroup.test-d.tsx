@@ -301,7 +301,7 @@ describe('useFormGroup field-like meta surface', () => {
       })
 
       expectTypeOf(group.state.meta.errors).toEqualTypeOf<
-        Array<'change-error' | undefined>
+        Array<'change-error'>
       >()
     }
   })
