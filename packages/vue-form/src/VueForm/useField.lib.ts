@@ -12,9 +12,17 @@ export interface InternalFieldProps {
   [key: string]: unknown
 }
 
-export function useField(
-  options: () => InternalFieldProps,
-): ShallowRef<AnyInternalFieldApi> {
+export interface FieldBinding {
+  fieldApi: ShallowRef<AnyInternalFieldApi>
+  /**
+   * The resolved field's name. Array mutations move existing field APIs to new
+   * names, so a keyed item can resolve to the same field API under a new name.
+   * `fieldApi` does not change in that case, so the name is tracked separately.
+   */
+  name: Readonly<ShallowRef<string>>
+}
+
+export function useField(options: () => InternalFieldProps): FieldBinding {
   const initialOptions = options()
   const resetVersion = useSelector(initialOptions.form._atoms.resetVersion)
 
@@ -30,11 +38,13 @@ export function useField(
   }
 
   const fieldApi = shallowRef(createField())
+  const name = shallowRef<string>(fieldApi.value.name)
 
   watch(
     [() => options().form, () => options().name, resetVersion],
     () => {
       fieldApi.value = createField()
+      name.value = fieldApi.value.name
     },
     { flush: 'sync' },
   )
@@ -60,5 +70,5 @@ export function useField(
   })
   onUnmounted(() => unregister?.())
 
-  return fieldApi
+  return { fieldApi, name }
 }

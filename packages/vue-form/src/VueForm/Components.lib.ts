@@ -56,11 +56,11 @@ function createFieldComponent(
   return defineComponent(
     (_props, context) => {
       const options = () => ({ ...context.attrs, form }) as never
-      const fieldApi = useField(options)
+      const { fieldApi, name } = useField(options)
       const { selection, meta } = array
         ? createArrayFieldSubscription(fieldApi)
         : createValueFieldSubscription(fieldApi)
-      const field = createFieldView(fieldApi, selection, meta)
+      const field = createFieldView(fieldApi, name, selection, meta)
       if (fieldComponents !== null) Object.assign(field, fieldComponents)
 
       if (fieldContext) {
