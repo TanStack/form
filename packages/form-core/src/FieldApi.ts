@@ -259,9 +259,32 @@ export interface FieldValidators<
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
    */
   onSubmitAsync?: TOnSubmitAsync
+  /**
+   * An optional function, whose run time is decided by the form's `validationLogic`
+   * rather than by a fixed event.
+   *
+   * It is not called under the default validation logic; pass `revalidateLogic()` to
+   * the form's `validationLogic` option to enable it.
+   *
+   * @example z.string().min(1)
+   */
   onDynamic?: RejectPromiseValidator<TOnDynamic>
+  /**
+   * An optional property similar to `onDynamic` but async validation.
+   *
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
+   */
   onDynamicAsync?: TOnDynamicAsync
+  /**
+   * An optional number to represent how long the `onDynamicAsync` should wait before running
+   *
+   * If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+   */
   onDynamicAsyncDebounceMs?: number
+  /**
+   * An optional list of field names that should trigger this field's `onDynamic` and `onDynamicAsync` events when its value changes
+   */
+  onDynamicListenTo?: DeepKeys<TParentData>[]
 }
 
 export interface FieldListeners<
@@ -1228,20 +1251,34 @@ export class FieldApi<
   getLinkedFields = (cause: ValidationCause) => {
     const fields = Object.values(this.form.fieldInfo) as FieldInfo<any>[]
 
-    const linkedFields: AnyFieldApi[] = []
+    const linkedFields: Array<{
+      field: AnyFieldApi
+      validatorCause: ValidationCause
+      validatorType?: 'dynamic'
+    }> = []
     for (const field of fields) {
       if (!field.instance) continue
       // TODO: How to handle FieldGroups? Do we need to? IDK.
       if (!(field.instance instanceof FieldApi)) {
         continue
       }
-      const { onChangeListenTo, onBlurListenTo } =
+      const { onChangeListenTo, onBlurListenTo, onDynamicListenTo } =
         field.instance.options.validators || {}
       if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'change' })
       }
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'blur' })
+      }
+      if (
+        (cause === 'change' || cause === 'blur') &&
+        onDynamicListenTo?.includes(this.name as string)
+      ) {
+        linkedFields.push({
+          field: field.instance,
+          validatorCause: cause,
+          validatorType: 'dynamic',
+        })
       }
     }
 
@@ -1265,15 +1302,43 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getSyncValidatorArray(cause, {
-          ...field.options,
+      (acc, { field, validatorCause, validatorType }) => {
+        let fieldOptions = field.options
+
+        if (validatorType === 'dynamic' && field.options.validators) {
+          const modifiedValidators = { ...field.options.validators }
+
+          if (validatorCause === 'change') {
+            modifiedValidators.onChange = modifiedValidators.onDynamic
+          } else if (validatorCause === 'blur') {
+            modifiedValidators.onBlur = modifiedValidators.onDynamic
+          }
+
+          fieldOptions = {
+            ...field.options,
+            validators: modifiedValidators,
+          }
+        }
+
+        const fieldValidates = getSyncValidatorArray(validatorCause, {
+          ...fieldOptions,
           form: field.form,
           fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
         fieldValidates.forEach((validate) => {
+          // Only the validator remapped from `onDynamic` above becomes a
+          // `dynamic` cause. The event's other validators (notably the
+          // `server` one, whose job is to clear stale errors) must keep their
+          // own cause, or they would overwrite the error just recorded under
+          // the `onDynamic` key.
+          if (
+            validatorType === 'dynamic' &&
+            validate.cause === validatorCause
+          ) {
+            validate.cause = 'dynamic'
+          }
           ;(validate as any).field = field
         })
         return acc.concat(fieldValidates as never)
@@ -1339,9 +1404,9 @@ export class FieldApi<
       for (const validateObj of validates) {
         validateFieldFn(this, validateObj)
       }
-      for (const fieldValitateObj of linkedFieldValidates) {
-        if (!fieldValitateObj.validate) continue
-        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
+      for (const fieldValidateObj of linkedFieldValidates) {
+        if (!fieldValidateObj.validate) continue
+        validateFieldFn(fieldValidateObj.field, fieldValidateObj)
       }
     })
 
@@ -1366,6 +1431,27 @@ export class FieldApi<
         errorSourceMap: {
           ...prev.errorSourceMap,
           [submitErrKey]: undefined,
+        },
+      }))
+    }
+
+    const dynamicErrKey = getErrorMapKey('dynamic')
+
+    if (
+      this.state.meta.errorMap[dynamicErrKey] &&
+      this.state.meta.errorSourceMap[dynamicErrKey] === 'field' &&
+      cause !== 'dynamic' &&
+      !hasErrored
+    ) {
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {
+          ...prev.errorMap,
+          [dynamicErrKey]: undefined,
+        },
+        errorSourceMap: {
+          ...prev.errorSourceMap,
+          [dynamicErrKey]: undefined,
         },
       }))
     }
@@ -1438,15 +1524,47 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getAsyncValidatorArray(cause, {
-          ...field.options,
+      (acc, { field, validatorCause, validatorType }) => {
+        let fieldOptions = field.options
+
+        if (validatorType === 'dynamic' && field.options.validators) {
+          const modifiedValidators = { ...field.options.validators }
+
+          if (validatorCause === 'change') {
+            modifiedValidators.onChangeAsync = modifiedValidators.onDynamicAsync
+            modifiedValidators.onChangeAsyncDebounceMs =
+              modifiedValidators.onDynamicAsyncDebounceMs
+          } else if (validatorCause === 'blur') {
+            modifiedValidators.onBlurAsync = modifiedValidators.onDynamicAsync
+            modifiedValidators.onBlurAsyncDebounceMs =
+              modifiedValidators.onDynamicAsyncDebounceMs
+          }
+
+          fieldOptions = {
+            ...field.options,
+            validators: modifiedValidators,
+          }
+        }
+
+        const fieldValidates = getAsyncValidatorArray(validatorCause, {
+          ...fieldOptions,
           form: field.form,
           fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
         fieldValidates.forEach((validate) => {
+          // Only the validator remapped from `onDynamic` above becomes a
+          // `dynamic` cause. The event's other validators (notably the
+          // `server` one, whose job is to clear stale errors) must keep their
+          // own cause, or they would overwrite the error just recorded under
+          // the `onDynamic` key.
+          if (
+            validatorType === 'dynamic' &&
+            validate.cause === validatorCause
+          ) {
+            validate.cause = 'dynamic'
+          }
           ;(validate as any).field = field
         })
         return acc.concat(fieldValidates as never)
@@ -1580,11 +1698,11 @@ export class FieldApi<
       if (!validateObj.validate) continue
       validateFieldAsyncFn(this, validateObj, validatesPromises)
     }
-    for (const fieldValitateObj of linkedFieldValidates) {
-      if (!fieldValitateObj.validate) continue
+    for (const fieldValidateObj of linkedFieldValidates) {
+      if (!fieldValidateObj.validate) continue
       validateFieldAsyncFn(
-        fieldValitateObj.field,
-        fieldValitateObj,
+        fieldValidateObj.field,
+        fieldValidateObj,
         linkedPromises,
       )
     }
