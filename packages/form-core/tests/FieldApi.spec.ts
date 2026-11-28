@@ -2301,6 +2301,57 @@ describe('field api', () => {
     ])
   })
 
+  it('should clear a stale onMount error when a linked field revalidation passes', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: 'password',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onMount: ({ value, fieldApi }) =>
+          value !== fieldApi.form.getFieldValue('password')
+            ? 'Passwords do not match'
+            : undefined,
+        onChangeListenTo: ['password'],
+        onChange: ({ value, fieldApi }) =>
+          value !== fieldApi.form.getFieldValue('password')
+            ? 'Passwords do not match'
+            : undefined,
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    // onMount reports the mismatch (password === '', confirm === 'password').
+    expect(passconfirmField.state.meta.errorMap.onMount).toBe(
+      'Passwords do not match',
+    )
+    expect(passconfirmField.getMeta().isValid).toBe(false)
+
+    // Changing the linked field re-runs confirm's onChange (which now passes)
+    // without touching confirm's own value. The stale onMount error should
+    // clear, just as it would if the field's value had changed directly.
+    passField.setValue('password')
+
+    expect(passconfirmField.state.meta.errorMap.onMount).toBeUndefined()
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    expect(passconfirmField.getMeta().isValid).toBe(true)
+    expect(form.state.isValid).toBe(true)
+  })
+
   it('should run onBlur on a linked field', () => {
     const form = new FormApi({
       defaultValues: {
