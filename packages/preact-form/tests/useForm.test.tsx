@@ -898,6 +898,33 @@ describe('useForm', () => {
     expect(result).toHaveTextContent('1')
   })
 
+  it('should restore the generated formId when formId changes back to undefined', () => {
+    let renderCount = 0
+
+    function Comp({ formId }: { formId?: string }) {
+      renderCount++
+      if (renderCount > 50) {
+        throw new Error('Render loop detected')
+      }
+
+      const form = useForm({ formId })
+
+      return <span data-testid="formId">{form.formId}</span>
+    }
+
+    const { getByTestId, rerender } = render(<Comp />)
+    const generatedFormId = getByTestId('formId').textContent
+
+    rerender(<Comp formId="test" />)
+    expect(getByTestId('formId').textContent).toBe('test')
+
+    rerender(<Comp formId={undefined} />)
+    expect(getByTestId('formId').textContent).toBe(generatedFormId)
+
+    rerender(<Comp formId="test" />)
+    expect(getByTestId('formId').textContent).toBe('test')
+  })
+
   it('should allow custom component keys for arrays', async () => {
     function Comp() {
       const form = useForm({
