@@ -2444,6 +2444,12 @@ export class FormApi<
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
     if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
+      // canSubmit is false while a submission is in flight, so without this
+      // guard a repeated handleSubmit during a pending onSubmit would fall
+      // through to the re-submission bypass below and submit the form again.
+      if (this.baseStore.state.isSubmitting) {
+        return
+      }
       // On re-submission (submissionAttempts > 1), skip the early return so
       // validateAllFields can re-run and clear stale field errors (e.g. from a
       // previous onBlur validation that is no longer relevant). The
