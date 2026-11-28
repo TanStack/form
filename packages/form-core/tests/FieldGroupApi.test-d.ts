@@ -201,4 +201,43 @@ describe('fieldGroupApi', () => {
       },
     })
   })
+
+  it('should reject nullish-only field-group paths', () => {
+    type FormValues = {
+      foo:
+        | {
+            bar: string
+          }
+        | null
+        | undefined
+      nope: null | undefined
+    }
+
+    const defaultValues: FormValues = {
+      foo: { bar: '' },
+      nope: null,
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+
+    const group = new FieldGroupApi({
+      form,
+      defaultValues: { bar: '' },
+      fields: 'foo',
+    })
+
+    expectTypeOf(group.state.values).toEqualTypeOf<{
+      bar: string
+    }>()
+    expectTypeOf(group.state.values.bar).toEqualTypeOf<string>()
+
+    const wrongGroup = new FieldGroupApi({
+      form,
+      defaultValues: null,
+      // @ts-expect-error nullish-only fields cannot produce the group shape
+      fields: 'nope',
+    })
+  })
 })
