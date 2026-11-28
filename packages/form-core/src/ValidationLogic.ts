@@ -194,9 +194,10 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
       })
     }
     case 'blur': {
-      // Run blur, server validation
+      // Run blur validation. Server errors are only cleared by a value
+      // change or a submit, not by a blur without a change.
       return props.runValidation({
-        validators: [onBlurValidator, onServerValidator],
+        validators: [onBlurValidator],
         form: props.form,
       })
     }
