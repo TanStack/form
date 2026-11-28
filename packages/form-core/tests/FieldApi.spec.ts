@@ -2099,6 +2099,64 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
 
+  it('should not clear onSubmit errors on blur when the value did not change', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(field.getMeta().errors).toStrictEqual(['first name is required'])
+
+    // Blurring the field without changing its value must keep the submit error
+    field.handleBlur()
+    expect(field.getMeta().errors).toStrictEqual(['first name is required'])
+    expect(field.getMeta().isValid).toBe(false)
+  })
+
+  it('should clear onSubmit errors once a valid value is entered', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(field.getMeta().errors).toStrictEqual(['first name is required'])
+
+    // Entering a valid value clears the stale submit error
+    field.handleChange('John')
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(field.getMeta().isValid).toBe(true)
+  })
+
   it('should show onMount errors', async () => {
     const form = new FormApi({
       defaultValues: {
