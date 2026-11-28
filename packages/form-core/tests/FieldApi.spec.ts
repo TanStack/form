@@ -132,6 +132,42 @@ describe('field api', () => {
     expect(field.getMeta().isDefaultValue).toBe(true)
   })
 
+  it('should treat field-level defaultValue of null as default when form default is non-null', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test' as string | null,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: null,
+    })
+    field.mount()
+
+    expect(field.getValue()).toBe(null)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue('other')
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue(null)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    form.resetField('name')
+    expect(field.getValue()).toBe(null)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue('other')
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    form.reset()
+    expect(field.getValue()).toBe(null)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
   it('should be false when value is undefined and a default value is specified in form-level only', () => {
     const form = new FormApi({
       defaultValues: {
