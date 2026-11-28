@@ -318,7 +318,10 @@ export class InternalFormApi<TFormData> implements FormApi<
     >,
   ): void {
     const previousListeners = previousOptions?.listeners ?? null
-    const previousValidators = previousOptions?.validators ?? null
+    const previousValidators =
+      previousOptions === undefined
+        ? undefined
+        : (previousOptions.validators ?? null)
 
     this._listenerInstances = ListenerInstance.update({
       scope: 'form',
