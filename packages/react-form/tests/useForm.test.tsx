@@ -1151,4 +1151,48 @@ describe('useForm', () => {
     await user.type(input, 'updated')
     await expect.element(stateValue).toHaveTextContent('updated')
   })
+
+  it('should paint isSubmitting UI before onSubmitAsync runs', async () => {
+    let submitLabelWhenValidatorStarts: string | undefined
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          apiKey: 'key',
+        },
+        validators: {
+          onSubmitAsync: async () => {
+            const button = document.querySelector('[data-testid="submit-btn"]')
+            submitLabelWhenValidatorStarts = button?.textContent ?? undefined
+            await sleep(10)
+            return undefined
+          },
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            void form.handleSubmit()
+          }}
+        >
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <button type="submit" data-testid="submit-btn">
+                {isSubmitting ? 'Loading' : 'Submit'}
+              </button>
+            )}
+          </form.Subscribe>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.click(getByTestId('submit-btn'))
+
+    await waitFor(() => {
+      expect(submitLabelWhenValidatorStarts).toBe('Loading')
+    })
+  })
 })

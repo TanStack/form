@@ -7,6 +7,7 @@ import {
   getSyncValidatorArray,
   isFieldInGroup,
   mergeOpts,
+  yieldToPaint,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import {
@@ -2429,6 +2430,8 @@ export class FormGroupApi<
     const done = () => {
       this.setFormGroupState((prev) => ({ ...prev, isSubmitting: false }))
     }
+
+    await yieldToPaint()
 
     await this.validateAllFields('submit')
 
