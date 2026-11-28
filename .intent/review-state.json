@@ -47,7 +47,7 @@
       ]
     },
     "skill:packages/form-core/skills/validation/SKILL.md": {
-      "fingerprint": "0910ac0972c24fc0e5659e601435c6926e90d73530b9c1f6d724bb84db73a02e",
+      "fingerprint": "741928a3e7a559adf38c31b4be24a7546207c3064251f86ba14c99daacb297ec",
       "snapshot": {
         "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
         "packages/form-core/skills/validation/SKILL.md": "58a8cdcfd6c8ec45d3433175c307f24c25e822b8746d6e32e225fef2cb3bb051",
@@ -61,25 +61,25 @@
         "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
         "packages/react-form/tests/public/validation-execution/SubmitOnlyValidation.tsx": "12b2dd7201feae3840719ef3edd76fdd2af02ad030901644a0d98d27ddbfb9c4",
         "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/ValidatorInitialization.tsx": "a1070e48bddac486d11f87fe61c3a1fa229ea17ea4b8270cc1a5885012fd89ec",
         "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
         "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa",
-        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289"
+        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289",
+        "packages/react-form/tests/public/validation-execution/validator-initialization.spec.tsx": "d48472c98fe04c41b6ab32c205cbb3e8bcae2e497c4bb737110ab4d0aded0c8f"
       },
-      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
-      "outcome": "updated",
-      "reason": "The scheduling table and reusable-policy guidance now allow omitted triggers at every validator scope. Omitted, undefined, and empty triggers leave interaction validation disabled while submission validation still runs unless skipOnSubmit is true. Existing fixed-length array and predicate constraints remain accurate.",
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "The new public React regression fixture mounts and rerenders fixed-length validator arrays at form, form-group, and field scope. The initialization fix removes a false array-length warning without changing how users configure validation. The validation skill already requires constant validator/listener array lengths and remains accurate.",
       "evidence": [
-        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
-        "Compared the changes since 994c7cd13 in this skill and packages/form-core/src/pipeline/validation/validation.public.ts. Reviewed SubmitOnlyValidation.tsx and submit-only-validation.spec.tsx through the public React API.",
-        "The submit-only suite passed all 6 checks (omitted, undefined, and empty triggers in normal and Strict Mode), including group versus parent submission and skipped validators.",
-        "Intent validate packages/form-core/skills passed all 3 skills.",
-        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
-        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
-        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Compared packages/form-core/src/FormApi/FormApi.lib.ts with the previous reviewed revision 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; reviewed the undefined initialization sentinel and warning guard in packages/form-core/src/pipeline/validation/ValidatorInstance.lib.ts.",
+        "Read packages/react-form/tests/public/validation-execution/ValidatorInitialization.tsx and validator-initialization.spec.tsx: public useForm, FormGroup, and Field APIs exercise initialization and rerendering; the test asserts that console.warn is not called.",
+        "packages/form-core/skills/validation/SKILL.md already documents constant validator/listener array lengths, optional interaction triggers, and independent submission validation."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c9e3663210daa9459842dc97766412a451a917423e995e9d1e861baeb11bd1bd",
+      "fingerprint": "b98697e894724136f1140d4f007ca9b39cfd7e6d60472cd74cc6ee2befbd5dac",
       "snapshot": {
         "_artifacts/domain_map.yaml": "0ead20111f976d440ffbad9a532d9b325613bdcfbe3d79ae0e318f357b2ea85f",
         "_artifacts/skill_spec.md": "39614950840f75f5fcdeb4f7c7be6279c6a28ad9d2ee2db9186d77795f419aef",
@@ -182,18 +182,22 @@
         "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
         "packages/react-form/tests/public/validation-execution/SubmitOnlyValidation.tsx": "12b2dd7201feae3840719ef3edd76fdd2af02ad030901644a0d98d27ddbfb9c4",
         "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/ValidatorInitialization.tsx": "a1070e48bddac486d11f87fe61c3a1fa229ea17ea4b8270cc1a5885012fd89ec",
         "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
         "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa",
-        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289"
+        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289",
+        "packages/react-form/tests/public/validation-execution/validator-initialization.spec.tsx": "d48472c98fe04c41b6ab32c205cbb3e8bcae2e497c4bb737110ab4d0aded0c8f"
       },
-      "head": "e5441bd2d7e949042302ad8f05f7da389c2ec0ec",
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
       "outcome": "no-change",
-      "reason": "The planning review reopened solely because its combined snapshot includes the brace-only range-validator edit. domain_map.yaml, skill_spec.md, and skill_tree.yaml all match their previously reviewed content. The edit changes no behavior, task coverage, failure mode, identity, activation, source mapping, prerequisite, or distribution decision, so all three records remain accurate without edits.",
+      "reason": "The validator initialization fix and its public React regression cases preserve the existing validation workflow and constant-length array requirement. Generated references only update source locations and reflect optional triggers already reviewed in the current skills. Domain coverage, recommendations, skill ownership, source mappings, and prerequisites remain accurate in all three planning documents.",
       "evidence": [
-        "Compared all planning snapshot entries with the recorded review at HEAD e5441bd2d7e949042302ad8f05f7da389c2ec0ec; the only changed entry is packages/react-form/skills/field-groups/SKILL.md.",
-        "Verified unchanged hashes for _artifacts/domain_map.yaml, _artifacts/skill_spec.md, and _artifacts/skill_tree.yaml. The existing record still covers optional interaction triggers, normalized time inputs, stable labels, explicit validator success, prior check results, and consumer-evaluation limitations.",
-        "Removing only the conditional braces reproduces the prior skill hash db17e3d32d9c5acd8b2c78dda014a3f95f852e8a50aa4f5521886dce0f4d17cf; all tracked source snapshots are unchanged.",
-        "CI-equivalent maintainer check validates all 10 skills and reports zero files to sync and zero authoring issues. No new planning content or tests are needed for this formatting-only change."
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed _artifacts/domain_map.yaml: the validation domain already covers optional interaction triggers, independent submission validation, and configuration without changing validator array lengths.",
+        "Reviewed _artifacts/skill_spec.md: the consequential decisions retain constant validator/listener lengths, and the latest source review already records optional triggers at form, field, and form-group scope.",
+        "Reviewed _artifacts/skill_tree.yaml: validation already tracks packages/react-form/tests/public/validation-execution/*, which includes both new initialization regression files. No new task or dependency requires a planning change.",
+        "Inspected the FormApi initialization diff and every pending docs/reference diff. No skill or planning content was changed during this review."
       ]
     },
     "skill:packages/react-form/skills/app-forms/SKILL.md": {
@@ -692,6 +696,501 @@
         "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
         "Reviewed the GroupValidatorErrors diff from 202b4aa88b440b582d5aeabefd5e9377a6dbb43c and the optional public Validator.triggers declaration.",
         "pnpm --dir packages/react-form test:types passed with the value and error inference assertions included."
+      ]
+    },
+    "source:docs/reference/functions/createValidator.md": {
+      "fingerprint": "46217091f697210aae3da4f1166ce85cf5405e9ae3785c4bc83b70756ab5eed4",
+      "snapshot": {
+        "docs/reference/functions/createValidator.md": "648e5696241841849729dfbf9d124d7081073f3c82ab3c07fd9765bcee7a8f38"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/functions/createValidator.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/functions/createValidators.md": {
+      "fingerprint": "e88440d6b5b8dc7247fbfb3348570bb7ffaacf492d399f5217f6566b9af4677b",
+      "snapshot": {
+        "docs/reference/functions/createValidators.md": "876fb8a5248ad6db4e942b5d02f0fdfff9710324b7d60d0a7bc037a3bf036d97"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/functions/createValidators.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FieldValidationPredicateContext.md": {
+      "fingerprint": "2aa263c0c2e4ab6ef2ac72f19ad292142bd10ae63bf4fff0f7e5590dcb2778fd",
+      "snapshot": {
+        "docs/reference/interfaces/FieldValidationPredicateContext.md": "72d81ae5bed459b8716cd36c5c95f39d149c532c8f99e3e872ff1ebf52711216"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FieldValidationPredicateContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FieldValidator.md": {
+      "fingerprint": "eaf8c91f4b4f969ff50c18c81f01b27cc84cd617711bf98b9648c4577ee76b0d",
+      "snapshot": {
+        "docs/reference/interfaces/FieldValidator.md": "476cd07d135a6bd86f3aa197f3e40f3b5d5bac3a1a9514ee17c16c73165d711a"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "The generated API reference now marks triggers as optional, matching the public validation types and existing validation skill. Omitted or empty triggers disable interaction validation while submission remains controlled separately by skipOnSubmit. This behavior was already incorporated in the prior guidance review; no additional skill change is needed.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FieldValidator.md. The reference changes reflect optional triggers, the empty-array default, and refreshed source links.",
+        "Compared with packages/form-core/src/pipeline/validation/validation.public.ts and packages/form-core/skills/validation/SKILL.md, which already describe optional triggers and submission-only validators. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FieldValidatorContext.md": {
+      "fingerprint": "b5dc4970faf51de0abd876054645e2bd5eff8f54ba94f6abb7b9c97ef46c6e23",
+      "snapshot": {
+        "docs/reference/interfaces/FieldValidatorContext.md": "3b16e5bdd7d9a99ae378f41173ea0ad6766f24e198c49de5f9f9cd8ac8f69c06"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FieldValidatorContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FormGroupValidationPredicateContext.md": {
+      "fingerprint": "e0032408be36616ee3f7759c9b0fdef4f4e6b7c66b86e343059a602ea5093c0f",
+      "snapshot": {
+        "docs/reference/interfaces/FormGroupValidationPredicateContext.md": "9a29117bd380b735ecaf847c70f97e0e6c365cf96376e4ea31ee99b3ae8154ff"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FormGroupValidationPredicateContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FormGroupValidator.md": {
+      "fingerprint": "107da6215ffd653b9b9b12288987f29904f0e92cbda3cb6598b51d6c28dab933",
+      "snapshot": {
+        "docs/reference/interfaces/FormGroupValidator.md": "49da1fafb4e737910a062ac1f9f58f637c9541b9825378a80dc1a97fc499ab4c"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "The generated API reference now marks triggers as optional, matching the public validation types and existing validation skill. Omitted or empty triggers disable interaction validation while submission remains controlled separately by skipOnSubmit. This behavior was already incorporated in the prior guidance review; no additional skill change is needed.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FormGroupValidator.md. The reference changes reflect optional triggers, the empty-array default, and refreshed source links.",
+        "Compared with packages/form-core/src/pipeline/validation/validation.public.ts and packages/form-core/skills/validation/SKILL.md, which already describe optional triggers and submission-only validators. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FormGroupValidatorContext.md": {
+      "fingerprint": "15ee324be20814ca270c49efca390d784c6e0ab91b21bd10c33546654d9d60ac",
+      "snapshot": {
+        "docs/reference/interfaces/FormGroupValidatorContext.md": "7d04e742f48d9a46ed085a8a5d4efdf21dbc894ff6ac00547f080aa0b3f523d3"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FormGroupValidatorContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FormValidationPredicateContext.md": {
+      "fingerprint": "92569a91d9b3b127ff536b971d7c271bab23045089ae4ce5086b940967e740cc",
+      "snapshot": {
+        "docs/reference/interfaces/FormValidationPredicateContext.md": "a91dabc6a524a411756b1b4985ecc5c9d588ef7e79811ab478057084d1e9ff99"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FormValidationPredicateContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/FormValidatorContext.md": {
+      "fingerprint": "ac31725609ddf2f2f2579112659704001b9599fc326b96125ccaa11388608cda",
+      "snapshot": {
+        "docs/reference/interfaces/FormValidatorContext.md": "32d7b1453837ef4334c7ea0bc1047c481c86579cb031b9512ffb7e24bd030bf9"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/FormValidatorContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/ServerFormValidatorContext.md": {
+      "fingerprint": "2e99f25a204742e05e204dcad094f8773af9bb326e6ae043ee950a4eae465daa",
+      "snapshot": {
+        "docs/reference/interfaces/ServerFormValidatorContext.md": "d5452d6ba3ca2c7549108e8666e5a95469885ed4b1ad0c09d554b5ef8d8b06b2"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/ServerFormValidatorContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/ValidationTriggerConfig.md": {
+      "fingerprint": "9b7fcff03a33b5067e5818dfda7a92a5ebdddac2948e529e08e16171fee52dc8",
+      "snapshot": {
+        "docs/reference/interfaces/ValidationTriggerConfig.md": "47d3645c45c31d521fcb51bacb2f31aa4c4b36b56f3001401c6af39ee9e3cbfc"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/ValidationTriggerConfig.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/interfaces/Validator.md": {
+      "fingerprint": "4d3794268730ad8f273a53f685ddb57ddc84a2b0513eb744f2f41d716d649613",
+      "snapshot": {
+        "docs/reference/interfaces/Validator.md": "0eb8f811e22678cd13591c356cdd74a6fd24d44a819afa0bfac75fff538d061c"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "The generated API reference now marks triggers as optional, matching the public validation types and existing validation skill. Omitted or empty triggers disable interaction validation while submission remains controlled separately by skipOnSubmit. This behavior was already incorporated in the prior guidance review; no additional skill change is needed.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/interfaces/Validator.md. The reference changes reflect optional triggers, the empty-array default, and refreshed source links.",
+        "Compared with packages/form-core/src/pipeline/validation/validation.public.ts and packages/form-core/skills/validation/SKILL.md, which already describe optional triggers and submission-only validators. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ClientValidationTrigger.md": {
+      "fingerprint": "e523b2f03d71541c86b994a412f96ac34d128ef9ccc6cb99ed4b46be9eb2c5cd",
+      "snapshot": {
+        "docs/reference/type-aliases/ClientValidationTrigger.md": "338240006ac090144a6accdf161b6737c3b4a0f1761563945362ccd13c5c2380"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ClientValidationTrigger.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ClientValidationTriggerOption.md": {
+      "fingerprint": "ee114533bbce830aec9e4d7a6b08dca18e32cb1e68a0d18aa97dc4fd5cec9f7c",
+      "snapshot": {
+        "docs/reference/type-aliases/ClientValidationTriggerOption.md": "431f00ce51736091ffa2d98d8a11ce7d0c3de8d0f9e5659f6975cf3c251e0fca"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ClientValidationTriggerOption.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ConfigurableValidationTrigger.md": {
+      "fingerprint": "bdc0515fca3077c4788c1045564accb5fb1ebdaf0e797074aa44db2641708ee3",
+      "snapshot": {
+        "docs/reference/type-aliases/ConfigurableValidationTrigger.md": "a01826a7e0f7f85b0438a3f89f0988f78a33a1d9b197f6272f829f925446190d"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ConfigurableValidationTrigger.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/CreatedValidator.md": {
+      "fingerprint": "5f8d41092430bfd79417645732b2f81175ed0085cc341d525997707201def169",
+      "snapshot": {
+        "docs/reference/type-aliases/CreatedValidator.md": "23de305ea1663a3459e732dac360252a2140febd5034bfba0b227ef46f0cfba9"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/CreatedValidator.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/FieldValidatorFn.md": {
+      "fingerprint": "776e51afa8416783bb5bcf723eb86a528f8abfb71733a243c3a7080fe1883e4c",
+      "snapshot": {
+        "docs/reference/type-aliases/FieldValidatorFn.md": "d562e16d8af9ae79a912b30eee4c6c83edad2aee9160d2198a2eaba4c6fe0d35"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/FieldValidatorFn.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/FieldValidators.md": {
+      "fingerprint": "cb9072685e67b35526309c0e545d508e3af56ef142513f48e04380f1a37d41e0",
+      "snapshot": {
+        "docs/reference/type-aliases/FieldValidators.md": "da581cafdf8e29a5b330e8bd32845dcdfeb462ba6e1cd71edf20ac124a62ca3d"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/FieldValidators.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/FormGroupValidatorFn.md": {
+      "fingerprint": "511c350eb35847403eb65188d250e04f403d2dc8669f2f620c8ab940d452934d",
+      "snapshot": {
+        "docs/reference/type-aliases/FormGroupValidatorFn.md": "f0313cee6008494d24345371eb2708ce5c7a5f35964a58ba07cc6f0f9cb82ee1"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/FormGroupValidatorFn.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/FormGroupValidators.md": {
+      "fingerprint": "04bc1e0bdeafd9d9b4396b3ac89c4dbb3b055574a845ea434600721b24ad7249",
+      "snapshot": {
+        "docs/reference/type-aliases/FormGroupValidators.md": "14392033fa1558b0f2f29b0b8728ea4e9625e697dd3d02a957c55f30806a3725"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/FormGroupValidators.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/FormValidationTriggerOption.md": {
+      "fingerprint": "fec78cf9405ab8ff7c84793815f7290aba8a0c2fc3f9aff073fc09480d6f5392",
+      "snapshot": {
+        "docs/reference/type-aliases/FormValidationTriggerOption.md": "f255bb916b73e0e0cf0316545006749d4d0f3f6886729937c4077e446bd65ca5"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/FormValidationTriggerOption.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/InferUnion.md": {
+      "fingerprint": "c82d0c19b41e453cbd67cbb49c849cd98f213d4f1a326e8a37b1713ac210b324",
+      "snapshot": {
+        "docs/reference/type-aliases/InferUnion.md": "8c67c6b1fccd00b5a778962abfdb8cd268abdbd27ea9d72a8c88736ba8e4bd6f"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/InferUnion.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ServerValidationTrigger.md": {
+      "fingerprint": "213343c963cbe3c1a30e5f81c76ceee90171c0ae4984a9d53643d141952b7452",
+      "snapshot": {
+        "docs/reference/type-aliases/ServerValidationTrigger.md": "48c81b4b7921c4a3d4d76d495d661fd9c33767f001d5d3c65456650ae228187e"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ServerValidationTrigger.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ToFormGroupOutputs.md": {
+      "fingerprint": "a08132c0082afb55d97d54aedc8bfbe31ac0b6430e8e27f2ce03b17da196be0d",
+      "snapshot": {
+        "docs/reference/type-aliases/ToFormGroupOutputs.md": "d2071b74135b38a7dea4f377f08e5734254e194ac82be6c2f44f2bad569c62e4"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ToFormGroupOutputs.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidationDebounceFn.md": {
+      "fingerprint": "81d4b47921c429e6f140024effb7ad6e195fae1477858b73d56bcecc62f31a98",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidationDebounceFn.md": "6d81831653f34df48d37424e02ef1ca5885680b86ab95dd744d900438c25f281"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidationDebounceFn.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidationPredicateContext.md": {
+      "fingerprint": "c6f58e162a0e8e0e914282a48c254a17efff4c03ac3afe50fe18fa4df9cd3a62",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidationPredicateContext.md": "60e20a8065cf44e585803958f9a0e64703a28dea4874a4ab0d89499a2a1677ce"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidationPredicateContext.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidationPredicateFn.md": {
+      "fingerprint": "61e3ad00289112a4171bccef04b69d1eff7a2b496b4d618f566ebc5694a65cff",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidationPredicateFn.md": "a29c769190f0eac097796577a23b1c805ddc3cf3c8b178113e6fc6b8c2cca26e"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidationPredicateFn.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidationTrigger.md": {
+      "fingerprint": "6ea70ff4e051f9dbf07441861bf92001757764eb1c5b79b4b1c3a62e2e43acc7",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidationTrigger.md": "aafac0720bba9996675648264ec601791f20f4383431d58532231392fd7118a3"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidationTrigger.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidationTriggerOption.md": {
+      "fingerprint": "a38730f2cfb32f257e3a3760e256e7f2a0dd03fbf0c1bb5a1487433aaeb0ddb4",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidationTriggerOption.md": "363a07ba3540eea11fe592b4efb14722bf5e2c86e6392be1416d5c0ff97bbb10"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidationTriggerOption.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidatorFn.md": {
+      "fingerprint": "43403bb47ff59f0c96cc8879b968824e6610e4167895d22020d64041d770d828",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidatorFn.md": "cf8dab9550aca8d0ad7887eace9632a3447a4bbd900b90edfac4aeb6ae56960e"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidatorFn.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidatorOptions.md": {
+      "fingerprint": "c6ee4244d373af0f8ec6bfcc433cb76beba25b1f33d97bcd6a602a30cad8a972",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidatorOptions.md": "be56d175f268e5989714b9a34dff68515c1321585d314e1318602c19174ce14d"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "The generated API reference now marks triggers as optional, matching the public validation types and existing validation skill. Omitted or empty triggers disable interaction validation while submission remains controlled separately by skipOnSubmit. This behavior was already incorporated in the prior guidance review; no additional skill change is needed.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidatorOptions.md. The reference changes reflect optional triggers and refreshed source links.",
+        "Compared with packages/form-core/src/pipeline/validation/validation.public.ts and packages/form-core/skills/validation/SKILL.md, which already describe optional triggers and submission-only validators. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidatorScope.md": {
+      "fingerprint": "671b26b1d95caf27149c30488b014df32501f04fd92aaae0781eecb9d3aa9120",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidatorScope.md": "8de6f01378f71ca011faacf416b1299a428721294b140a2c08cfa17ad559aab0"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidatorScope.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:docs/reference/type-aliases/ValidatorTrigger.md": {
+      "fingerprint": "7452f01a7f19502d4741feb84c9742dd5d360c1a5d4df18c1a21b5b41c40745c",
+      "snapshot": {
+        "docs/reference/type-aliases/ValidatorTrigger.md": "645f9ade535389e43a2b2cd224dbdcea1ea5fd3d5031058c7c9aaebf05272c97"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Only generated source-location links changed. The documented signatures and behavior are unchanged, so the existing skill guidance needs no update.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c HEAD -- docs/reference/type-aliases/ValidatorTrigger.md; every added or removed content line is a Defined in source-location link. Generated documentation was not regenerated."
+      ]
+    },
+    "source:packages/form-core/src/FormApi/FormApi.lib.ts": {
+      "fingerprint": "f11555f01081ab7313e02c5f1e0de347b8854092b6d1386b32f614d35f2d08ba",
+      "snapshot": {
+        "packages/form-core/src/FormApi/FormApi.lib.ts": "9f1ab06ebefdfd97c0d7d440637fa2d53a60ed583b3eea239052f0db0de481dd"
+      },
+      "head": "5354a7aaf10704840720f67afcab67e4909a953f",
+      "outcome": "no-change",
+      "reason": "Form validator initialization now passes undefined when no previous options exist, so the validator update guard does not treat first initialization as a change from zero validators. Subsequent updates still compare array lengths. This removes a false warning for supported fixed-length validator arrays and preserves the validation skill contract.",
+      "evidence": [
+        "Reviewed Git-visible content at HEAD 5354a7aaf10704840720f67afcab67e4909a953f against the recorded baseline 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm exec intent maintainer status --json reported 0 stale files and 0 authoring problems. This review changes only review metadata; runtime, type, and fresh-consumer tests were not rerun.",
+        "Reviewed the FormApi.lib.ts diff from 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9 and ValidatorInstance.update in packages/form-core/src/pipeline/validation/ValidatorInstance.lib.ts; the warning guard checks previousDefinitions !== undefined before comparing counts.",
+        "Read the public React regression fixture ValidatorInitialization.tsx and validator-initialization.spec.tsx under packages/react-form/tests/public/validation-execution/. The existing validation skill and planning documents already require constant validator array lengths."
       ]
     }
   }
