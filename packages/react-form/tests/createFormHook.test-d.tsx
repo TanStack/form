@@ -87,9 +87,9 @@ describe('createFormHook', () => {
       render: ({ form, initialValues }) => {
         return (
           <div className="m-3">
-            <form.AppField name={`editors.${initialValues}.key` as const}>
+            <form.AppField name={`editors.${initialValues}.key`}>
               {(field) => {
-                expectTypeOf(field.state.value).toExtend<string>()
+                expectTypeOf(field.state.value).toEqualTypeOf<string>()
                 return null
               }}
             </form.AppField>
