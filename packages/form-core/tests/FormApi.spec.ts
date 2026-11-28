@@ -2100,6 +2100,73 @@ describe('form api', () => {
     expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
   })
 
+  it('should not call onSubmit again when handleSubmit runs while a submission is in flight', async () => {
+    // Regression: since the re-submission bypass for canSubmit (1.33.1), a second
+    // handleSubmit during a pending onSubmit skipped the early return, because
+    // canSubmit is false while isSubmitting, and submitted the form twice.
+    // See: https://github.com/TanStack/form/issues/2467
+    const pending: Array<() => void> = []
+    const onSubmit = vi.fn(
+      () => new Promise<void>((resolve) => pending.push(resolve)),
+    )
+
+    // Note: an earlier test in this file leaks fake timers, so this test opts
+    // into them explicitly instead of relying on real timers.
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await vi.advanceTimersByTimeAsync(10)
+    expect(form.state.isSubmitting).toBe(true)
+
+    const second = form.handleSubmit()
+    await vi.advanceTimersByTimeAsync(10)
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+
+    pending.forEach((resolve) => resolve())
+    await Promise.all([first, second])
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    vi.useRealTimers()
+  })
+
+  it('should still re-validate on re-submission after a completed submit', async () => {
+    // The in-flight guard must not break the re-submission bypass: once the
+    // first submission settles, a later handleSubmit still validates and submits.
+    const pending: Array<() => void> = []
+    const onSubmit = vi.fn(
+      () => new Promise<void>((resolve) => pending.push(resolve)),
+    )
+
+    // An earlier test in this file leaks fake timers; this test needs real
+    // ones so the in-flight promise can settle without manual advancing.
+    vi.useRealTimers()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await sleep(10)
+    expect(form.state.isSubmitting).toBe(true)
+    pending.forEach((resolve) => resolve())
+    await first
+    expect(form.state.isSubmitting).toBe(false)
+
+    const second = form.handleSubmit()
+    await sleep(10)
+    expect(onSubmit).toHaveBeenCalledTimes(2)
+    pending.forEach((resolve) => resolve())
+    await second
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
